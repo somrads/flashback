@@ -13,12 +13,11 @@ const styles = StyleSheet.create({
     height: 120,
     justifyContent: "center",
     alignItems: "center",
-
   },
   title: {
-    fontFamily:"Nunito-Bold",
+    fontFamily: "Nunito-Bold",
     color: COLORS.grayWhite,
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "bold",
   },
 });
