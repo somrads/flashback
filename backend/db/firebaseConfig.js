@@ -1,4 +1,3 @@
-// firebaseConfig.js
 const firebaseConfig = {
   apiKey: "AIzaSyAdLr7pPFxOuTS8n4n8ETX-4e8qi4JuCHc",
   authDomain: "flashback-31ad2.firebaseapp.com",

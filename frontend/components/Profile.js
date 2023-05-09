@@ -1,12 +1,13 @@
 import React from "react";
+import CustomHeader from "./CustomHeader";
 import { StyleSheet, Text, View } from "react-native";
 import { COLORS } from "../constants/colors";
 
 export default function Profile() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Profile</Text>
       <View style={styles.wrapper}>
+        <CustomHeader title="Profile" />
         <View style={styles.circle}></View>
       </View>
     </View>
@@ -15,7 +16,7 @@ export default function Profile() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginTop: 140,
+    marginTop: 30,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -24,17 +25,5 @@ const styles = StyleSheet.create({
     height: 203,
     backgroundColor: COLORS.grayWhite,
     borderRadius: 100,
-  },
-  title: {
-    justifyContent: "center",
-    alignItems: "center",
-    color: COLORS.grayWhite,
-  },
-
-  titleWrapper: {
-    marginTop: 100,
-    marginBottom: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
 });
