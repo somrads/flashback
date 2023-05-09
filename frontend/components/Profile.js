@@ -1,35 +1,19 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { Icon } from "react-native-elements";
+import { StyleSheet, Text, View } from "react-native";
+import { COLORS } from "../constants/colors";
 
-const CustomHeader = ({ title, navigation }) => {
-  return (
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Icon name="arrow-back" type="material" />
-      </TouchableOpacity>
-      <Text style={{ fontSize: 20, marginLeft: 10 }}>{title}</Text>
-    </View>
-  );
-};
-
-const Profile = ({ navigation }) => {
+export default function Profile() {
   return (
     <View style={styles.container}>
-      <CustomHeader title="Profile" navigation={navigation} />
+      <Text style={styles.title}>Profile</Text>
       <View style={styles.wrapper}>
         <View style={styles.circle}></View>
       </View>
     </View>
   );
-};
-
-export default Profile;
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   wrapper: {
     marginTop: 140,
     justifyContent: "center",
@@ -38,7 +22,19 @@ const styles = StyleSheet.create({
   circle: {
     width: 209,
     height: 203,
-    backgroundColor: "#DCDCDC",
+    backgroundColor: COLORS.grayWhite,
     borderRadius: 100,
+  },
+  title: {
+    justifyContent: "center",
+    alignItems: "center",
+    color: COLORS.grayWhite,
+  },
+
+  titleWrapper: {
+    marginTop: 100,
+    marginBottom: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
