@@ -1,23 +1,49 @@
 import React from "react";
 import CustomHeader from "./CustomHeader";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import { COLORS } from "../constants/colors";
+import BirthdayIcon from "../assets/icons/birthday.svg";
+import RoleIcon from "../assets/icons/role.svg";
 
 export default function Profile() {
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
         <CustomHeader title="Profile" />
-        <View style={styles.circle}></View>
+        <View style={styles.circle} />
         <Text style={styles.userName}>Somrad Sharma</Text>
-        <View style={styles.bioWrapper}>
-          <Text style={styles.role}>DAD</Text>
-          <View style={styles.bio}>
-            <Text style={styles.bioText}>
-              Im the Dad of the fam and the alpha
-            </Text>
+
+        {/* Birthday and Role */}
+        <View style={styles.bioSection}>
+          <View style={styles.icons}>
+            <View style={styles.statsSection}>
+              <RoleIcon />
+              <View style={styles.text}>
+                <Text style={styles.statsTitle}>Dad</Text>
+                <Text style={styles.statsPlaceHolder}>Role</Text>
+              </View>
+            </View>
+
+            <View style={styles.statsSection}>
+              <BirthdayIcon />
+              <View style={styles.text}>
+                <Text style={styles.statsTitle}>In 80 days</Text>
+                <Text style={styles.statsPlaceHolder}>1998-11-17</Text>
+              </View>
+            </View>
           </View>
         </View>
+        <View style={styles.greenLine} />
+
+        {/* Description */}
+        <View style={styles.description}>
+          <Text style={styles.descriptionText}>
+            Im the alpha of my wolfpack
+          </Text>
+        </View>
+
+        {/* Todays Posts */}
+        <View></View>
       </View>
     </View>
   );
@@ -42,13 +68,54 @@ const styles = StyleSheet.create({
     fontSize: 30,
     margin: 20,
   },
-  bioWrapper: {},
+  icons: {
+    flexDirection: "row",
+  },
+  bioSection: {
+    alignItems: "center",
+  },
+
   bio: {
     margin: 20,
   },
-  role:{
-    fontFamily: "Nunito-Black",
+
+  statsSection: {
+    flexDirection: "row",
+    marginRight: 30,
+    marginLeft: 30,
+    marginTop: 20,
+  },
+  statsTitle: {
     color: COLORS.grayWhite,
-    fontSize: 30
+    fontFamily: "Nunito-Black",
+    fontSize: 15,
+  },
+
+  statsPlaceHolder: {
+    color: COLORS.placeHolder,
+    fontFamily: "Nunito-Light",
+    fontSize: 15,
+  },
+
+  text: {
+    marginLeft: 10,
+  },
+
+  greenLine: {
+    marginTop: 30,
+    width: "70%",
+    height: 0.5,
+    backgroundColor: COLORS.mainDarker,
+  },
+
+  description: {
+    alignItems: "flex-start",
+  },
+
+  descriptionText: {
+    color: COLORS.grayWhite,
+    fontFamily: "Nunito-Regular",
+    fontSize: 20,
+    marginTop: 10,
   },
 });
