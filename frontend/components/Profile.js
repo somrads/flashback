@@ -1,17 +1,27 @@
 import React from "react";
 import CustomHeader from "./CustomHeader";
-import { StyleSheet, Text, View, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { COLORS } from "../constants/colors";
 import BirthdayIcon from "../assets/icons/birthday.svg";
 import RoleIcon from "../assets/icons/role.svg";
 
 export default function Profile() {
   return (
-    <View style={styles.container}>
+    <ScrollView>
       <View style={styles.wrapper}>
         <CustomHeader title="Profile" />
-        <View style={styles.circle} />
-        <Text style={styles.userName}>Somrad Sharma</Text>
+        <Image
+          style={styles.pfp}
+          source={require("../assets/img/image1.png")}
+        />
+        <Text style={styles.userName}>Angela Laquez</Text>
 
         {/* Birthday and Role */}
         <View style={styles.bioSection}>
@@ -19,7 +29,7 @@ export default function Profile() {
             <View style={styles.statsSection}>
               <RoleIcon />
               <View style={styles.text}>
-                <Text style={styles.statsTitle}>Dad</Text>
+                <Text style={styles.statsTitle}>Mom</Text>
                 <Text style={styles.statsPlaceHolder}>Role</Text>
               </View>
             </View>
@@ -38,14 +48,45 @@ export default function Profile() {
         {/* Description */}
         <View style={styles.description}>
           <Text style={styles.descriptionText}>
-            Im the alpha of my wolfpack
+            Im the mommy of my wolfpack
           </Text>
         </View>
-
-        {/* Todays Posts */}
-        <View></View>
       </View>
-    </View>
+
+      {/* Todays Posts */}
+      <View style={styles.postsWrapper}>
+        <Text style={styles.title}>Today Post</Text>
+        <View style={styles.todaysPhotoCentered}>
+          <View style={styles.todaysPhotoWrapper}>
+            <Image
+              style={styles.todaysPhotoWrapper}
+              source={require("../assets/img/image1.png")}
+            ></Image>
+          </View>
+        </View>
+      </View>
+
+      {/* Family Members */}
+      <View style={styles.familyMembersSection}>
+        <Text style={styles.familyMembersTitle}>Family Members</Text>
+        <View style={styles.membersInfo}>
+          <Text style={styles.membersCount}>2</Text>
+          <Text style={styles.membersText}>Members</Text>
+        </View>
+      </View>
+      <View style={styles.membersWrapper}>
+        <View style={styles.members}>
+          <Image
+            style={styles.memberPfp}
+            source={require("../assets/img/image1.png")}
+          ></Image>
+          <Text style={styles.memberName}>Julie Laquez</Text>
+          <TouchableOpacity style={styles.removeButton}>
+            <Text style={styles.removeButtonText}>Remove</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -55,13 +96,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  circle: {
-    marginTop: 20,
+  pfp: {
     width: 209,
     height: 203,
-    backgroundColor: COLORS.grayWhite,
     borderRadius: 100,
   },
+
   userName: {
     fontFamily: "Nunito-SemiBold",
     color: COLORS.grayWhite,
@@ -117,5 +157,91 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Regular",
     fontSize: 20,
     marginTop: 10,
+  },
+  title: {
+    color: COLORS.grayWhite,
+    fontFamily: "Nunito-Bold",
+    fontSize: 25,
+    marginTop: 50,
+    marginLeft: 50,
+    alignSelf: "flex-start",
+    marginBottom: 20,
+  },
+  postsWrapper: {
+    marginTop: 10,
+  },
+  todaysPhotoCentered: {
+    alignItems: "center",
+  },
+  todaysPhotoWrapper: {
+    width: 346,
+    height: 318,
+    borderRadius: 5,
+  },
+  familyMembersSection: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    paddingHorizontal: 20,
+    marginTop: 50,
+    marginBottom: 20,
+  },
+  familyMembersTitle: {
+    color: COLORS.grayWhite,
+    fontFamily: "Nunito-Bold",
+    fontSize: 25,
+  },
+  membersCount: {
+    color: COLORS.grayWhite,
+    fontFamily: "Nunito-Medium",
+    fontSize: 20,
+    marginTop: 2,
+  },
+  membersInfo: {
+    flexDirection: "row",
+  },
+
+  membersText: {
+    color: COLORS.mainDarker,
+    fontFamily: "Nunito-Bold",
+    fontSize: 12,
+    marginLeft: 6,
+    marginTop: 10,
+  },
+
+  membersWrapper: {
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+
+  members: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+  },
+
+  memberPfp: {
+    width: 59,
+    height: 57,
+    borderRadius: 70,
+  },
+
+  memberName: {
+    marginLeft: 15,
+    marginLeft: -15,
+    color: COLORS.grayWhite,
+    fontFamily: "Nunito-Medium",
+    fontSize: 20,
+  },
+  removeButton: {
+    marginLeft: 15,
+    backgroundColor: COLORS.grayBlack,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  removeButtonText: {
+    color: COLORS.grayWhite,
+    fontFamily: "Nunito-Medium",
+    fontSize: 12,
   },
 });
