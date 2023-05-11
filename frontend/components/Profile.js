@@ -11,11 +11,13 @@ import {
 import { COLORS } from "../constants/colors";
 import BirthdayIcon from "../assets/icons/birthday.svg";
 import RoleIcon from "../assets/icons/role.svg";
+import Arrow from "../assets/icons/arrow.svg";
 
 export default function Profile() {
   return (
     <ScrollView>
       <View style={styles.wrapper}>
+        <Arrow/>
         <CustomHeader title="Profile" />
         <Image
           style={styles.pfp}
@@ -214,6 +216,7 @@ const styles = StyleSheet.create({
   },
 
   members: {
+    margin: 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-evenly",
@@ -224,7 +227,6 @@ const styles = StyleSheet.create({
     height: 57,
     borderRadius: 70,
   },
-
   memberName: {
     marginLeft: 15,
     marginLeft: -15,
@@ -235,13 +237,13 @@ const styles = StyleSheet.create({
   removeButton: {
     marginLeft: 15,
     backgroundColor: COLORS.grayBlack,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 13,
+    paddingVertical: 8,
     borderRadius: 5,
   },
   removeButtonText: {
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Medium",
-    fontSize: 12,
+    fontSize: 14,
   },
 });
