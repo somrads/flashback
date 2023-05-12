@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import CustomHeader from "./CustomHeader";
 import {
   StyleSheet,
@@ -13,6 +13,7 @@ import BirthdayIcon from "../assets/icons/birthday.svg";
 import RoleIcon from "../assets/icons/role.svg";
 import Arrow from "../assets/icons/arrow.svg";
 import EditIcon from "../assets/icons/edit.svg";
+import { database } from "../../backend/db/firebase";
 
 export default function Profile() {
   return (
