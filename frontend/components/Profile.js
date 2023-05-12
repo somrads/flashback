@@ -12,19 +12,26 @@ import { COLORS } from "../constants/colors";
 import BirthdayIcon from "../assets/icons/birthday.svg";
 import RoleIcon from "../assets/icons/role.svg";
 import Arrow from "../assets/icons/arrow.svg";
+import EditIcon from "../assets/icons/edit.svg";
 
 export default function Profile() {
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.wrapper}>
-        <Arrow/>
+        {/* <Arrow /> */}
+        <TouchableOpacity style={styles.arrowButton} onPress={() => {}}>
+          <Arrow width={30} height={20} fill={COLORS.grayWhite} />
+        </TouchableOpacity>
         <CustomHeader title="Profile" />
+        {/* Edit button with three dots icon */}
+        <TouchableOpacity style={styles.editButton} onPress={() => {}}>
+          <EditIcon width={30} height={20} />
+        </TouchableOpacity>
         <Image
           style={styles.pfp}
           source={require("../assets/img/image1.png")}
         />
         <Text style={styles.userName}>Angela Laquez</Text>
-
         {/* Birthday and Role */}
         <View style={styles.bioSection}>
           <View style={styles.icons}>
@@ -54,7 +61,6 @@ export default function Profile() {
           </Text>
         </View>
       </View>
-
       {/* Todays Posts */}
       <View style={styles.postsWrapper}>
         <Text style={styles.title}>Today Post</Text>
@@ -67,12 +73,11 @@ export default function Profile() {
           </View>
         </View>
       </View>
-
       {/* Family Members */}
       <View style={styles.familyMembersSection}>
         <Text style={styles.familyMembersTitle}>Family Members</Text>
         <View style={styles.membersInfo}>
-          <Text style={styles.membersCount}>2</Text>
+          <Text style={styles.membersCount}>1</Text>
           <Text style={styles.membersText}>Members</Text>
         </View>
       </View>
@@ -83,16 +88,23 @@ export default function Profile() {
             source={require("../assets/img/image1.png")}
           ></Image>
           <Text style={styles.memberName}>Julie Laquez</Text>
-          <TouchableOpacity style={styles.removeButton}>
+          <TouchableOpacity style={styles.removeButton} onPress={() => {}}>
             <Text style={styles.removeButtonText}>Remove</Text>
           </TouchableOpacity>
         </View>
       </View>
+      <TouchableOpacity style={styles.logoutButton} onPress={() => {}}>
+        <Text style={styles.buttonText}>Logout</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "space-between",
+  },
   wrapper: {
     marginTop: 30,
     justifyContent: "center",
@@ -245,5 +257,32 @@ const styles = StyleSheet.create({
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Medium",
     fontSize: 14,
+  },
+
+  editButton: {
+    position: "absolute",
+    top: 35,
+    right: 25,
+  },
+  logoutButton: {
+    backgroundColor: COLORS.mainDarker,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    borderRadius: 5,
+    alignSelf: "center",
+    marginBottom: 20,
+    marginTop: 15,
+  },
+  buttonText: {
+    color: COLORS.grayWhite,
+    fontFamily: "Nunito-Bold",
+    fontSize: 14,
+  },
+
+  arrowButton: {
+    position: "absolute",
+    top: 35,
+    left: 25,
+    transform: [{ rotate: "-180deg" }],
   },
 });
