@@ -1,6 +1,11 @@
+import firebase from "firebase/compat/app";
+import { getDatabase } from "firebase/database";
+
 const firebaseConfig = {
   apiKey: "AIzaSyAdLr7pPFxOuTS8n4n8ETX-4e8qi4JuCHc",
   authDomain: "flashback-31ad2.firebaseapp.com",
+  databaseURL:
+    "https://flashback-31ad2-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "flashback-31ad2",
   storageBucket: "flashback-31ad2.appspot.com",
   messagingSenderId: "997571286424",
@@ -8,4 +13,9 @@ const firebaseConfig = {
   measurementId: "G-ZD85XQ2YD6",
 };
 
-export default firebaseConfig;
+if (firebase.apps.length === 0) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+const database = getDatabase();
+export { database };

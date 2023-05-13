@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import Profile from "./components/Profile";
 import { COLORS } from "./constants/colors";
 import { useFonts } from "expo-font";
+import FetchData from "./components/FetchData";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -23,7 +24,8 @@ export default function App() {
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
-        <Profile />
+        {/* <Profile /> */}
+        <FetchData />
       </View>
       <StatusBar style="light" />
     </View>
@@ -33,6 +35,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    // backgroundColor: COLORS.background,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

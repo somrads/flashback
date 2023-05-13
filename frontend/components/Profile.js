@@ -13,9 +13,38 @@ import BirthdayIcon from "../assets/icons/birthday.svg";
 import RoleIcon from "../assets/icons/role.svg";
 import Arrow from "../assets/icons/arrow.svg";
 import EditIcon from "../assets/icons/edit.svg";
-import { database } from "../../backend/db/firebase";
+import { database } from "../db/firebase";
+import {ref, onValue} from "firebase/database";
+
+// const FetchData = () => {
+
+//   // useEffect(() => {
+//   //   const users = ref(database, "users")
+//   //   onValue(users, (snapshot) => {
+//   //     const data = snapshot.val();
+//   //     const newUser = Object.keys(data).map(key => ({
+//   //       id: key,
+//   //       ...data[key]
+//   //     }));
+//   //     console.log(newUser);
+//   //     setUserData(newUser)
+//   //   })
+//   // }, [])
+
+
+// }
+
+const fetchAllUsers = async () => {
+  const usersRef = database.ref("users");
+  usersRef.on("value", (snapshot) => {
+    const data = snapshot.val();
+    setUsersData(data);
+  });
+};
 
 export default function Profile() {
+  const [usersData, setUsersData] = useState({});
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.wrapper}>
