@@ -34,7 +34,7 @@ const fetchAllUsers = async () => {
   });
 };
 
-//Birthday day calculator
+//Birthday count calculator
 const daysUntilBirthday = (birthday) => {
   const today = new Date();
   const birthDate = new Date(birthday);
