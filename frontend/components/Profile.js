@@ -14,83 +14,97 @@ import RoleIcon from "../assets/icons/role.svg";
 import Arrow from "../assets/icons/arrow.svg";
 import EditIcon from "../assets/icons/edit.svg";
 import { database } from "../db/firebase";
-import {ref, onValue} from "firebase/database";
-
-// const FetchData = () => {
-
-//   // useEffect(() => {
-//   //   const users = ref(database, "users")
-//   //   onValue(users, (snapshot) => {
-//   //     const data = snapshot.val();
-//   //     const newUser = Object.keys(data).map(key => ({
-//   //       id: key,
-//   //       ...data[key]
-//   //     }));
-//   //     console.log(newUser);
-//   //     setUserData(newUser)
-//   //   })
-//   // }, [])
-
-
-// }
+import { ref, onValue } from "firebase/database";
 
 const fetchAllUsers = async () => {
-  const usersRef = database.ref("users");
-  usersRef.on("value", (snapshot) => {
-    const data = snapshot.val();
-    setUsersData(data);
+  const usersRef = ref(database, "users");
+  return new Promise((resolve) => {
+    onValue(usersRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const usersArray = Object.entries(data).map(([key, value]) => ({
+          id: key,
+          ...value,
+        }));
+        resolve(usersArray);
+      } else {
+        resolve([]);
+      }
+    });
   });
 };
 
+//Birthday day calculator
+const daysUntilBirthday = (birthday) => {
+  const today = new Date();
+  const birthDate = new Date(birthday);
+  birthDate.setFullYear(today.getFullYear());
+
+  if (birthDate < today) {
+    birthDate.setFullYear(today.getFullYear() + 1);
+  }
+
+  const oneDay = 24 * 60 * 60 * 1000;
+  const daysUntil = Math.round(Math.abs((today - birthDate) / oneDay));
+  return daysUntil;
+};
+
 export default function Profile() {
-  const [usersData, setUsersData] = useState({});
+  const [usersData, setUsersData] = useState([]);
+
+  useEffect(() => {
+    fetchAllUsers().then((users) => {
+      setUsersData(users);
+    });
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.wrapper}>
-        {/* <Arrow /> */}
-        <TouchableOpacity style={styles.arrowButton} onPress={() => {}}>
-          <Arrow width={30} height={20} fill={COLORS.grayWhite} />
-        </TouchableOpacity>
-        <CustomHeader title="Profile" />
-        {/* Edit button with three dots icon */}
-        <TouchableOpacity style={styles.editButton} onPress={() => {}}>
-          <EditIcon width={30} height={20} />
-        </TouchableOpacity>
-        <Image
-          style={styles.pfp}
-          source={require("../assets/img/image1.png")}
-        />
-        <Text style={styles.userName}>Angela Laquez</Text>
-        {/* Birthday and Role */}
-        <View style={styles.bioSection}>
-          <View style={styles.icons}>
-            <View style={styles.statsSection}>
-              <RoleIcon />
-              <View style={styles.text}>
-                <Text style={styles.statsTitle}>Mom</Text>
-                <Text style={styles.statsPlaceHolder}>Role</Text>
+      {usersData.map((user) => (
+        <View style={styles.wrapper} key={user.id}>
+          <TouchableOpacity style={styles.arrowButton} onPress={() => {}}>
+            <Arrow width={30} height={20} fill={COLORS.grayWhite} />
+          </TouchableOpacity>
+          <CustomHeader title="Profile" />
+          <TouchableOpacity style={styles.editButton} onPress={() => {}}>
+            <EditIcon width={30} height={20} />
+          </TouchableOpacity>
+          <Image
+            style={styles.pfp}
+            source={require("../assets/img/image1.png")}
+          />
+          <Text style={styles.userName}>{user.name}</Text>
+          {/* Birthday and Role */}
+          <View style={styles.bioSection}>
+            <View style={styles.icons}>
+              <View style={styles.statsSection}>
+                <RoleIcon />
+                <View style={styles.text}>
+                  <Text style={styles.statsTitle}>{user.role}</Text>
+                  <Text style={styles.statsPlaceHolder}>Role</Text>
+                </View>
               </View>
-            </View>
 
-            <View style={styles.statsSection}>
-              <BirthdayIcon />
-              <View style={styles.text}>
-                <Text style={styles.statsTitle}>In 80 days</Text>
-                <Text style={styles.statsPlaceHolder}>1998-11-17</Text>
+              <View style={styles.statsSection}>
+                <BirthdayIcon />
+                <View style={styles.text}>
+                  <Text style={styles.statsTitle}>
+                    In {daysUntilBirthday(user.birthday)} days
+                  </Text>
+                  <Text style={styles.statsPlaceHolder}>{user.birthday}</Text>
+                </View>
               </View>
             </View>
           </View>
-        </View>
-        <View style={styles.greenLine} />
+          <View style={styles.greenLine} />
 
-        {/* Description */}
-        <View style={styles.description}>
-          <Text style={styles.descriptionText}>
-            Im the mommy of my wolfpack
-          </Text>
+          {/* Description */}
+          <View style={styles.description}>
+            <Text style={styles.descriptionText}>{user.description}</Text>
+          </View>
         </View>
-      </View>
+      ))}
+
       {/* Todays Posts */}
       <View style={styles.postsWrapper}>
         <Text style={styles.title}>Today Post</Text>
@@ -306,7 +320,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Bold",
-    fontSize: 14,
+    fontSize: 15,
   },
 
   arrowButton: {
