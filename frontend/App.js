@@ -2,6 +2,8 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Profile from "./components/Profile";
+import Home from "./components/Home"
+import Login from "./components/Login"
 import { COLORS } from "./constants/colors";
 import { useFonts } from "expo-font";
 
@@ -22,9 +24,10 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.wrapper}>
-        <Profile />
-      </View>
+      <View style={styles.wrapper}>{/* <Profile /> */}</View>
+      {/* <Home/> */}
+      {/* <Login/> */}
+      
       <StatusBar style="light" />
     </View>
   );
@@ -34,7 +37,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
-    // alignItems: "center",
-    // justifyContent: "center",
   },
 });
