@@ -20,7 +20,7 @@ const fetchAllUsers = async () => {
   const usersRef = ref(database, "users");
   return new Promise((resolve) => {
     onValue(usersRef, (snapshot) => {
-      const data = snapshot.val();
+       const data = snapshot.val();
       if (data) {
         const usersArray = Object.entries(data).map(([key, value]) => ({
           id: key,

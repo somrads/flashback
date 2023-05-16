@@ -1,13 +1,22 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import Profile from "./components/Profile";
-import Home from "./components/Home"
-import Login from "./components/Login"
-import { COLORS } from "./constants/colors";
-import { useFonts } from "expo-font";
 
-export default function App() {
+import { useFonts } from "expo-font";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator, DefaultTheme } from "@react-navigation/stack";
+import { firebase } from "./db/firebase";
+
+import Profile from "./components/Profile";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import Feed from "./components/Feed";
+
+const Stack = createStackNavigator();
+
+function AppNavigator() {
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
   let [fontsLoaded] = useFonts({
     "Nunito-Bold": require("./assets/fonts/Nunito-Bold.ttf"),
     "Nunito-Regular": require("./assets/fonts/Nunito-Regular.ttf"),
@@ -18,24 +27,52 @@ export default function App() {
     "Ubuntu-Regular": require("./assets/fonts/Ubuntu-Regular.ttf"),
   });
 
-  if (!fontsLoaded) {
-    return null;
+  // Handle user state changes
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+  }, []);
+
+  if (!fontsLoaded || initializing) return null;
+
+  if (!user) {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen name="Personal Info" component={Signup} />
+      </Stack.Navigator>
+    );
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.wrapper}>{/* <Profile /> */}</View>
-      {/* <Home/> */}
-      {/* <Login/> */}
-      
-      <StatusBar style="light" />
-    </View>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Feed"
+        component={Feed}
+        // options={{
+        //   headerShown: false,
+        // }}
+      />
+    </Stack.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-});
+export default function App() {
+  return (
+    <NavigationContainer>
+      <StatusBar style="light" />
+      <AppNavigator />
+    </NavigationContainer>
+  );
+}
