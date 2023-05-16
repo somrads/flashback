@@ -36,7 +36,7 @@ const Login = () => {
         alert(error.message);
       }
     }
-  };
+  }
 
   return (
     <View style={styles.container}>

@@ -50,7 +50,13 @@ function AppNavigator() {
             headerShown: false,
           }}
         />
-        <Stack.Screen name="Personal Info" component={Signup} />
+        <Stack.Screen
+          name="Signup"
+          component={Signup}
+          // options={{
+          //   headerShown: false,
+          // }}
+        />
       </Stack.Navigator>
     );
   }
