@@ -22,11 +22,12 @@ const Signup = () => {
   const [role, setRole] = useState("");
 
   const handleSignup = () => {
+    navigation.navigate("Name", { signupUser });
     if (password !== confirmPassword) {
       alert("Passwords do not match");
       return;
     }
-    console.log("handleSignup called"); 
+    console.log("handleSignup called");
 
     signupUser(
       email,

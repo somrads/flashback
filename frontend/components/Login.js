@@ -36,7 +36,7 @@ const Login = () => {
         alert(error.message);
       }
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -86,7 +86,7 @@ const Login = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate("Signup")}
+          onPress={() => navigation.navigate("Name")}
           style={styles.signupButton}
         >
           <Text style={styles.signupButtonText}>Signup</Text>
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Nunito-Medium",
   },
-  buttons:{
+  buttons: {
     marginTop: 10,
   },
 });

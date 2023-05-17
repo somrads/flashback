@@ -8,7 +8,11 @@ import { firebase } from "./db/firebase";
 
 import Profile from "./components/Profile";
 import Login from "./components/Login";
-import Signup from "./components/Signup";
+import Name from "./components/SignUpScreens/Name";
+import Email from "./components/SignUpScreens/Email";
+import Password from "./components/SignUpScreens/Password";
+import RoleAndDob from "./components/SignUpScreens/RoleAndDob";
+
 import Feed from "./components/Feed";
 
 const Stack = createStackNavigator();
@@ -50,13 +54,10 @@ function AppNavigator() {
             headerShown: false,
           }}
         />
-        <Stack.Screen
-          name="Signup"
-          component={Signup}
-          // options={{
-          //   headerShown: false,
-          // }}
-        />
+        <Stack.Screen name="Name" component={Name} />
+        <Stack.Screen name="Email" component={Email} />
+        <Stack.Screen name="Password" component={Password} />
+        <Stack.Screen name="RoleAndDob" component={RoleAndDob} />
       </Stack.Navigator>
     );
   }
