@@ -26,7 +26,7 @@ const Signup = () => {
       alert("Passwords do not match");
       return;
     }
-    console.log("handleSignup called"); // Add this line
+    console.log("handleSignup called"); 
 
     signupUser(
       email,
@@ -72,7 +72,7 @@ const Signup = () => {
 
       navigation.navigate("Feed");
     } catch (error) {
-      console.log("Error:", error.message); // Add this line
+      console.log("Error:", error.message);
       alert(error.message);
     }
   }
