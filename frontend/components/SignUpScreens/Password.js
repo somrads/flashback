@@ -11,8 +11,18 @@ import { firebase } from "../../db/firebase";
 const Password = ({ route, navigation }) => {
   const { firstName, lastName, email } = route.params;
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSignup = async () => {
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+    if (password.length < 6) {
+      alert("Password must be at least 6 characters long");
+      return;
+    }
+
     try {
       const userCredential = await firebase
         .auth()
@@ -45,6 +55,16 @@ const Password = ({ route, navigation }) => {
         onChangeText={setPassword}
         value={password}
         placeholder="Password"
+        secureTextEntry={true}
+        autoCapitalize="none"
+      />
+
+      <Text style={styles.label}>Confirm Password</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={setConfirmPassword}
+        value={confirmPassword}
+        placeholder="Confirm Password"
         secureTextEntry={true}
         autoCapitalize="none"
       />
