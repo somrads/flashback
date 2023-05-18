@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { firebase } from "../../db/firebase";
+import { COLORS } from "../../constants/colors";
 
 const Name = () => {
   const navigation = useNavigation();
@@ -27,22 +28,24 @@ const Name = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Name</Text>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Personal Info</Text>
+      </View>
 
-      <Text style={styles.label}>First Name</Text>
       <TextInput
         style={styles.input}
         onChangeText={setFirstName}
         value={firstName}
         placeholder="First Name"
+        placeholderTextColor={COLORS.grayWhite}
       />
 
-      <Text style={styles.label}>Last Name</Text>
       <TextInput
         style={styles.input}
         onChangeText={setLastName}
         value={lastName}
         placeholder="Last Name"
+        placeholderTextColor={COLORS.grayWhite}
       />
 
       <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
@@ -56,37 +59,45 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 20,
+    backgroundColor: COLORS.background,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 5,
-    marginBottom: 15,
-  },
-  nextButton: {
-    backgroundColor: "#3498db",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+  titleContainer: {
+    marginTop: 40,
     alignItems: "center",
   },
+  title: {
+    fontSize: 50,
+    marginBottom: 20,
+    textAlign: "center",
+    fontFamily: "Nunito-Bold",
+    color: COLORS.grayWhite,
+  },
+  input: {
+    borderWidth: 0,
+    borderBottomWidth: 3,
+    borderBottomColor: COLORS.grayBlack,
+    fontSize: 30,
+    color: COLORS.grayWhite,
+    fontFamily: "Nunito-Regular",
+    marginBottom: 40, // Increase marginBottom for more spacing between inputs
+    width: "100%",
+  },
+  nextButton: {
+    backgroundColor: COLORS.main,
+    paddingVertical: 15,
+    paddingHorizontal: 75,
+    borderRadius: 15,
+    marginBottom: 20,
+    borderColor: COLORS.main,
+    borderWidth: 1,
+  },
   nextButtonText: {
+    color: "#FFFFFF",
     fontSize: 18,
-    color: "#fff",
+    fontFamily: "Nunito-Medium",
+    textAlign: "center",
   },
 });
 

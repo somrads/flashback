@@ -2,10 +2,12 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 
 import { useFonts } from "expo-font";
+import { Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator, DefaultTheme } from "@react-navigation/stack";
 import { firebase } from "./db/firebase";
 import { LogBox } from "react-native";
+import { COLORS } from "./constants/colors";
 
 import Profile from "./components/Profile";
 import Login from "./components/Login";
@@ -14,6 +16,7 @@ import Email from "./components/SignUpScreens/Email";
 import Password from "./components/SignUpScreens/Password";
 import RoleAndDob from "./components/SignUpScreens/RoleAndDob";
 import Feed from "./components/Feed";
+import Arrow from "./assets/icons/arrow.svg";
 
 const Stack = createStackNavigator();
 LogBox.ignoreLogs(["Animated: `useNativeDriver`"]);
@@ -55,7 +58,20 @@ function AppNavigator() {
             headerShown: false,
           }}
         />
-        <Stack.Screen name="Name" component={Name} />
+        <Stack.Screen
+          name="Name"
+          component={Name}
+          options={{
+            headerStyle: {
+              backgroundColor: COLORS.background,
+              elevation: 0,
+              shadowOpacity: 0,
+              borderBottomWidth: 0,
+            },
+            headerBackImage: () => <Arrow width={25} height={20} style={{ marginLeft: 20 }}  />,
+            headerBackTitleVisible: false,
+          }}
+        />
         <Stack.Screen name="Email" component={Email} />
         <Stack.Screen name="Password" component={Password} />
         <Stack.Screen name="RoleAndDob" component={RoleAndDob} />
