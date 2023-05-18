@@ -5,6 +5,7 @@ import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator, DefaultTheme } from "@react-navigation/stack";
 import { firebase } from "./db/firebase";
+import { LogBox } from "react-native";
 
 import Profile from "./components/Profile";
 import Login from "./components/Login";
@@ -12,10 +13,10 @@ import Name from "./components/SignUpScreens/Name";
 import Email from "./components/SignUpScreens/Email";
 import Password from "./components/SignUpScreens/Password";
 import RoleAndDob from "./components/SignUpScreens/RoleAndDob";
-
 import Feed from "./components/Feed";
 
 const Stack = createStackNavigator();
+LogBox.ignoreLogs(["Animated: `useNativeDriver`"]);
 
 function AppNavigator() {
   const [initializing, setInitializing] = useState(true);

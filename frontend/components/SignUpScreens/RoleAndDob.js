@@ -5,11 +5,9 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Platform,
 } from "react-native";
-import DropDownPicker from "react-native-dropdown-picker";
-
-const isAndroid = Platform.OS === "android";
+import RNPickerSelect from "react-native-picker-select";
+import DatePicker from "react-native-datepicker";
 
 const RoleAndDob = ({ route, navigation }) => {
   const { firstName, lastName, email } = route.params;
@@ -33,31 +31,59 @@ const RoleAndDob = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Role and Date of Birth</Text>
-
       <Text style={styles.label}>Role</Text>
-      <View style={styles.dropdownWrapper}>
-        <DropDownPicker
-          items={[
-            { label: "Role 1", value: "Role 1" },
-            { label: "Role 2", value: "Role 2" },
-            { label: "Role 3", value: "Role 3" },
-          ]}
-          defaultValue={role}
-          containerStyle={styles.dropdownContainer}
-          style={styles.dropdown}
-          itemStyle={styles.dropdownItem}
-          dropDownStyle={styles.dropdownDropDown}
-          onChangeItem={(item) => setRole(item.value)}
-        />
-      </View>
-
-      <Text style={styles.label}>Date of Birth</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setDob}
-        value={dob}
-        placeholder="YYYY-MM-DD"
-        keyboardType="numbers-and-punctuation"
+      <RNPickerSelect
+        onValueChange={(value) => setRole(value)}
+        items={[
+          { label: "Daddy", value: "Daddy" },
+          { label: "Mommy", value: "Mommy" },
+          { label: "Son", value: "Son" },
+          { label: "Daughter", value: "Daughter" },
+          { label: "Grandpa", value: "Grandpa" },
+          { label: "Grandma", value: "Grandmother" },
+          { label: "Uncle", value: "Uncle" },
+          { label: "Auntie", value: "Auntie" },
+          { label: "Cousin", value: "Cousin" },
+          { label: "Other", value: "Other" },
+        ]}
+        placeholder={{ label: "Select a Role", value: null }}
+        style={pickerSelectStyles}
+      />
+      <DatePicker
+        style={styles.datePicker}
+        date={dob}
+        mode="date"
+        placeholder="Select date"
+        format="YYYY-MM-DD"
+        minDate="1900-01-01"
+        maxDate={new Date()} // Today's date
+        confirmBtnText="Confirm"
+        cancelBtnText="Cancel"
+        showIcon={true}
+        customStyles={{
+          dateIcon: {
+            width: 20,
+            height: 20,
+            tintColor: "#3498db",
+          },
+          dateInput: {
+            marginLeft: 36,
+            borderWidth: 1,
+            borderColor: "#ccc",
+            borderRadius: 5,
+            alignItems: "flex-start",
+            padding: 10,
+          },
+          placeholderText: {
+            color: "#999",
+            fontSize: 16,
+          },
+          dateText: {
+            fontSize: 16,
+            color: "#000",
+          },
+        }}
+        onDateChange={(date) => setDob(date)}
       />
 
       <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
@@ -103,23 +129,30 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#fff",
   },
+});
 
-  dropdownContainer: {
-    height: 40,
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 4,
+    color: "black",
+    paddingRight: 30,
     marginBottom: 15,
   },
-  dropdown: {
-    backgroundColor: "#fafafa",
-  },
-  dropdownItem: {
-    justifyContent: "flex-start",
-  },
-  dropdownDropDown: {
-    backgroundColor: "#fafafa",
-  },
-  dropdownWrapper: {
-    zIndex: isAndroid ? undefined : 1000,
-    elevation: isAndroid ? 1000 : undefined,
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: "purple",
+    borderRadius: 8,
+    color: "black",
+    paddingRight: 30,
+    marginBottom: 15,
   },
 });
 
