@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Text,
 } from "react-native";
 import { firebase } from "../../db/firebase";
+import { COLORS } from "../../constants/colors";
 
 const EmailPage = ({ route, navigation }) => {
   const { firstName, lastName } = route.params;
@@ -47,28 +48,20 @@ const EmailPage = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Email</Text>
-
-      <Text style={styles.label}>Email</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setEmail}
-        value={email}
-        placeholder="Email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-
-      <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
-        <Text style={styles.nextButtonText}>Next</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={styles.backButton}
-      >
-        <Text style={styles.backButtonText}>Back</Text>
-      </TouchableOpacity>
+      <View style={styles.contentContainer}>
+        <TextInput
+          style={styles.input}
+          onChangeText={setEmail}
+          value={email}
+          placeholder="Email"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          placeholderTextColor={COLORS.grayWhite}
+        />
+        <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
+          <Text style={styles.nextButtonText}>Next</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -76,46 +69,38 @@ const EmailPage = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     paddingHorizontal: 20,
+    backgroundColor: COLORS.background,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
+  contentContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 5,
-    marginBottom: 15,
+    borderWidth: 0,
+    borderBottomWidth: 3,
+    borderBottomColor: COLORS.grayBlack,
+    fontSize: 25,
+    color: COLORS.grayWhite,
+    fontFamily: "Nunito-Regular",
+    marginBottom: 60,  // Adjusted marginBottom
+    width: "100%",
   },
   nextButton: {
-    backgroundColor: "#3498db",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    alignItems: "center",
+    backgroundColor: COLORS.main,
+    paddingVertical: 15,
+    paddingHorizontal: 75,
+    borderRadius: 15,
+    marginBottom: 20,
+    borderColor: COLORS.main,
+    borderWidth: 1,
   },
   nextButtonText: {
+    color: "#FFFFFF",
     fontSize: 18,
-    color: "#fff",
-  },
-  backButton: {
-    marginTop: 10,
-    alignItems: "center",
-  },
-  backButtonText: {
-    fontSize: 16,
-    color: "#3498db",
+    fontFamily: "Nunito-Medium",
+    textAlign: "center",
   },
 });
 

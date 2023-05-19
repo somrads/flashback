@@ -28,29 +28,31 @@ const Name = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Personal Info</Text>
+      <View style={styles.titleContainer}></View>
+
+      <View style={styles.contentContainer}>
+        <View style={styles.inputsContainer}>
+          <TextInput
+            style={styles.input}
+            onChangeText={setFirstName}
+            value={firstName}
+            placeholder="First Name"
+            placeholderTextColor={COLORS.grayWhite}
+          />
+
+          <TextInput
+            style={styles.input}
+            onChangeText={setLastName}
+            value={lastName}
+            placeholder="Last Name"
+            placeholderTextColor={COLORS.grayWhite}
+          />
+        </View>
+
+        <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
+          <Text style={styles.nextButtonText}>Next</Text>
+        </TouchableOpacity>
       </View>
-
-      <TextInput
-        style={styles.input}
-        onChangeText={setFirstName}
-        value={firstName}
-        placeholder="First Name"
-        placeholderTextColor={COLORS.grayWhite}
-      />
-
-      <TextInput
-        style={styles.input}
-        onChangeText={setLastName}
-        value={lastName}
-        placeholder="Last Name"
-        placeholderTextColor={COLORS.grayWhite}
-      />
-
-      <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
-        <Text style={styles.nextButtonText}>Next</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -58,8 +60,6 @@ const Name = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     paddingHorizontal: 20,
     backgroundColor: COLORS.background,
   },
@@ -67,9 +67,16 @@ const styles = StyleSheet.create({
     marginTop: 40,
     alignItems: "center",
   },
+  contentContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  inputsContainer: {
+    width: "100%",
+  },
   title: {
-    fontSize: 50,
-    marginBottom: 20,
+    fontSize: 40,
     textAlign: "center",
     fontFamily: "Nunito-Bold",
     color: COLORS.grayWhite,
@@ -78,10 +85,10 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderBottomWidth: 3,
     borderBottomColor: COLORS.grayBlack,
-    fontSize: 30,
+    fontSize: 25,
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Regular",
-    marginBottom: 40, // Increase marginBottom for more spacing between inputs
+    marginBottom: 80,
     width: "100%",
   },
   nextButton: {
@@ -92,6 +99,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderColor: COLORS.main,
     borderWidth: 1,
+    alignSelf: "center",
   },
   nextButtonText: {
     color: "#FFFFFF",

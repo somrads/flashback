@@ -50,7 +50,25 @@ function AppNavigator() {
 
   if (!user) {
     return (
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: COLORS.background,
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+          headerTintColor: COLORS.grayWhite,
+          headerTitleStyle: {
+            fontSize: 24,
+            fontFamily: "Nunito-Medium",
+          },
+          headerBackImage: () => (
+            <Arrow width={25} height={20} style={{ marginLeft: 20 }} />
+          ),
+          headerBackTitleVisible: false,
+        }}
+      >
         <Stack.Screen
           name="Login"
           component={Login}
@@ -62,14 +80,7 @@ function AppNavigator() {
           name="Name"
           component={Name}
           options={{
-            headerStyle: {
-              backgroundColor: COLORS.background,
-              elevation: 0,
-              shadowOpacity: 0,
-              borderBottomWidth: 0,
-            },
-            headerBackImage: () => <Arrow width={25} height={20} style={{ marginLeft: 20 }}  />,
-            headerBackTitleVisible: false,
+            title: "Personal Info",
           }}
         />
         <Stack.Screen name="Email" component={Email} />
