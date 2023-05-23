@@ -9,7 +9,6 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { firebase } from "../db/firebase";
 import { COLORS } from "../constants/colors";
-
 import Logo from "../assets/icons/logo.svg";
 
 const Login = () => {
@@ -23,6 +22,10 @@ const Login = () => {
     } catch (error) {
       alert(error.message);
     }
+  };
+
+  const handleForgotPassword = () => {
+    navigation.navigate("ResetPassword");
   };
 
   const resetPassword = async (email) => {
@@ -70,7 +73,7 @@ const Login = () => {
         />
 
         <TouchableOpacity
-          onPress={() => resetPassword(email)}
+          onPress={handleForgotPassword}
           style={styles.forgotPassword}
         >
           <Text style={styles.forgotPasswordText}>Forgot your password?</Text>

@@ -2,20 +2,20 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 
 import { useFonts } from "expo-font";
-import { Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator, DefaultTheme } from "@react-navigation/stack";
 import { firebase } from "./db/firebase";
 import { LogBox } from "react-native";
 import { COLORS } from "./constants/colors";
 
-import Profile from "./components/Profile";
 import Login from "./components/Login";
 import Name from "./components/SignUpScreens/Name";
 import Email from "./components/SignUpScreens/Email";
 import Password from "./components/SignUpScreens/Password";
 import RoleAndDob from "./components/SignUpScreens/RoleAndDob";
 import Feed from "./components/Feed";
+import ResetPassword from "./components/SignUpScreens/ResetPassword";
+import VerifyEmail from "./components/VerifyEmail";
 import Arrow from "./assets/icons/arrow.svg";
 
 const Stack = createStackNavigator();
@@ -35,7 +35,6 @@ function AppNavigator() {
     "Ubuntu-Regular": require("./assets/fonts/Ubuntu-Regular.ttf"),
   });
 
-  // Handle user state changes
   function onAuthStateChanged(user) {
     setUser(user);
     if (initializing) setInitializing(false);
@@ -77,23 +76,45 @@ function AppNavigator() {
             headerShown: false,
           }}
         />
+
         <Stack.Screen name="Name" component={Name} />
         <Stack.Screen name="Email" component={Email} />
         <Stack.Screen name="Password" component={Password} />
         <Stack.Screen name="RoleAndDob" component={RoleAndDob} />
+        <Stack.Screen name="ResetPassword" component={ResetPassword} />
+      </Stack.Navigator>
+    );
+  }
+
+  if (user && !user.emailVerified) {
+    return (
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: COLORS.background,
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+          headerTintColor: COLORS.grayWhite,
+          headerTitleStyle: {
+            fontSize: 24,
+            fontFamily: "Nunito-Medium",
+          },
+          headerBackImage: () => (
+            <Arrow width={25} height={20} style={{ marginLeft: 20 }} />
+          ),
+          headerBackTitleVisible: false,
+        }}
+      >
+        <Stack.Screen name="VerifyEmail" component={VerifyEmail}   />
       </Stack.Navigator>
     );
   }
 
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="Feed"
-        component={Feed}
-        // options={{
-        //   headerShown: false,
-        // }}
-      />
+      <Stack.Screen name="Feed" component={Feed} />
     </Stack.Navigator>
   );
 }

@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { firebase } from "../../db/firebase";
 import { COLORS } from "../../constants/colors";
 
@@ -14,8 +13,6 @@ const Password = ({ route, navigation }) => {
   const { firstName, lastName, email, role, dob } = route.params;
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // const nav = useNavigation();
-
   const handleSignup = async () => {
     if (password !== confirmPassword) {
       alert("Passwords do not match");
@@ -27,23 +24,27 @@ const Password = ({ route, navigation }) => {
     }
 
     try {
-      const userCredential = await firebase
+      const response = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password);
-
-      await userCredential.user.sendEmailVerification();
-
-      alert("Verification email sent");
-
-      await firebase.database().ref(`users/${userCredential.user.uid}`).set({
-        firstName,
-        lastName,
-        email,
-      });
-
-      navigation.navigate("Feed");
+      if (response.user) {
+        await response.user.sendEmailVerification();
+        alert("A verification email has been sent to your email account");
+        const userData = {
+          firstName,
+          lastName,
+          email,
+          role,
+          dob,
+        };
+        await firebase
+          .database()
+          .ref("users")
+          .child(response.user.uid)
+          .set(userData);
+        navigation.navigate("VerifyEmail");
+      }
     } catch (error) {
-      console.log("Error:", error.message);
       alert(error.message);
     }
   };
