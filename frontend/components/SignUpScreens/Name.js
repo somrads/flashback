@@ -29,7 +29,6 @@ const Name = () => {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}></View>
-
       <View style={styles.contentContainer}>
         <View style={styles.inputsContainer}>
           <TextInput
@@ -95,7 +94,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.main,
     paddingVertical: 15,
     paddingHorizontal: 75,
-    borderRadius: 15,
+    borderRadius: 8,
     marginBottom: 20,
     borderColor: COLORS.main,
     borderWidth: 1,

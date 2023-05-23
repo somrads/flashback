@@ -67,6 +67,7 @@ function AppNavigator() {
             <Arrow width={25} height={20} style={{ marginLeft: 20 }} />
           ),
           headerBackTitleVisible: false,
+          title: "Personal Info",
         }}
       >
         <Stack.Screen
@@ -76,13 +77,7 @@ function AppNavigator() {
             headerShown: false,
           }}
         />
-        <Stack.Screen
-          name="Name"
-          component={Name}
-          options={{
-            title: "Personal Info",
-          }}
-        />
+        <Stack.Screen name="Name" component={Name} />
         <Stack.Screen name="Email" component={Email} />
         <Stack.Screen name="Password" component={Password} />
         <Stack.Screen name="RoleAndDob" component={RoleAndDob} />

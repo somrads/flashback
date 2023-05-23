@@ -89,7 +89,7 @@ const Login = () => {
           onPress={() => navigation.navigate("Name")}
           style={styles.signupButton}
         >
-          <Text style={styles.signupButtonText}>Signup</Text>
+          <Text style={styles.signupButtonText}>Sign-up</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
 
   input: {
     backgroundColor: "#303030",
-    borderRadius: 15,
+    borderRadius: 8,
     color: COLORS.grayWhite,
     paddingHorizontal: 20,
     paddingVertical: 20,
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.main,
     paddingVertical: 15,
     paddingHorizontal: 75,
-    borderRadius: 15,
+    borderRadius: 8,
     marginBottom: 20,
     borderColor: COLORS.main,
     borderWidth: 1,
@@ -162,9 +162,9 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     paddingVertical: 15,
     paddingHorizontal: 70,
-    borderRadius: 15,
+    borderRadius: 8,
     marginBottom: 20,
-    borderColor: COLORS.mainDarker,
+    borderColor: COLORS.main,
     borderWidth: 1,
   },
 

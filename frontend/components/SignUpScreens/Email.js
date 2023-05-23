@@ -84,14 +84,14 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Regular",
-    marginBottom: 60,  // Adjusted marginBottom
+    marginBottom: 60, 
     width: "100%",
   },
   nextButton: {
     backgroundColor: COLORS.main,
     paddingVertical: 15,
     paddingHorizontal: 75,
-    borderRadius: 15,
+    borderRadius: 8,
     marginBottom: 20,
     borderColor: COLORS.main,
     borderWidth: 1,
