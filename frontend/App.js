@@ -98,7 +98,13 @@ function AppNavigator() {
   if (user && !user.emailVerified) {
     return (
       <Stack.Navigator>
-        <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
+        <Stack.Screen
+          name="VerifyEmail"
+          component={VerifyEmail}
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name="SignUp"
           component={SignUpNavigator}

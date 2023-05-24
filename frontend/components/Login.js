@@ -28,19 +28,6 @@ const Login = () => {
     navigation.navigate("ResetPassword");
   };
 
-  const resetPassword = async (email) => {
-    if (email === "") {
-      alert("Please enter your email address.");
-    } else {
-      try {
-        await firebase.auth().sendPasswordResetEmail(email);
-        alert("Password reset link has been sent to your email.");
-      } catch (error) {
-        alert(error.message);
-      }
-    }
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
