@@ -8,51 +8,28 @@ import {
 } from "react-native";
 import { COLORS } from "../../constants/colors";
 import { firebase } from "../../db/firebase";
-
 const ResetPassword = () => {
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState("");
 
   const handleResetPassword = () => {
-    if (newPassword === confirmPassword) {
-      const user = firebase.auth().currentUser;
-
-      if (user) {
-        user
-          .updatePassword(newPassword)
-          .then(() => {
-            alert("Password reset successful");
-          })
-          .catch((error) => {
-
-            alert(error.message);
-          });
-      } else {
-        alert("User not authenticated");
-      }
-    } else {
-      alert("Passwords do not match");
-    }
+    firebase
+      .auth()
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        alert("If an account exists with this email, a password reset email has been sent!");
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   };
 
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        onChangeText={setNewPassword}
-        value={newPassword}
-        placeholder="New Password"
-        secureTextEntry={true}
-        autoCapitalize="none"
-        placeholderTextColor={COLORS.grayWhite}
-      />
-
-      <TextInput
-        style={styles.input}
-        onChangeText={setConfirmPassword}
-        value={confirmPassword}
-        placeholder="Confirm Password"
-        secureTextEntry={true}
+        onChangeText={setEmail}
+        value={email}
+        placeholder="Email"
         autoCapitalize="none"
         placeholderTextColor={COLORS.grayWhite}
       />
@@ -94,7 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.main,
     paddingVertical: 15,
     paddingHorizontal: 75,
-    borderRadius: 15,
+    borderRadius: 8,
     marginBottom: 20,
     borderColor: COLORS.main,
     borderWidth: 1,

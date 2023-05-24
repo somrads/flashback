@@ -56,7 +56,13 @@ function SignUpNavigator() {
       <Stack.Screen name="Email" component={Email} />
       <Stack.Screen name="Password" component={Password} />
       <Stack.Screen name="RoleAndDob" component={RoleAndDob} />
-      <Stack.Screen name="ResetPassword" component={ResetPassword} />
+      <Stack.Screen
+        name="ResetPassword"
+        component={ResetPassword}
+        options={{
+          title: "Reset Password",
+        }}
+      />
     </Stack.Navigator>
   );
 }
