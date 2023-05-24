@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Button, TouchableOpacity } from "react-native";
+import { View, Text, Button, TouchableOpacity, StyleSheet } from "react-native";
 import { firebase } from "../db/firebase";
 import { useNavigation } from "@react-navigation/native";
 
@@ -20,15 +20,35 @@ const VerifyEmail = () => {
     }
   };
 
+  const goBack = () => {
+    navigation.navigate("Login");
+  };
+
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View style={styles.container}>
       <Text>Please verify your email and try to log in after.</Text>
       <Button title="Resend verification email" onPress={resendEmail} />
-      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("SignUp", { screen: "Login" })}
+      >
         <Text>Log In</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#007bff",
+    fontSize: 16,
+    textDecorationLine: "underline",
+    marginTop: 20,
+  },
+});
 
 export default VerifyEmail;

@@ -6,6 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator, DefaultTheme } from "@react-navigation/stack";
 import { firebase } from "./db/firebase";
 import { LogBox } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { COLORS } from "./constants/colors";
 
 import Login from "./components/Login";
@@ -21,9 +22,49 @@ import Arrow from "./assets/icons/arrow.svg";
 const Stack = createStackNavigator();
 LogBox.ignoreLogs(["Animated: `useNativeDriver`"]);
 
+function SignUpNavigator() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Login"
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: COLORS.background,
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 0,
+        },
+        headerTintColor: COLORS.grayWhite,
+        headerTitleStyle: {
+          fontSize: 24,
+          fontFamily: "Nunito-Medium",
+        },
+        headerBackImage: () => (
+          <Arrow width={25} height={20} style={{ marginLeft: 20 }} />
+        ),
+        headerBackTitleVisible: false,
+        title: "Personal Info",
+      }}
+    >
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen name="Name" component={Name} />
+      <Stack.Screen name="Email" component={Email} />
+      <Stack.Screen name="Password" component={Password} />
+      <Stack.Screen name="RoleAndDob" component={RoleAndDob} />
+      <Stack.Screen name="ResetPassword" component={ResetPassword} />
+    </Stack.Navigator>
+  );
+}
+
 function AppNavigator() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
+  const navigation = useNavigation();
 
   let [fontsLoaded] = useFonts({
     "Nunito-Bold": require("./assets/fonts/Nunito-Bold.ttf"),
@@ -38,6 +79,9 @@ function AppNavigator() {
   function onAuthStateChanged(user) {
     setUser(user);
     if (initializing) setInitializing(false);
+    else if (user && !user.emailVerified) {
+      navigation.navigate("VerifyEmail");
+    }
   }
 
   useEffect(() => {
@@ -48,66 +92,18 @@ function AppNavigator() {
   if (!fontsLoaded || initializing) return null;
 
   if (!user) {
-    return (
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: COLORS.background,
-            elevation: 0,
-            shadowOpacity: 0,
-            borderBottomWidth: 0,
-          },
-          headerTintColor: COLORS.grayWhite,
-          headerTitleStyle: {
-            fontSize: 24,
-            fontFamily: "Nunito-Medium",
-          },
-          headerBackImage: () => (
-            <Arrow width={25} height={20} style={{ marginLeft: 20 }} />
-          ),
-          headerBackTitleVisible: false,
-          title: "Personal Info",
-        }}
-      >
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{
-            headerShown: false,
-          }}
-        />
-
-        <Stack.Screen name="Name" component={Name} />
-        <Stack.Screen name="Email" component={Email} />
-        <Stack.Screen name="Password" component={Password} />
-        <Stack.Screen name="RoleAndDob" component={RoleAndDob} />
-        <Stack.Screen name="ResetPassword" component={ResetPassword} />
-      </Stack.Navigator>
-    );
+    return <SignUpNavigator />;
   }
 
   if (user && !user.emailVerified) {
     return (
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: COLORS.background,
-            elevation: 0,
-            shadowOpacity: 0,
-            borderBottomWidth: 0,
-          },
-          headerTintColor: COLORS.grayWhite,
-          headerTitleStyle: {
-            fontSize: 24,
-            fontFamily: "Nunito-Medium",
-          },
-          headerBackImage: () => (
-            <Arrow width={25} height={20} style={{ marginLeft: 20 }} />
-          ),
-          headerBackTitleVisible: false,
-        }}
-      >
-        <Stack.Screen name="VerifyEmail" component={VerifyEmail}   />
+      <Stack.Navigator>
+        <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
+        <Stack.Screen
+          name="SignUp"
+          component={SignUpNavigator}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     );
   }
