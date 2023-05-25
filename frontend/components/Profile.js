@@ -89,22 +89,24 @@ export default function Profile({ navigation }) {
     }
   };
 
+  const pfpStyles = userData.profileImage
+    ? styles.pfp
+    : [
+        styles.pfp,
+        {
+          backgroundColor: userData.color,
+          justifyContent: "center",
+          alignItems: "center",
+        },
+      ];
+
   return (
     <ScrollView
       contentContainerStyle={styles.scrollContainer}
       style={styles.color}
     >
       <View style={styles.wrapper}>
-        <View
-          style={[
-            styles.pfp,
-            !userData.profileImage && {
-              backgroundColor: userData.color,
-              justifyContent: "center",
-              alignItems: "center",
-            },
-          ]}
-        >
+        <View style={pfpStyles}>
           {userData.profileImage ? (
             <Image style={styles.pfp} source={{ uri: userData.profileImage }} />
           ) : (
@@ -204,7 +206,7 @@ const styles = StyleSheet.create({
   },
 
   loadingText: {
-    color: COLORS.grayWhite,
+    color: "white",
     fontFamily: "Nunito-Bold",
     fontSize: 20,
   },
@@ -377,7 +379,6 @@ const styles = StyleSheet.create({
   },
   initials: {
     fontSize: 50,
-    color: "#FFFFFF",
     fontFamily: "Nunito-Black",
   },
 });
