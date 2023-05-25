@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { firebase } from "../db/firebase";
+import { COLORS } from "../constants/colors";
+import Add from "../assets/icons/addIcon.svg";
 
 const Feed = ({ navigation }) => {
   const handleLogout = async () => {
@@ -11,16 +13,20 @@ const Feed = ({ navigation }) => {
       alert(error.message);
     }
   };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Feed</Text>
+      <View style={styles.header}>
+        <Text style={styles.logo}>flashback</Text>
+        <TouchableOpacity onPress="" style={styles.iconButton}>
+          <Add />
+        </TouchableOpacity>
+        <View style={styles.profilePic} />
+      </View>
 
-      {/* Your Feed content here */}
-
+      {/* 
       <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
         <Text style={styles.logoutButtonText}>Logout</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
@@ -28,8 +34,33 @@ const Feed = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     paddingHorizontal: 20,
+    backgroundColor: COLORS.background,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 90,
+  },
+  logo: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#DCDCDC",
+    fontFamily: "Ubuntu-Regular",
+  },
+  iconButton: {
+    marginRight: -100,
+
+  },
+
+
+  profilePic: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#ccc", 
   },
   title: {
     fontSize: 24,

@@ -122,7 +122,13 @@ function AppNavigator() {
 
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Feed" component={Feed} />
+      <Stack.Screen
+        name="Feed"
+        component={Feed}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 }
