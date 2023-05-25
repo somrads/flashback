@@ -12,6 +12,18 @@ import BirthdayIcon from "../assets/icons/birthday.svg";
 import RoleIcon from "../assets/icons/role.svg";
 import { firebase, database } from "../db/firebase";
 import { ref, onValue, child } from "firebase/database";
+import tinycolor from "tinycolor2";
+
+function darkenColor(color) {
+  let colorObj = tinycolor(color);
+  let { r, g, b } = colorObj.toRgb();
+
+  r = Math.floor(r / 3);
+  g = Math.floor(g / 3);
+  b = Math.floor(b / 3);
+
+  return tinycolor({ r, g, b }).toString();
+}
 
 const fetchUserData = async (userId) => {
   const userRef = ref(database, `users/${userId}`);
@@ -22,7 +34,7 @@ const fetchUserData = async (userId) => {
         const initials = userData.firstName[0] + userData.lastName[0];
         userData.initials = initials.toUpperCase();
         userData.color = userData.color;
-
+        userData.darkerColor = darkenColor(userData.color);
         resolve(userData);
       } else {
         resolve(null);
@@ -96,7 +108,9 @@ export default function Profile({ navigation }) {
           {userData.profileImage ? (
             <Image style={styles.pfp} source={{ uri: userData.profileImage }} />
           ) : (
-            <Text style={styles.initials}>{userData.initials}</Text>
+            <Text style={[styles.initials, { color: userData.darkerColor }]}>
+              {userData.initials}
+            </Text>
           )}
         </View>
         <Text style={styles.userName}>
