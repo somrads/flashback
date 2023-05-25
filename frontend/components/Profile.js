@@ -363,6 +363,6 @@ const styles = StyleSheet.create({
   initials: {
     fontSize: 50,
     color: "#FFFFFF",
-    fontFamily: "Ubuntu-Regular",
+    fontFamily: "Nunito-Black",
   },
 });

@@ -1,15 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Text,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { COLORS } from "../../constants/colors";
@@ -40,12 +30,13 @@ const RoleAndDob = ({ route, navigation }) => {
 
   const handleNext = () => {
     if (role && dob) {
+      const dobUTC = new Date(dob.getTime() - dob.getTimezoneOffset() * 60000);
       navigation.navigate("Password", {
         firstName,
         lastName,
         email,
         role,
-        dob: dob.toISOString().split("T")[0],
+        dob: dobUTC.toISOString().split("T")[0],
       });
     } else {
       alert("Please fill in all fields");
@@ -62,9 +53,7 @@ const RoleAndDob = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
-        <View style={styles.rolePickerContainer}>
-          
-        </View>
+        <View style={styles.rolePickerContainer}></View>
         <RNPickerSelect
           onValueChange={(value) => setRole(value)}
           items={[
@@ -219,7 +208,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     color: COLORS.grayWhite,
-    fontFamily: "Nunito-Medium"
+    fontFamily: "Nunito-Medium",
   },
 });
 
