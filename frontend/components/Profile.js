@@ -10,28 +10,24 @@ import {
 import { COLORS } from "../constants/colors";
 import BirthdayIcon from "../assets/icons/birthday.svg";
 import RoleIcon from "../assets/icons/role.svg";
-import { database } from "../db/firebase";
-import { ref, onValue } from "firebase/database";
+import { firebase, database } from "../db/firebase";
+import { ref, onValue, child } from "firebase/database";
 
-const fetchAllUsers = async () => {
-  const usersRef = ref(database, "users");
+const fetchUserData = async (userId) => {
+  const userRef = ref(database, `users/${userId}`);
   return new Promise((resolve) => {
-    onValue(usersRef, (snapshot) => {
-       const data = snapshot.val();
-      if (data) {
-        const usersArray = Object.entries(data).map(([key, value]) => ({
-          id: key,
-          ...value,
-        }));
-        resolve(usersArray);
+    onValue(userRef, (snapshot) => {
+      const userData = snapshot.val();
+      if (userData) {
+        resolve(userData);
       } else {
-        resolve([]);
+        resolve(null);
       }
     });
   });
 };
 
-//Birthday count calculator
+// Birthday count calculator
 const daysUntilBirthday = (birthday) => {
   const today = new Date();
   const birthDate = new Date(birthday);
@@ -47,53 +43,64 @@ const daysUntilBirthday = (birthday) => {
 };
 
 export default function Profile() {
-  const [usersData, setUsersData] = useState([]);
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    fetchAllUsers().then((users) => {
-      setUsersData(users);
-    });
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser) {
+      fetchUserData(currentUser.uid).then((data) => {
+        setUserData(data);
+      });
+    }
   }, []);
 
-  return (
-    <ScrollView contentContainerStyle={styles.scrollContainer} style={styles.container}>
-      {usersData.map((user) => (
-        <View style={styles.wrapper} key={user.id}>
-          <Image
-            style={styles.pfp}
-            source={require("../assets/img/image1.png")}
-          />
-          <Text style={styles.userName}>{user.name}</Text>
-          {/* Birthday and Role */}
-          <View style={styles.bioSection}>
-            <View style={styles.icons}>
-              <View style={styles.statsSection}>
-                <RoleIcon />
-                <View style={styles.text}>
-                  <Text style={styles.statsTitle}>{user.role}</Text>
-                  <Text style={styles.statsPlaceHolder}>Role</Text>
-                </View>
-              </View>
+  if (!userData) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  }
 
-              <View style={styles.statsSection}>
-                <BirthdayIcon />
-                <View style={styles.text}>
-                  <Text style={styles.statsTitle}>
-                    In {daysUntilBirthday(user.birthday)} days
-                  </Text>
-                  <Text style={styles.statsPlaceHolder}>{user.birthday}</Text>
-                </View>
+  const { firstName, lastName, role, dob, description } = userData;
+
+  return (
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.wrapper}>
+        <Image
+          style={styles.pfp}
+          source={require("../assets/img/image1.png")}
+        />
+        <Text style={styles.userName}>{firstName} {lastName}</Text>
+        {/* Birthday and Role */}
+        <View style={styles.bioSection}>
+          <View style={styles.icons}>
+            <View style={styles.statsSection}>
+              <RoleIcon />
+              <View style={styles.text}>
+                <Text style={styles.statsTitle}>{role}</Text>
+                <Text style={styles.statsPlaceHolder}>Role</Text>
+              </View>
+            </View>
+
+            <View style={styles.statsSection}>
+              <BirthdayIcon />
+              <View style={styles.text}>
+                <Text style={styles.statsTitle}>
+                  In {daysUntilBirthday(dob)} days
+                </Text>
+                <Text style={styles.statsPlaceHolder}>{dob}</Text>
               </View>
             </View>
           </View>
-          <View style={styles.greenLine} />
-
-          {/* Description */}
-          <View style={styles.description}>
-            <Text style={styles.descriptionText}>{user.description}</Text>
-          </View>
         </View>
-      ))}
+        <View style={styles.greenLine} />
+
+        {/* Description */}
+        <View style={styles.description}>
+          <Text style={styles.descriptionText}>{description}</Text>
+        </View>
+      </View>
 
       {/* Todays Posts */}
       <View style={styles.postsWrapper}>
@@ -107,6 +114,7 @@ export default function Profile() {
           </View>
         </View>
       </View>
+
       {/* Family Members */}
       <View style={styles.familyMembersSection}>
         <Text style={styles.familyMembersTitle}>Family Members</Text>
@@ -136,11 +144,20 @@ export default function Profile() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.background
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: COLORS.background,
+  },
+  loadingText: {
+    color: COLORS.grayWhite,
+    fontFamily: "Nunito-Bold",
+    fontSize: 20,
   },
   scrollContainer: {
     flexGrow: 1,
     justifyContent: "space-between",
+    backgroundColor: COLORS.background,
   },
   wrapper: {
     marginTop: 30,
@@ -152,7 +169,6 @@ const styles = StyleSheet.create({
     height: 203,
     borderRadius: 100,
   },
-
   userName: {
     fontFamily: "Nunito-SemiBold",
     color: COLORS.grayWhite,
@@ -165,11 +181,6 @@ const styles = StyleSheet.create({
   bioSection: {
     alignItems: "center",
   },
-
-  bio: {
-    margin: 20,
-  },
-
   statsSection: {
     flexDirection: "row",
     marginRight: 30,
@@ -181,28 +192,23 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Black",
     fontSize: 15,
   },
-
   statsPlaceHolder: {
     color: COLORS.placeHolder,
     fontFamily: "Nunito-Light",
     fontSize: 15,
   },
-
   text: {
     marginLeft: 10,
   },
-
   greenLine: {
     marginTop: 30,
     width: "70%",
     height: 0.5,
     backgroundColor: COLORS.mainDarker,
   },
-
   description: {
     alignItems: "flex-start",
   },
-
   descriptionText: {
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Regular",
@@ -250,7 +256,6 @@ const styles = StyleSheet.create({
   membersInfo: {
     flexDirection: "row",
   },
-
   membersText: {
     color: COLORS.mainDarker,
     fontFamily: "Nunito-Bold",
@@ -258,19 +263,16 @@ const styles = StyleSheet.create({
     marginLeft: 6,
     marginTop: 10,
   },
-
   membersWrapper: {
     paddingHorizontal: 20,
     marginBottom: 10,
   },
-
   members: {
     margin: 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-evenly",
   },
-
   memberPfp: {
     width: 59,
     height: 57,
@@ -295,12 +297,6 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Medium",
     fontSize: 14,
   },
-
-  editButton: {
-    position: "absolute",
-    top: 35,
-    right: 25,
-  },
   logoutButton: {
     backgroundColor: COLORS.mainDarker,
     paddingHorizontal: 30,
@@ -315,7 +311,6 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 15,
   },
-
   arrowButton: {
     position: "absolute",
     top: 35,
