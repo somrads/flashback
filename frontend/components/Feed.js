@@ -5,15 +5,6 @@ import { COLORS } from "../constants/colors";
 import Add from "../assets/icons/addIcon.svg";
 
 const Feed = ({ navigation }) => {
-  const handleLogout = async () => {
-    try {
-      await firebase.auth().signOut();
-      navigation.navigate("Login");
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
   const navigateToProfile = () => {
     navigation.navigate("Profile");
   };
@@ -30,11 +21,6 @@ const Feed = ({ navigation }) => {
           style={styles.profilePic}
         />
       </View>
-
-      
-      <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-        <Text style={styles.logoutButtonText}>Logout</Text>
-      </TouchableOpacity>
     </View>
   );
 };

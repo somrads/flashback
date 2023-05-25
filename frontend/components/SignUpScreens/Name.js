@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
-  StyleSheet,
   TextInput,
   TouchableOpacity,
+  StyleSheet,
+  Text,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { firebase } from "../../db/firebase";
@@ -27,7 +29,7 @@ const Name = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}>
       <View style={styles.titleContainer}></View>
       <View style={styles.contentContainer}>
         <View style={styles.inputsContainer}>
@@ -52,7 +54,7 @@ const Name = () => {
           <Text style={styles.nextButtonText}>Next</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

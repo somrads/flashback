@@ -19,6 +19,10 @@ const fetchUserData = async (userId) => {
     onValue(userRef, (snapshot) => {
       const userData = snapshot.val();
       if (userData) {
+        const initials = userData.firstName[0] + userData.lastName[0];
+        userData.initials = initials.toUpperCase();
+        userData.color = userData.color;
+
         resolve(userData);
       } else {
         resolve(null);
@@ -42,7 +46,7 @@ const daysUntilBirthday = (birthday) => {
   return daysUntil;
 };
 
-export default function Profile() {
+export default function Profile({ navigation }) {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
@@ -64,14 +68,40 @@ export default function Profile() {
 
   const { firstName, lastName, role, dob, description } = userData;
 
+  const handleLogout = async () => {
+    try {
+      await firebase.auth().signOut();
+      navigation.navigate("Login");
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <ScrollView
+      contentContainerStyle={styles.scrollContainer}
+      style={styles.color}
+    >
       <View style={styles.wrapper}>
-        <Image
-          style={styles.pfp}
-          source={require("../assets/img/image1.png")}
-        />
-        <Text style={styles.userName}>{firstName} {lastName}</Text>
+        <View
+          style={[
+            styles.pfp,
+            !userData.profileImage && {
+              backgroundColor: userData.color,
+              justifyContent: "center",
+              alignItems: "center",
+            },
+          ]}
+        >
+          {userData.profileImage ? (
+            <Image style={styles.pfp} source={{ uri: userData.profileImage }} />
+          ) : (
+            <Text style={styles.initials}>{userData.initials}</Text>
+          )}
+        </View>
+        <Text style={styles.userName}>
+          {firstName} {lastName}
+        </Text>
         {/* Birthday and Role */}
         <View style={styles.bioSection}>
           <View style={styles.icons}>
@@ -98,7 +128,11 @@ export default function Profile() {
 
         {/* Description */}
         <View style={styles.description}>
-          <Text style={styles.descriptionText}>{description}</Text>
+          {description ? (
+            <Text style={styles.descriptionText}>{description}</Text>
+          ) : (
+            <Text style={styles.placeholderText}>No bio yet...</Text>
+          )}
         </View>
       </View>
 
@@ -135,7 +169,8 @@ export default function Profile() {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity style={styles.logoutButton} onPress={() => {}}>
+
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -147,8 +182,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+
+  color: {
     backgroundColor: COLORS.background,
   },
+
   loadingText: {
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Bold",
@@ -165,8 +204,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   pfp: {
-    width: 209,
-    height: 203,
+    width: 161,
+    height: 156,
     borderRadius: 100,
   },
   userName: {
@@ -208,13 +247,22 @@ const styles = StyleSheet.create({
   },
   description: {
     alignItems: "flex-start",
+    marginBottom: 20,
+    marginTop: 10,
   },
   descriptionText: {
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Regular",
     fontSize: 20,
+  },
+
+  placeholderText: {
+    color: COLORS.placeHolder,
+    fontFamily: "Nunito-Regular",
+    fontSize: 15,
     marginTop: 10,
   },
+
   title: {
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Bold",
@@ -298,23 +346,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   logoutButton: {
-    backgroundColor: COLORS.mainDarker,
-    paddingHorizontal: 30,
+    backgroundColor: "#e74c3c",
     paddingVertical: 10,
+    paddingHorizontal: 50,
     borderRadius: 5,
     alignSelf: "center",
     marginBottom: 20,
-    marginTop: 15,
+    marginTop: 100,
   },
   buttonText: {
     color: COLORS.grayWhite,
-    fontFamily: "Nunito-Bold",
-    fontSize: 15,
+    fontFamily: "Nunito-Medium",
+    fontSize: 18,
+    color: "#fff",
   },
-  arrowButton: {
-    position: "absolute",
-    top: 35,
-    left: 25,
-    transform: [{ rotate: "-180deg" }],
+  initials: {
+    fontSize: 50,
+    color: "#FFFFFF",
+    fontFamily: "Ubuntu-Regular",
   },
 });

@@ -13,6 +13,7 @@ const Password = ({ route, navigation }) => {
   const { firstName, lastName, email, role, dob } = route.params;
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
   const handleSignup = async () => {
     if (password !== confirmPassword) {
       alert("Passwords do not match");
@@ -30,12 +31,31 @@ const Password = ({ route, navigation }) => {
       if (response.user) {
         await response.user.sendEmailVerification();
         alert("A verification email has been sent to your email account");
+
+        const initials = firstName.charAt(0) + lastName.charAt(0);
+
+        const colors = [
+          "#2A9D8F",
+          "#9D2A38",
+          "#9D2A91",
+          "#2A589D",
+          "#9D5A2A",
+          "#2A9D61",
+          "#9D2A6A",
+          "#5F2A9D",
+          "#9D5F2A",
+        ];
+
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
         const userData = {
           firstName,
           lastName,
           email,
           role,
           dob,
+          initials,
+          color,
         };
         await firebase
           .database()

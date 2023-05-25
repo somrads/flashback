@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Text,
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 import { firebase } from "../../db/firebase";
 import { COLORS } from "../../constants/colors";
@@ -47,7 +49,7 @@ const EmailPage = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}>
       <View style={styles.contentContainer}>
         <TextInput
           style={styles.input}
@@ -62,7 +64,7 @@ const EmailPage = ({ route, navigation }) => {
           <Text style={styles.nextButtonText}>Next</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
