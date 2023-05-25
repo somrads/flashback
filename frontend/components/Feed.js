@@ -13,20 +13,28 @@ const Feed = ({ navigation }) => {
       alert(error.message);
     }
   };
+
+  const navigateToProfile = () => {
+    navigation.navigate("Profile");
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.logo}>flashback</Text>
-        <TouchableOpacity onPress="" style={styles.iconButton}>
+        <TouchableOpacity style={styles.iconButton}>
           <Add />
         </TouchableOpacity>
-        <View style={styles.profilePic} />
+
+        <TouchableOpacity
+          onPress={navigateToProfile}
+          style={styles.profilePic}
+        />
       </View>
 
-      {/* 
+      
       <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
         <Text style={styles.logoutButtonText}>Logout</Text>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
     </View>
   );
 };
@@ -52,15 +60,13 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     marginRight: -100,
-
   },
-
 
   profilePic: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#ccc", 
+    backgroundColor: "#ccc",
   },
   title: {
     fontSize: 24,

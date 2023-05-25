@@ -5,11 +5,21 @@ import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator, DefaultTheme } from "@react-navigation/stack";
 import { firebase } from "./db/firebase";
-import { LogBox } from "react-native";
+import {
+  LogBox,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+
 import { useNavigation } from "@react-navigation/native";
 import { COLORS } from "./constants/colors";
 
 import Login from "./components/Login";
+import Profile from "./components/Profile";
 import Name from "./components/SignUpScreens/Name";
 import Email from "./components/SignUpScreens/Email";
 import Password from "./components/SignUpScreens/Password";
@@ -17,6 +27,8 @@ import RoleAndDob from "./components/SignUpScreens/RoleAndDob";
 import Feed from "./components/Feed";
 import ResetPassword from "./components/SignUpScreens/ResetPassword";
 import VerifyEmail from "./components/VerifyEmail";
+
+import EditIcon from "./assets/icons/edit.svg";
 import Arrow from "./assets/icons/arrow.svg";
 
 const Stack = createStackNavigator();
@@ -52,6 +64,7 @@ function SignUpNavigator() {
           headerShown: false,
         }}
       />
+
       <Stack.Screen name="Name" component={Name} />
       <Stack.Screen name="Email" component={Email} />
       <Stack.Screen name="Password" component={Password} />
@@ -127,6 +140,37 @@ function AppNavigator() {
         component={Feed}
         options={{
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          headerStyle: {
+            backgroundColor: COLORS.background,
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+          headerTintColor: COLORS.grayWhite,
+          headerTitleStyle: {
+            fontSize: 24,
+            fontFamily: "Nunito-Medium",
+          },
+          headerBackImage: () => (
+            <Arrow width={25} height={20} style={{ marginLeft: 20 }} />
+          ),
+          headerBackTitleVisible: false,
+          title: "Profile",
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => {
+                /*Handle your action here*/
+              }}
+            >
+              <EditIcon width={25} height={20} style={{ marginRight: 20 }} />
+            </TouchableOpacity>
+          ),
         }}
       />
     </Stack.Navigator>

@@ -5,11 +5,15 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { firebase } from "../db/firebase";
 import { COLORS } from "../constants/colors";
 import Logo from "../assets/icons/logo.svg";
+
+const windowWidth = Dimensions.get('window').width;
 
 const Login = () => {
   const navigation = useNavigation();
@@ -29,60 +33,63 @@ const Login = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.logoContainer}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <View style={styles.container}>
         <View style={styles.logoContainer}>
           <Logo />
           <Text style={styles.logoTitle}>flashback</Text>
           <Text style={styles.logoSlogan}>Catch up in a flash</Text>
         </View>
+
+        <View style={styles.formContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor={COLORS.grayWhite}
+            keyboardType="email-address"
+            onChangeText={(email) => setEmail(email)}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor={COLORS.grayWhite}
+            onChangeText={(password) => setPassword(password)}
+            autoCapitalize="none"
+            autoCorrect={false}
+            secureTextEntry={true}
+          />
+
+          <TouchableOpacity
+            onPress={handleForgotPassword}
+            style={styles.forgotPassword}
+          >
+            <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.buttons}>
+          <TouchableOpacity
+            onPress={() => loginUser(email, password)}
+            style={styles.loginButton}
+          >
+            <Text style={styles.loginButtonText}>Login</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Name")}
+            style={styles.signupButton}
+          >
+            <Text style={styles.signupButtonText}>Sign-up</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-
-      <View style={styles.formContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor={COLORS.grayWhite}
-          keyboardType="email-address"
-          onChangeText={(email) => setEmail(email)}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor={COLORS.grayWhite}
-          onChangeText={(password) => setPassword(password)}
-          autoCapitalize="none"
-          autoCorrect={false}
-          secureTextEntry={true}
-        />
-
-        <TouchableOpacity
-          onPress={handleForgotPassword}
-          style={styles.forgotPassword}
-        >
-          <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.buttons}>
-        <TouchableOpacity
-          onPress={() => loginUser(email, password)}
-          style={styles.loginButton}
-        >
-          <Text style={styles.loginButtonText}>Login</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Name")}
-          style={styles.signupButton}
-        >
-          <Text style={styles.signupButtonText}>Sign-up</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -118,7 +125,7 @@ const styles = StyleSheet.create({
   },
 
   formContainer: {
-    width: "65%",
+    width: windowWidth * 0.8,
     marginBottom: 30,
   },
 
@@ -130,6 +137,8 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginBottom: 20,
     fontSize: 16,
+    width: "90%",
+    alignSelf: "center",
   },
 
   loginButton: {
@@ -166,6 +175,7 @@ const styles = StyleSheet.create({
 
   forgotPassword: {
     alignSelf: "flex-end",
+    marginRight: 20,
   },
 
   forgotPasswordText: {

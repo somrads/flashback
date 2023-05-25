@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import CustomHeader from "./CustomHeader";
 import {
   StyleSheet,
   Text,
@@ -11,8 +10,6 @@ import {
 import { COLORS } from "../constants/colors";
 import BirthdayIcon from "../assets/icons/birthday.svg";
 import RoleIcon from "../assets/icons/role.svg";
-import Arrow from "../assets/icons/arrow.svg";
-import EditIcon from "../assets/icons/edit.svg";
 import { database } from "../db/firebase";
 import { ref, onValue } from "firebase/database";
 
@@ -59,16 +56,9 @@ export default function Profile() {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <ScrollView contentContainerStyle={styles.scrollContainer} style={styles.container}>
       {usersData.map((user) => (
         <View style={styles.wrapper} key={user.id}>
-          <TouchableOpacity style={styles.arrowButton} onPress={() => {}}>
-            <Arrow width={30} height={20} fill={COLORS.grayWhite} />
-          </TouchableOpacity>
-          <CustomHeader title="Profile" />
-          <TouchableOpacity style={styles.editButton} onPress={() => {}}>
-            <EditIcon width={30} height={20} />
-          </TouchableOpacity>
           <Image
             style={styles.pfp}
             source={require("../assets/img/image1.png")}
@@ -145,6 +135,9 @@ export default function Profile() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: COLORS.background
+  },
   scrollContainer: {
     flexGrow: 1,
     justifyContent: "space-between",
