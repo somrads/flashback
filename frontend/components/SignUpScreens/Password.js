@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
-  StyleSheet,
   TextInput,
   TouchableOpacity,
+  StyleSheet,
+  Text,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { firebase } from "../../db/firebase";
 import { COLORS } from "../../constants/colors";
@@ -70,34 +74,38 @@ const Password = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.titleContainer}></View>
-      <View style={styles.contentContainer}>
-        <View style={styles.inputsContainer}>
-          <TextInput
-            style={styles.input}
-            onChangeText={setPassword}
-            value={password}
-            placeholder="Password"
-            placeholderTextColor={COLORS.grayWhite}
-            secureTextEntry
-          />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.contentContainer}
+        >
+          <View style={styles.inputsContainer}>
+            <TextInput
+              style={styles.input}
+              onChangeText={setPassword}
+              value={password}
+              placeholder="Password"
+              placeholderTextColor={COLORS.grayWhite}
+              secureTextEntry
+            />
 
-          <TextInput
-            style={styles.input}
-            onChangeText={setConfirmPassword}
-            value={confirmPassword}
-            placeholder="Confirm Password"
-            placeholderTextColor={COLORS.grayWhite}
-            secureTextEntry
-          />
-        </View>
+            <TextInput
+              style={styles.input}
+              onChangeText={setConfirmPassword}
+              value={confirmPassword}
+              placeholder="Confirm Password"
+              placeholderTextColor={COLORS.grayWhite}
+              secureTextEntry
+            />
+          </View>
 
-        <TouchableOpacity onPress={handleSignup} style={styles.signUpButton}>
-          <Text style={styles.signUpButtonText}>Complete</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={handleSignup} style={styles.signUpButton}>
+            <Text style={styles.signUpButtonText}>Complete</Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

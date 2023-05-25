@@ -7,6 +7,8 @@ import {
   Text,
   KeyboardAvoidingView,
   Platform,
+  TouchableWithoutFeedback,
+  Keyboard
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { firebase } from "../../db/firebase";
@@ -29,32 +31,37 @@ const Name = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container}>
-      <View style={styles.titleContainer}></View>
-      <View style={styles.contentContainer}>
-        <View style={styles.inputsContainer}>
-          <TextInput
-            style={styles.input}
-            onChangeText={setFirstName}
-            value={firstName}
-            placeholder="First Name"
-            placeholderTextColor={COLORS.grayWhite}
-          />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <View style={styles.titleContainer}></View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.contentContainer}
+        >
+          <View style={styles.inputsContainer}>
+            <TextInput
+              style={styles.input}
+              onChangeText={setFirstName}
+              value={firstName}
+              placeholder="First Name"
+              placeholderTextColor={COLORS.grayWhite}
+            />
 
-          <TextInput
-            style={styles.input}
-            onChangeText={setLastName}
-            value={lastName}
-            placeholder="Last Name"
-            placeholderTextColor={COLORS.grayWhite}
-          />
-        </View>
+            <TextInput
+              style={styles.input}
+              onChangeText={setLastName}
+              value={lastName}
+              placeholder="Last Name"
+              placeholderTextColor={COLORS.grayWhite}
+            />
+          </View>
 
-        <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
-          <Text style={styles.nextButtonText}>Next</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
+            <Text style={styles.nextButtonText}>Next</Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
       </View>
-    </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 

@@ -6,7 +6,9 @@ import {
   StyleSheet,
   Text,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback
 } from "react-native";
 import { firebase } from "../../db/firebase";
 import { COLORS } from "../../constants/colors";
@@ -49,22 +51,27 @@ const EmailPage = ({ route, navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container}>
-      <View style={styles.contentContainer}>
-        <TextInput
-          style={styles.input}
-          onChangeText={setEmail}
-          value={email}
-          placeholder="Email"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          placeholderTextColor={COLORS.grayWhite}
-        />
-        <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
-          <Text style={styles.nextButtonText}>Next</Text>
-        </TouchableOpacity>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.contentContainer}
+        >
+          <TextInput
+            style={styles.input}
+            onChangeText={setEmail}
+            value={email}
+            placeholder="Email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            placeholderTextColor={COLORS.grayWhite}
+          />
+          <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
+            <Text style={styles.nextButtonText}>Next</Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
       </View>
-    </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -86,7 +93,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Regular",
-    marginBottom: 60, 
+    marginBottom: 60,
     width: "100%",
   },
   nextButton: {

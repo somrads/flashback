@@ -5,9 +5,14 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { COLORS } from "../../constants/colors";
 import { firebase } from "../../db/firebase";
+
 const ResetPassword = () => {
   const [email, setEmail] = useState("");
 
@@ -16,7 +21,9 @@ const ResetPassword = () => {
       .auth()
       .sendPasswordResetEmail(email)
       .then(() => {
-        alert("If an account exists with this email, a password reset email has been sent!");
+        alert(
+          "If an account exists with this email, a password reset email has been sent!"
+        );
       })
       .catch((error) => {
         alert(error.message);
@@ -24,23 +31,28 @@ const ResetPassword = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        onChangeText={setEmail}
-        value={email}
-        placeholder="Email"
-        autoCapitalize="none"
-        placeholderTextColor={COLORS.grayWhite}
-      />
-
-      <TouchableOpacity
-        onPress={handleResetPassword}
-        style={styles.resetButton}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
       >
-        <Text style={styles.resetButtonText}>Reset Password</Text>
-      </TouchableOpacity>
-    </View>
+        <TextInput
+          style={styles.input}
+          onChangeText={setEmail}
+          value={email}
+          placeholder="Email"
+          autoCapitalize="none"
+          placeholderTextColor={COLORS.grayWhite}
+        />
+
+        <TouchableOpacity
+          onPress={handleResetPassword}
+          style={styles.resetButton}
+        >
+          <Text style={styles.resetButtonText}>Reset Password</Text>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 

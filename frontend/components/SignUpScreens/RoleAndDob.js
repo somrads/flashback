@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import {
   View,
+  TextInput,
   TouchableOpacity,
   StyleSheet,
-  Platform,
   Text,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import DateTimePicker from "@react-native-community/datetimepicker";
