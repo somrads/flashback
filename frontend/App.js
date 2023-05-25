@@ -25,10 +25,11 @@ import Email from "./components/SignUpScreens/Email";
 import Password from "./components/SignUpScreens/Password";
 import RoleAndDob from "./components/SignUpScreens/RoleAndDob";
 import Feed from "./components/Feed";
+import Options from "./components/Options";
 import ResetPassword from "./components/SignUpScreens/ResetPassword";
 import VerifyEmail from "./components/VerifyEmail";
 
-import EditIcon from "./assets/icons/edit.svg";
+import OptionsIcon from "./assets/icons/edit.svg";
 import Arrow from "./assets/icons/arrow.svg";
 
 const Stack = createStackNavigator();
@@ -164,12 +165,33 @@ function AppNavigator() {
           title: "Profile",
           headerRight: () => (
             <TouchableOpacity
-              onPress={() => {
-                /*Handle your action here*/
-              }}
+              onPress={() => navigation.navigate("Options")}
+              style={{ marginRight: 20 }}
             >
-              <EditIcon width={25} height={20} style={{ marginRight: 20 }} />
+              <OptionsIcon width={25} height={20} />
             </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="Options"
+        component={Options}
+        options={{
+          headerStyle: {
+            backgroundColor: COLORS.background,
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+          headerTintColor: COLORS.grayWhite,
+          headerTitleStyle: {
+            fontSize: 24,
+            fontFamily: "Nunito-Medium",
+          },
+          title: "Edit",
+          headerBackTitleVisible: false,
+          headerBackImage: () => (
+            <Arrow width={25} height={20} style={{ marginLeft: 20 }} />
           ),
         }}
       />
