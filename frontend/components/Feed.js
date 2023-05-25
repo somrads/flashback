@@ -1,13 +1,66 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { firebase } from "../db/firebase";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import { firebase, database } from "../db/firebase";
+import { ref, onValue } from "firebase/database";
 import { COLORS } from "../constants/colors";
 import Add from "../assets/icons/addIcon.svg";
+import tinycolor from "tinycolor2";
+
+function darkenColor(color) {
+  let colorObj = tinycolor(color);
+  let { r, g, b } = colorObj.toRgb();
+
+  r = Math.floor(r / 2);
+  g = Math.floor(g / 2);
+  b = Math.floor(b / 2);
+
+  return tinycolor({ r, g, b }).toString();
+}
+
+const fetchUserData = async (userId) => {
+  const userRef = ref(database, `users/${userId}`);
+  return new Promise((resolve, reject) => {
+    onValue(
+      userRef,
+      (snapshot) => {
+        const userData = snapshot.val();
+        if (userData) {
+          const initials = userData.firstName[0] + userData.lastName[0];
+          userData.initials = initials.toUpperCase();
+          userData.color = userData.color;
+          userData.darkerColor = darkenColor(userData.color);
+          resolve(userData);
+        } else {
+          reject(new Error("User data not found"));
+        }
+      },
+      (error) => {
+        reject(error);
+      }
+    );
+  });
+};
 
 const Feed = ({ navigation }) => {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser) {
+      fetchUserData(currentUser.uid)
+        .then((data) => {
+          setUserData(data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
+
   const navigateToProfile = () => {
     navigation.navigate("Profile");
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -18,8 +71,32 @@ const Feed = ({ navigation }) => {
 
         <TouchableOpacity
           onPress={navigateToProfile}
-          style={styles.profilePic}
-        />
+          style={[
+            styles.profilePic,
+            userData &&
+              !userData.profileImage && {
+                backgroundColor: userData.color,
+                justifyContent: "center",
+                alignItems: "center",
+              },
+          ]}
+        >
+          {userData && userData.profileImage ? (
+            <Image
+              style={styles.profilePic}
+              source={{ uri: userData.profileImage }}
+            />
+          ) : (
+            <Text
+              style={[
+                styles.profileInitials,
+                { color: userData ? userData.darkerColor : COLORS.black },
+              ]}
+            >
+              {userData ? userData.initials : ""}
+            </Text>
+          )}
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -45,32 +122,18 @@ const styles = StyleSheet.create({
     fontFamily: "Ubuntu-Regular",
   },
   iconButton: {
-    marginRight: -100,
+    marginRight: -130,
   },
-
   profilePic: {
     width: 40,
     height: 40,
     borderRadius: 20,
     backgroundColor: "#ccc",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  logoutButton: {
-    backgroundColor: "#e74c3c",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    alignItems: "center",
-    marginTop: 20,
-  },
-  logoutButtonText: {
+  profileInitials: {
     fontSize: 18,
-    color: "#fff",
+    color: COLORS.black,
+    fontFamily: "Nunito-Black",
   },
 });
 

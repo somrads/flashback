@@ -18,9 +18,9 @@ function darkenColor(color) {
   let colorObj = tinycolor(color);
   let { r, g, b } = colorObj.toRgb();
 
-  r = Math.floor(r / 3);
-  g = Math.floor(g / 3);
-  b = Math.floor(b / 3);
+  r = Math.floor(r / 2);
+  g = Math.floor(g / 2);
+  b = Math.floor(b / 2);
 
   return tinycolor({ r, g, b }).toString();
 }
@@ -196,6 +196,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: COLORS.background,
   },
 
   color: {

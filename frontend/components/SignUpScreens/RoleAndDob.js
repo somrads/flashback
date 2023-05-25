@@ -57,8 +57,8 @@ const RoleAndDob = ({ route, navigation }) => {
         <RNPickerSelect
           onValueChange={(value) => setRole(value)}
           items={[
-            { label: "Dad", value: "Daddy" },
-            { label: "Mom", value: "Mommy" },
+            { label: "Dad", value: "Dad" },
+            { label: "Mom", value: "Mom" },
             { label: "Son", value: "Son" },
             { label: "Daughter", value: "Daughter" },
             { label: "Grandpa", value: "Grandpa" },
