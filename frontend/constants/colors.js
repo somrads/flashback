@@ -8,6 +8,7 @@ const COLORS = {
   grayBlack: "#636363",
 
   placeHolder: "#656565",
+  red: "#9D2A38",
 };
 
 export { COLORS };

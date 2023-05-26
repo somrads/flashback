@@ -188,7 +188,7 @@ function AppNavigator() {
             fontSize: 24,
             fontFamily: "Nunito-Medium",
           },
-          title: "Edit",
+          title: "Edit Profile",
           headerBackTitleVisible: false,
           headerBackImage: () => (
             <Arrow width={25} height={20} style={{ marginLeft: 20 }} />
