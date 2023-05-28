@@ -118,7 +118,15 @@ const Options = () => {
       >
         <View style={styles.profileImageContainer}>
           <View style={[styles.profileImage, { backgroundColor: color }]}>
-            <Text style={{ color: darkerColor, fontSize: 50, fontFamily:'Nunito-Black' }}>{initials}</Text>
+            <Text
+              style={{
+                color: darkerColor || "#000",
+                fontSize: 50,
+                fontFamily: "Nunito-Black",
+              }}
+            >
+              {initials}
+            </Text>
           </View>
           <TouchableOpacity style={styles.editButton}>
             <Text style={styles.editText}>Edit Picture</Text>
@@ -283,8 +291,8 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: COLORS.grayWhite,
     marginBottom: 10,
-    justifyContent: 'center',
-    alignItems: 'center',  
+    justifyContent: "center",
+    alignItems: "center",
   },
   formContainer: {
     width: windowWidth * 0.8,
