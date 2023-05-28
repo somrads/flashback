@@ -9,11 +9,14 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from "react-native";
 import { COLORS } from "../constants/colors";
 import { firebase, database } from "../db/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { getDatabase, ref, onValue, update } from "firebase/database";
+import * as ImagePicker from "expo-image-picker";
+import { getDownloadURL, uploadString } from "firebase/storage";
 import RNPickerSelect from "react-native-picker-select";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import tinycolor from "tinycolor2";
@@ -35,6 +38,32 @@ const Options = () => {
   const [color, setColor] = useState("");
   const [initials, setInitials] = useState("");
   const [darkerColor, setDarkerColor] = useState("");
+  const [image, setImage] = useState(null);
+
+  const handleChooseImage = async () => {
+    try {
+      const permissionResult =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (permissionResult.granted === false) {
+        alert("Permission to access camera roll is required!");
+        return;
+      }
+
+      const pickerResult = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!pickerResult.canceled) {
+        setImage(pickerResult.assets[0]);
+      }
+    } catch (error) {
+      console.error("Error choosing image:", error);
+    }
+  };
 
   const toggleDatePicker = () => {
     setShow(!show);
@@ -91,9 +120,36 @@ const Options = () => {
     }
   }, [user]);
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     if (user) {
       const dbRef = ref(database, `users/${user.uid}`);
+      const storageRef = ref(
+        firebase.storage(),
+        `users/${user.uid}/profile_picture`
+      );
+
+      if (image && image.uri) {
+        try {
+          const response = await fetch(image.uri);
+          const blob = await response.blob();
+
+          // Upload the image to Firebase Storage
+          const uploadTask = uploadBytes(storageRef, blob);
+
+          // Get the download URL of the uploaded image
+          const snapshot = await uploadTask;
+          const downloadURL = await getDownloadURL(snapshot.ref);
+
+          // Update the database with the download URL
+          update(dbRef, {
+            profilePicture: downloadURL,
+          });
+        } catch (error) {
+          console.error("Error uploading image:", error);
+        }
+      }
+
+      // Update other user data in the database
       update(dbRef, {
         firstName: firstName,
         lastName: lastName,
@@ -117,21 +173,32 @@ const Options = () => {
         style={{ backgroundColor: COLORS.background }}
       >
         <View style={styles.profileImageContainer}>
-          <View style={[styles.profileImage, { backgroundColor: color }]}>
-            <Text
-              style={{
-                color: darkerColor || "#000",
-                fontSize: 50,
-                fontFamily: "Nunito-Black",
-              }}
-            >
-              {initials}
-            </Text>
-          </View>
-          <TouchableOpacity style={styles.editButton}>
+          {image && image.uri ? (
+            <Image source={{ uri: image.uri }} style={styles.profileImage} />
+          ) : (
+            <View style={[styles.profileImage, { backgroundColor: color }]}>
+              <Text
+                style={{
+                  color: darkerColor || COLORS.grayWhite,
+                  fontSize: 50,
+                  fontFamily: "Nunito-Black",
+                }}
+              >
+                {initials}
+              </Text>
+            </View>
+          )}
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={handleChooseImage}
+          >
             <Text style={styles.editText}>Edit Picture</Text>
           </TouchableOpacity>
         </View>
+
+        <TouchableOpacity style={styles.editButton} onPress={handleSaveChanges}>
+          <Text style={styles.editText}>Save</Text>
+        </TouchableOpacity>
 
         <View style={styles.formContainer}>
           <Text style={styles.label}>First Name</Text>
