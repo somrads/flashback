@@ -43,8 +43,6 @@ const fetchUserData = async (userId) => {
   });
 };
 
-
-
 // Birthday count calculator
 const daysUntilBirthday = (birthday) => {
   const today = new Date();

@@ -16,6 +16,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { getDatabase, ref, onValue, update } from "firebase/database";
 import RNPickerSelect from "react-native-picker-select";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import tinycolor from "tinycolor2";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -31,6 +32,9 @@ const Options = () => {
   const [email, setEmail] = useState("");
   const [show, setShow] = useState(false);
   const [tempDate, setTempDate] = useState(new Date());
+  const [color, setColor] = useState("");
+  const [initials, setInitials] = useState("");
+  const [darkerColor, setDarkerColor] = useState("");
 
   const toggleDatePicker = () => {
     setShow(!show);
@@ -56,6 +60,17 @@ const Options = () => {
     return `${year}-${month}-${day}`;
   };
 
+  function darkenColor(color) {
+    let colorObj = tinycolor(color);
+    let { r, g, b } = colorObj.toRgb();
+
+    r = Math.floor(r / 2);
+    g = Math.floor(g / 2);
+    b = Math.floor(b / 2);
+
+    return tinycolor({ r, g, b }).toString();
+  }
+
   useEffect(() => {
     if (user) {
       const dbRef = ref(database, `users/${user.uid}`);
@@ -67,6 +82,11 @@ const Options = () => {
         setRole(data.role);
         setBirthday(data.dob);
         setEmail(data.email);
+
+        const userInitials = data.firstName[0] + data.lastName[0];
+        setInitials(userInitials.toUpperCase());
+        setColor(data.color);
+        setDarkerColor(darkenColor(data.color));
       });
     }
   }, [user]);
@@ -97,7 +117,9 @@ const Options = () => {
         style={{ backgroundColor: COLORS.background }}
       >
         <View style={styles.profileImageContainer}>
-          <View style={styles.profileImage}></View>
+          <View style={[styles.profileImage, { backgroundColor: color }]}>
+            <Text style={{ color: darkerColor, fontSize: 50, fontFamily:'Nunito-Black' }}>{initials}</Text>
+          </View>
           <TouchableOpacity style={styles.editButton}>
             <Text style={styles.editText}>Edit Picture</Text>
           </TouchableOpacity>
@@ -150,7 +172,7 @@ const Options = () => {
               { label: "Cousin", value: "Cousin" },
               { label: "Other", value: "Other" },
             ]}
-            placeholder={{ label: role || "Role", value: null }}
+            placeholder={{ label: role || "Role", value: role || null }}
             value={role}
             style={pickerSelectStyles}
           />
@@ -253,7 +275,7 @@ const styles = StyleSheet.create({
   },
   profileImageContainer: {
     alignItems: "center",
-    marginBottom: 30,
+    marginBottom: 10,
   },
   profileImage: {
     width: 120,
@@ -261,6 +283,8 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: COLORS.grayWhite,
     marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',  
   },
   formContainer: {
     width: windowWidth * 0.8,
