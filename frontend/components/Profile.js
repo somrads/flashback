@@ -114,14 +114,18 @@ export default function Profile({ navigation }) {
     >
       <View style={styles.wrapper}>
         <View style={pfpStyles}>
-          {userData.profileImage ? (
-            <Image style={styles.pfp} source={{ uri: userData.profileImage }} />
+          {userData.profilePicture ? (
+            <Image
+              style={styles.pfp}
+              source={{ uri: userData.profilePicture }}
+            />
           ) : (
             <Text style={[styles.initials, { color: userData.darkerColor }]}>
               {userData.initials}
             </Text>
           )}
         </View>
+
         <Text style={styles.userName}>
           {firstName} {lastName}
         </Text>
@@ -149,10 +153,10 @@ export default function Profile({ navigation }) {
         </View>
         <View style={styles.greenLine} />
 
-        {/* Description */}
+        {/* Bio */}
         <View style={styles.description}>
-          {description ? (
-            <Text style={styles.descriptionText}>{description}</Text>
+          {userData.bio ? (
+            <Text style={styles.descriptionText}>{userData.bio}</Text>
           ) : (
             <Text style={styles.placeholderText}>No bio yet...</Text>
           )}
