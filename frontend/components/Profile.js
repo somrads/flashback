@@ -12,7 +12,7 @@ import { COLORS } from "../constants/colors";
 import BirthdayIcon from "../assets/icons/birthday.svg";
 import RoleIcon from "../assets/icons/role.svg";
 import { auth, database } from "../db/firebase";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, off } from "firebase/database";
 import tinycolor from "tinycolor2";
 
 function darkenColor(color) {
@@ -26,22 +26,23 @@ function darkenColor(color) {
   return tinycolor({ r, g, b }).toString();
 }
 
-const fetchUserData = async (userId) => {
+// Set up real-time data listener
+const fetchUserData = (userId, callback) => {
   const userRef = ref(database, `users/${userId}`);
-  return new Promise((resolve) => {
-    onValue(userRef, (snapshot) => {
-      const userData = snapshot.val();
-      if (userData) {
-        const initials = userData.firstName[0] + userData.lastName[0];
-        userData.initials = initials.toUpperCase();
-        userData.color = userData.color;
-        userData.darkerColor = darkenColor(userData.color);
-        resolve(userData);
-      } else {
-        resolve(null);
-      }
-    });
-  });
+  const listener = (snapshot) => {
+    const userData = snapshot.val();
+    if (userData) {
+      const initials = userData.firstName[0] + userData.lastName[0];
+      userData.initials = initials.toUpperCase();
+      userData.color = userData.color;
+      userData.darkerColor = darkenColor(userData.color);
+      callback(userData); // Trigger the callback with new data
+    }
+  };
+  onValue(userRef, listener);
+
+  // Return the function to unsubscribe this listener
+  return () => off(userRef, listener);
 };
 
 // Birthday count calculator
@@ -56,7 +57,12 @@ const daysUntilBirthday = (birthday) => {
 
   const oneDay = 24 * 60 * 60 * 1000;
   const daysUntil = Math.round(Math.abs((today - birthDate) / oneDay));
-  return daysUntil;
+  // If the date is today, return "Happy Birthday"
+  if (daysUntil === 0) {
+    return "Happy Birthday 🥳";
+  } else {
+    return `In ${daysUntil} days`;
+  }
 };
 
 export default function Profile({ navigation }) {
@@ -64,10 +70,12 @@ export default function Profile({ navigation }) {
 
   const route = useRoute();
 
+  // Use the listener in your component
   useEffect(() => {
     const currentUser = auth.currentUser;
+    let unsubscribe; // Save the unsubscribe function
     if (currentUser) {
-      fetchUserData(currentUser.uid).then((data) => {
+      unsubscribe = fetchUserData(currentUser.uid, (data) => {
         if (data) {
           setUserData(data);
         } else {
@@ -75,6 +83,10 @@ export default function Profile({ navigation }) {
         }
       });
     }
+    // Clean up: remove the listener when the component is unmounted
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, [route.params?.updatedData]);
 
   if (!userData) {
@@ -85,7 +97,7 @@ export default function Profile({ navigation }) {
     );
   }
 
-  const { firstName, lastName, role, dob, description } = userData;
+  const { firstName, lastName, role, dob, bio, profilePicture } = userData;
 
   const handleLogout = async () => {
     try {
@@ -96,7 +108,7 @@ export default function Profile({ navigation }) {
     }
   };
 
-  const pfpStyles = userData.profileImage
+  const pfpStyles = profilePicture
     ? styles.pfp
     : [
         styles.pfp,
@@ -114,11 +126,8 @@ export default function Profile({ navigation }) {
     >
       <View style={styles.wrapper}>
         <View style={pfpStyles}>
-          {userData.profilePicture ? (
-            <Image
-              style={styles.pfp}
-              source={{ uri: userData.profilePicture }}
-            />
+          {profilePicture ? (
+            <Image style={styles.pfp} source={{ uri: profilePicture }} />
           ) : (
             <Text style={[styles.initials, { color: userData.darkerColor }]}>
               {userData.initials}
@@ -144,7 +153,7 @@ export default function Profile({ navigation }) {
               <BirthdayIcon />
               <View style={styles.text}>
                 <Text style={styles.statsTitle}>
-                  In {daysUntilBirthday(dob)} days
+                  {daysUntilBirthday(dob)}
                 </Text>
                 <Text style={styles.statsPlaceHolder}>{dob}</Text>
               </View>
@@ -155,8 +164,8 @@ export default function Profile({ navigation }) {
 
         {/* Bio */}
         <View style={styles.description}>
-          {userData.bio ? (
-            <Text style={styles.descriptionText}>{userData.bio}</Text>
+          {bio ? (
+            <Text style={styles.descriptionText}>{bio}</Text>
           ) : (
             <Text style={styles.placeholderText}>No bio yet...</Text>
           )}

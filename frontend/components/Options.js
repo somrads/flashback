@@ -140,8 +140,8 @@ const Options = () => {
           // Manipulate the image and resize it
           const manipulatedImage = await ImageManipulator.manipulateAsync(
             image.uri,
-            [{ resize: { width: 165 } }],
-            { compress: 0.7, format: ImageManipulator.SaveFormat.PNG }
+            [{ resize: { width: 200 } }],
+            { compress: 1, format: ImageManipulator.SaveFormat.PNG }
           );
 
           const response = await fetch(manipulatedImage.uri);
@@ -180,7 +180,7 @@ const Options = () => {
         email: email,
       });
     }
-    navigation.navigate('Profile', { updatedData: new Date().getTime() });
+    navigation.navigate("Profile", { updatedData: new Date().getTime() });
   };
 
   useLayoutEffect(() => {
