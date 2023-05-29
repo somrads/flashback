@@ -58,7 +58,13 @@ const Feed = ({ navigation }) => {
   }, []);
 
   const navigateToProfile = () => {
-    navigation.navigate("Profile");
+    navigation.navigate("Profile", { updatedData: Date.now() });
+  };
+
+  const getImageUrl = (profilePicture) => {
+    // Append a query parameter to the image URL
+    const timestamp = Date.now();
+    return `${profilePicture}?t=${timestamp}`;
   };
 
   return (
@@ -74,17 +80,17 @@ const Feed = ({ navigation }) => {
           style={[
             styles.profilePic,
             userData &&
-              !userData.profileImage && {
+              !userData.profilePicture && {
                 backgroundColor: userData.color,
                 justifyContent: "center",
                 alignItems: "center",
               },
           ]}
         >
-          {userData && userData.profileImage ? (
+          {userData && userData.profilePicture ? (
             <Image
               style={styles.profilePic}
-              source={{ uri: userData.profileImage }}
+              source={{ uri: getImageUrl(userData.profilePicture) }}
             />
           ) : (
             <Text
