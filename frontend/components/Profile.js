@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
+import { useRoute } from "@react-navigation/native";
 import { COLORS } from "../constants/colors";
 import BirthdayIcon from "../assets/icons/birthday.svg";
 import RoleIcon from "../assets/icons/role.svg";
@@ -61,14 +62,20 @@ const daysUntilBirthday = (birthday) => {
 export default function Profile({ navigation }) {
   const [userData, setUserData] = useState(null);
 
+  const route = useRoute();
+
   useEffect(() => {
     const currentUser = auth.currentUser;
     if (currentUser) {
       fetchUserData(currentUser.uid).then((data) => {
-        setUserData(data);
+        if (data) {
+          setUserData(data);
+        } else {
+          alert("User data not found");
+        }
       });
     }
-  }, []);
+  }, [route.params?.updatedData]);
 
   if (!userData) {
     return (

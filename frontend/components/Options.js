@@ -145,9 +145,7 @@ const Options = () => {
           // Get the download URL of the uploaded image
           uploadTask.on(
             "state_changed",
-            (snapshot) => {
-              // handle progress, error, and complete states here
-            },
+            (snapshot) => {},
             (error) => {
               console.error("Error uploading image:", error);
             },
@@ -174,6 +172,7 @@ const Options = () => {
         email: email,
       });
     }
+    navigation.navigate("Profile", { updatedData: true });
   };
 
   useLayoutEffect(() => {
@@ -210,7 +209,7 @@ const Options = () => {
       >
         <View style={styles.profileImageContainer}>
           {image && image.uri ? (
-            <Image source={{ uri: image.uri }} style={styles.profileImage} />
+            <Image source={{ uri: image.uri }} style={styles.profileImage}  />
           ) : (
             <View style={[styles.profileImage, { backgroundColor: color }]}>
               <Text
@@ -377,7 +376,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    padding: 5,
     backgroundColor: COLORS.background,
   },
   profileImageContainer: {
