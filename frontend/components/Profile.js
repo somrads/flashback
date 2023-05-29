@@ -11,7 +11,7 @@ import { COLORS } from "../constants/colors";
 import BirthdayIcon from "../assets/icons/birthday.svg";
 import RoleIcon from "../assets/icons/role.svg";
 import { auth, database } from "../db/firebase";
-import { ref, onValue, child } from "firebase/database";
+import { ref, onValue } from "firebase/database";
 import tinycolor from "tinycolor2";
 
 function darkenColor(color) {
