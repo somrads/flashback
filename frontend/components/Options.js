@@ -78,7 +78,7 @@ const Options = () => {
 
   const handleConfirmDate = () => {
     setShow(false);
-    setBirthday(tempDate);
+    setBirthday(formatDate(tempDate));
   };
 
   const handleCancelDate = () => {
