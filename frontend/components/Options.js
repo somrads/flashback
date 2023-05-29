@@ -26,6 +26,7 @@ import RNPickerSelect from "react-native-picker-select";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import tinycolor from "tinycolor2";
 import { useNavigation } from "@react-navigation/native";
+import * as ImageManipulator from "expo-image-manipulator";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -136,7 +137,14 @@ const Options = () => {
 
       if (image && image.uri) {
         try {
-          const response = await fetch(image.uri);
+          // Manipulate the image and resize it
+          const manipulatedImage = await ImageManipulator.manipulateAsync(
+            image.uri,
+            [{ resize: { width: 165 } }],
+            { compress: 0.7, format: ImageManipulator.SaveFormat.PNG }
+          );
+
+          const response = await fetch(manipulatedImage.uri);
           const blob = await response.blob();
 
           // Upload the image to Firebase Storage
@@ -209,7 +217,7 @@ const Options = () => {
       >
         <View style={styles.profileImageContainer}>
           {image && image.uri ? (
-            <Image source={{ uri: image.uri }} style={styles.profileImage}  />
+            <Image source={{ uri: image.uri }} style={styles.profileImage} />
           ) : (
             <View style={[styles.profileImage, { backgroundColor: color }]}>
               <Text
