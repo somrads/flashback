@@ -180,7 +180,7 @@ const Options = () => {
         email: email,
       });
     }
-    navigation.navigate("Profile", { updatedData: true });
+    navigation.navigate('Profile', { updatedData: new Date().getTime() });
   };
 
   useLayoutEffect(() => {

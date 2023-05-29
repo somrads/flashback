@@ -144,6 +144,7 @@ function AppNavigator() {
         name="Profile"
         component={Profile}
         options={{
+          unmountOnBlur: true,
           headerStyle: {
             backgroundColor: COLORS.background,
             elevation: 0,
