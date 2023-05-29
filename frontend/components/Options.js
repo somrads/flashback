@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -25,6 +25,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import RNPickerSelect from "react-native-picker-select";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import tinycolor from "tinycolor2";
+import { useNavigation } from "@react-navigation/native";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -42,6 +43,7 @@ const Options = () => {
   const [initials, setInitials] = useState("");
   const [darkerColor, setDarkerColor] = useState("");
   const [image, setImage] = useState(null);
+  const navigation = useNavigation();
 
   const handleChooseImage = async () => {
     try {
@@ -162,7 +164,6 @@ const Options = () => {
           console.error("Error uploading image:", error);
         }
       }
-
       // Update other user data in the database
       update(dbRef, {
         firstName: firstName,
@@ -174,6 +175,27 @@ const Options = () => {
       });
     }
   };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={handleSaveChanges}
+          style={{ marginRight: 20 }}
+        >
+          <Text
+            style={{
+              color: COLORS.main,
+              fontFamily: "Nunito-Bold",
+              fontSize: 20,
+            }}
+          >
+            Save
+          </Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, handleSaveChanges]);
 
   const handleDeleteAccount = () => {};
 
@@ -209,10 +231,6 @@ const Options = () => {
             <Text style={styles.editText}>Edit Picture</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.editButton} onPress={handleSaveChanges}>
-          <Text style={styles.editText}>Save</Text>
-        </TouchableOpacity>
 
         <View style={styles.formContainer}>
           <Text style={styles.label}>First Name</Text>

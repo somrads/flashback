@@ -188,7 +188,9 @@ function AppNavigator() {
           title: "Edit Profile",
           headerBackTitleVisible: false,
           headerBackImage: () => (
-            <Arrow width={25} height={20} style={{ marginLeft: 20 }} />
+            <Text style={{ color: "white", marginLeft: 20, fontSize: 20 }}>
+              Cancel
+            </Text>
           ),
         }}
       />
