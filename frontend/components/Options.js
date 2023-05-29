@@ -114,6 +114,7 @@ const Options = () => {
         setRole(data.role);
         setBirthday(data.dob);
         setEmail(data.email);
+        setImage({ uri: data.profilePicture });
 
         const userInitials = data.firstName[0] + data.lastName[0];
         setInitials(userInitials.toUpperCase());
@@ -150,6 +151,7 @@ const Options = () => {
             },
             async () => {
               const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+              setImage({ uri: downloadURL });
               // Update the database with the download URL
               update(dbRef, {
                 profilePicture: downloadURL,
