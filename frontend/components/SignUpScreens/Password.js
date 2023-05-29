@@ -10,8 +10,13 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
-import { firebase } from "../../db/firebase";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
+import { ref, set } from "firebase/database";
 import { COLORS } from "../../constants/colors";
+import { auth, database } from "../../db/firebase";
 
 const Password = ({ route, navigation }) => {
   const { firstName, lastName, email, role, dob } = route.params;
@@ -28,13 +33,14 @@ const Password = ({ route, navigation }) => {
       return;
     }
 
+    let response;
     try {
-      const response = await firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password);
+      response = await createUserWithEmailAndPassword(auth, email, password);
       if (response.user) {
-        await response.user.sendEmailVerification();
-        alert("A verification email has been sent to your email account");
+        if (auth.currentUser) {
+          await sendEmailVerification(auth.currentUser);
+          alert("A verification email has been sent to your email account");
+        }
 
         const initials = firstName.charAt(0) + lastName.charAt(0);
 
@@ -61,15 +67,21 @@ const Password = ({ route, navigation }) => {
           initials,
           color,
         };
-        await firebase
-          .database()
-          .ref("users")
-          .child(response.user.uid)
-          .set(userData);
-        navigation.navigate("VerifyEmail");
+
+        try {
+          await set(ref(database, `users/${response.user.uid}`), userData);
+          navigation.navigate("VerifyEmail");
+        } catch (error) {
+          console.log("Error while setting user data:", error);
+          alert("An error occurred while completing the registration.");
+        }
       }
     } catch (error) {
       alert(error.message);
+      console.log(error);
+      console.log(database);
+      if (response && response.user) console.log(response.user.uid);
+      console.log(userData);
     }
   };
 
@@ -115,10 +127,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: COLORS.background,
   },
-  titleContainer: {
-    marginTop: 40,
-    alignItems: "center",
-  },
   contentContainer: {
     flex: 1,
     justifyContent: "center",
@@ -126,12 +134,6 @@ const styles = StyleSheet.create({
   },
   inputsContainer: {
     width: "100%",
-  },
-  title: {
-    fontSize: 40,
-    textAlign: "center",
-    fontFamily: "Nunito-Bold",
-    color: COLORS.grayWhite,
   },
   input: {
     borderWidth: 0,

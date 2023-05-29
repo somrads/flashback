@@ -10,7 +10,7 @@ import {
 import { COLORS } from "../constants/colors";
 import BirthdayIcon from "../assets/icons/birthday.svg";
 import RoleIcon from "../assets/icons/role.svg";
-import { firebase, database } from "../db/firebase";
+import { auth, database } from "../db/firebase";
 import { ref, onValue, child } from "firebase/database";
 import tinycolor from "tinycolor2";
 
@@ -62,7 +62,7 @@ export default function Profile({ navigation }) {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const currentUser = firebase.auth().currentUser;
+    const currentUser = auth.currentUser;
     if (currentUser) {
       fetchUserData(currentUser.uid).then((data) => {
         setUserData(data);
@@ -82,7 +82,7 @@ export default function Profile({ navigation }) {
 
   const handleLogout = async () => {
     try {
-      await firebase.auth().signOut();
+      await auth.signOut();
       navigation.navigate("Login");
     } catch (error) {
       alert(error.message);

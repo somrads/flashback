@@ -10,16 +10,15 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
+import { sendPasswordResetEmail } from "firebase/auth";
 import { COLORS } from "../../constants/colors";
-import { firebase } from "../../db/firebase";
+import { auth } from "../../db/firebase";
 
 const ResetPassword = () => {
   const [email, setEmail] = useState("");
 
   const handleResetPassword = () => {
-    firebase
-      .auth()
-      .sendPasswordResetEmail(email)
+    sendPasswordResetEmail(auth, email)
       .then(() => {
         alert(
           "If an account exists with this email, a password reset email has been sent!"

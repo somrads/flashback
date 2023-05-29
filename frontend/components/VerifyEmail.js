@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { firebase } from "../db/firebase";
+import { auth } from "../db/firebase";
 import { useNavigation } from "@react-navigation/native";
 import { COLORS } from "../constants/colors";
 import Logo from "../assets/icons/logo.svg";
@@ -9,7 +9,6 @@ const VerifyEmail = () => {
   const navigation = useNavigation();
 
   const resendEmail = () => {
-    const auth = firebase.auth();
     const user = auth.currentUser;
     if (user) {
       user

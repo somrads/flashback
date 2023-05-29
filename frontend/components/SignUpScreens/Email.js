@@ -8,9 +8,16 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
 } from "react-native";
-import { firebase } from "../../db/firebase";
+import {
+  ref,
+  get,
+  query,
+  orderByChild,
+  equalTo,
+} from "firebase/database";
+import { database } from "../../db/firebase";
 import { COLORS } from "../../constants/colors";
 
 const EmailPage = ({ route, navigation }) => {
@@ -18,18 +25,14 @@ const EmailPage = ({ route, navigation }) => {
   const [email, setEmail] = useState("");
 
   const checkEmailExists = async (email) => {
-    const usersRef = firebase.database().ref("users");
-    let emailExists = false;
-
-    await usersRef.once("value", (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-        if (childSnapshot.val().email === email) {
-          emailExists = true;
-        }
-      });
-    });
-
-    return emailExists;
+    const usersRef = ref(database, "users");
+    const emailExistsQuery = query(
+      usersRef,
+      orderByChild("email"),
+      equalTo(email)
+    );
+    const snapshot = await get(emailExistsQuery);
+    return snapshot.exists();
   };
 
   const handleNext = async () => {

@@ -11,7 +11,6 @@ import {
   Keyboard
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { firebase } from "../../db/firebase";
 import { COLORS } from "../../constants/colors";
 
 const Name = () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
-import { firebase, database } from "../db/firebase";
+import { auth, database } from "../db/firebase";
 import { ref, onValue } from "firebase/database";
 import { COLORS } from "../constants/colors";
 import Add from "../assets/icons/addIcon.svg";
@@ -45,7 +45,7 @@ const Feed = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const currentUser = firebase.auth().currentUser;
+    const currentUser = auth.currentUser;
     if (currentUser) {
       fetchUserData(currentUser.uid)
         .then((data) => {

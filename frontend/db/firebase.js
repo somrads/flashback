@@ -1,6 +1,5 @@
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/database";
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
 
@@ -16,11 +15,10 @@ const firebaseConfig = {
   measurementId: "G-ZD85XQ2YD6",
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+const app = initializeApp(firebaseConfig);
 
-const database = getDatabase();
-const storage = getStorage();
+const database = getDatabase(app);
+const storage = getStorage(app);
+const auth = getAuth(app);
 
-export { database, firebase, storage };
+export { database, auth, storage };

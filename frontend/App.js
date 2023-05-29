@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 
 import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator, DefaultTheme } from "@react-navigation/stack";
-import { firebase } from "./db/firebase";
+import { createStackNavigator } from "@react-navigation/stack";
+import { auth } from "./db/firebase";
 import {
   LogBox,
   StyleSheet,
@@ -99,13 +99,10 @@ function AppNavigator() {
   function onAuthStateChanged(user) {
     setUser(user);
     if (initializing) setInitializing(false);
-    else if (user && !user.emailVerified) {
-      navigation.navigate("VerifyEmail");
-    }
   }
 
   useEffect(() => {
-    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
+    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
 

@@ -9,11 +9,13 @@ import {
   Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { firebase } from "../db/firebase";
+import { auth } from "../db/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+
 import { COLORS } from "../constants/colors";
 import Logo from "../assets/icons/logo.svg";
 
-const windowWidth = Dimensions.get('window').width;
+const windowWidth = Dimensions.get("window").width;
 
 const Login = () => {
   const navigation = useNavigation();
@@ -22,7 +24,7 @@ const Login = () => {
 
   const loginUser = async (email, password) => {
     try {
-      await firebase.auth().signInWithEmailAndPassword(email, password);
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       alert(error.message);
     }
