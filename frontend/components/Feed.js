@@ -47,13 +47,30 @@ const Feed = ({ navigation }) => {
   useEffect(() => {
     const currentUser = auth.currentUser;
     if (currentUser) {
-      fetchUserData(currentUser.uid)
-        .then((data) => {
-          setUserData(data);
-        })
-        .catch((error) => {
+      const userRef = ref(database, `users/${currentUser.uid}`);
+      const unsubscribe = onValue(
+        userRef,
+        (snapshot) => {
+          const userData = snapshot.val();
+          if (userData) {
+            const initials = userData.firstName[0] + userData.lastName[0];
+            userData.initials = initials.toUpperCase();
+            userData.color = userData.color;
+            userData.darkerColor = darkenColor(userData.color);
+            setUserData(userData);
+          } else {
+            console.log("User data not found");
+          }
+        },
+        (error) => {
           console.log(error);
-        });
+        }
+      );
+
+      // Clean up function
+      return () => {
+        unsubscribe();
+      };
     }
   }, []);
 

@@ -113,7 +113,7 @@ const Options = () => {
         const data = snapshot.val();
         setFirstName(data.firstName);
         setLastName(data.lastName);
-        setBio(data.bio);
+        setBio(data.bio || '');
         setRole(data.role);
         setBirthday(data.dob);
         setEmail(data.email);
