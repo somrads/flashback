@@ -51,18 +51,24 @@ const daysUntilBirthday = (birthday) => {
   const birthDate = new Date(birthday);
   birthDate.setFullYear(today.getFullYear());
 
+  // If today's date is the same as the birthday
+  if (
+    birthDate.getDate() === today.getDate() &&
+    birthDate.getMonth() === today.getMonth()
+  ) {
+    return "Happy Birthday 🥳";
+  }
+
+  // If the birthDate has already passed this year, set it for next year
   if (birthDate < today) {
     birthDate.setFullYear(today.getFullYear() + 1);
   }
 
   const oneDay = 24 * 60 * 60 * 1000;
-  const daysUntil = Math.round(Math.abs((today - birthDate) / oneDay));
-  // If the date is today, return "Happy Birthday"
-  if (daysUntil === 0) {
-    return "Happy Birthday 🥳";
-  } else {
-    return `In ${daysUntil} days`;
-  }
+  const daysUntil = Math.round(
+    Math.abs((birthDate.getTime() - today.getTime()) / oneDay)
+  );
+  return `In ${daysUntil} days`;
 };
 
 export default function Profile({ navigation }) {
@@ -152,9 +158,7 @@ export default function Profile({ navigation }) {
             <View style={styles.statsSection}>
               <BirthdayIcon />
               <View style={styles.text}>
-                <Text style={styles.statsTitle}>
-                  {daysUntilBirthday(dob)}
-                </Text>
+                <Text style={styles.statsTitle}>{daysUntilBirthday(dob)}</Text>
                 <Text style={styles.statsPlaceHolder}>{dob}</Text>
               </View>
             </View>
