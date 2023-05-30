@@ -10,18 +10,20 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  Alert,
 } from "react-native";
 import { COLORS } from "../constants/colors";
 import { database, auth, storage } from "../db/firebase";
-import { onValue, ref, update } from "firebase/database";
+import { onValue, ref, update, remove as deleteDBRef } from "firebase/database";
 import {
   getDownloadURL,
   uploadBytesResumable,
   ref as storageRef,
+  deleteObject as deleteStorageObject,
 } from "firebase/storage";
-import * as ImagePicker from "expo-image-picker";
-import { signOut } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { deleteUser as deleteAuthUser } from "firebase/auth";
+import * as ImagePicker from "expo-image-picker";
 import RNPickerSelect from "react-native-picker-select";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import tinycolor from "tinycolor2";
@@ -31,7 +33,7 @@ import * as ImageManipulator from "expo-image-manipulator";
 const windowWidth = Dimensions.get("window").width;
 
 const Options = () => {
-  const [user, loading, error] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [bio, setBio] = useState("");
@@ -44,6 +46,7 @@ const Options = () => {
   const [initials, setInitials] = useState("");
   const [darkerColor, setDarkerColor] = useState("");
   const [image, setImage] = useState(null);
+  const [password, setPassword] = useState("");
   const navigation = useNavigation();
 
   const handleChooseImage = async () => {
@@ -113,7 +116,7 @@ const Options = () => {
         const data = snapshot.val();
         setFirstName(data.firstName);
         setLastName(data.lastName);
-        setBio(data.bio || '');
+        setBio(data.bio || "");
         setRole(data.role);
         setBirthday(data.dob);
         setEmail(data.email);
@@ -183,6 +186,53 @@ const Options = () => {
     navigation.navigate("Profile", { updatedData: new Date().getTime() });
   };
 
+  // const deleteUser = async () => {
+  //   if (user !== null) {
+  //     try {
+  //       // Create a reference to the user's data in the database
+  //       const dbRef = ref(database, `users/${user.uid}`);
+  
+  //       // Create a reference to the user's profile picture in storage
+  //       const imageRef = storageRef(
+  //         storage,
+  //         `users/${user.uid}/profile_picture`
+  //       );
+  
+  //       // Delete the user's data from the database
+  //       await deleteDBRef(dbRef);
+  
+  //       // Delete the user's profile picture from storage
+  //       await deleteStorageObject(imageRef);
+  
+  //       // Delete the user from authentication
+  //       await deleteAuthUser(user);
+  
+  //       // After the account deletion, navigate to the login screen
+  //       navigation.navigate('Login', { message: 'User deletion successful' });
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   } else {
+  //     console.error('No user is currently signed in');
+  //   }
+  // };
+  
+
+  const confirmDeleteUser = () => {
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to delete your account? This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Yes", onPress: deleteUser },
+      ]
+    );
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -203,8 +253,6 @@ const Options = () => {
       ),
     });
   }, [navigation, handleSaveChanges]);
-
-  const handleDeleteAccount = () => {};
 
   return (
     <KeyboardAvoidingView
@@ -343,7 +391,7 @@ const Options = () => {
 
         <TouchableOpacity
           style={styles.deleteButton}
-          onPress={handleDeleteAccount}
+          onPress=""
         >
           <Text style={styles.buttonText2}>Delete Account</Text>
         </TouchableOpacity>

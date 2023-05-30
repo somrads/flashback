@@ -17,29 +17,29 @@ function darkenColor(color) {
   return tinycolor({ r, g, b }).toString();
 }
 
-const fetchUserData = async (userId) => {
-  const userRef = ref(database, `users/${userId}`);
-  return new Promise((resolve, reject) => {
-    onValue(
-      userRef,
-      (snapshot) => {
-        const userData = snapshot.val();
-        if (userData) {
-          const initials = userData.firstName[0] + userData.lastName[0];
-          userData.initials = initials.toUpperCase();
-          userData.color = userData.color;
-          userData.darkerColor = darkenColor(userData.color);
-          resolve(userData);
-        } else {
-          reject(new Error("User data not found"));
-        }
-      },
-      (error) => {
-        reject(error);
-      }
-    );
-  });
-};
+// const fetchUserData = async (userId) => {
+//   const userRef = ref(database, `users/${userId}`);
+//   return new Promise((resolve, reject) => {
+//     onValue(
+//       userRef,
+//       (snapshot) => {
+//         const userData = snapshot.val();
+//         if (userData) {
+//           const initials = userData.firstName[0] + userData.lastName[0];
+//           userData.initials = initials.toUpperCase();
+//           userData.color = userData.color;
+//           userData.darkerColor = darkenColor(userData.color);
+//           resolve(userData);
+//         } else {
+//           reject(new Error("User data not found"));
+//         }
+//       },
+//       (error) => {
+//         reject(error);
+//       }
+//     );
+//   });
+// };
 
 const Feed = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
@@ -66,8 +66,6 @@ const Feed = ({ navigation }) => {
           console.log(error);
         }
       );
-
-      // Clean up function
       return () => {
         unsubscribe();
       };
@@ -79,7 +77,6 @@ const Feed = ({ navigation }) => {
   };
 
   const getImageUrl = (profilePicture) => {
-    // Append a query parameter to the image URL
     const timestamp = Date.now();
     return `${profilePicture}?t=${timestamp}`;
   };
