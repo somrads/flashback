@@ -88,13 +88,13 @@ const Feed = ({ navigation }) => {
       setTimeout(() => {
         setShowPhotoModal(true);
         setIsLoading(false);
-      }, 300); // delay of 0.5 seconds
+      }, 300);
     }
   };
 
   const postPhoto = async () => {
     // TODO: implement logic to post the photo and update your feed
-    setIsLoading(false); // Add this after the photo post logic is complete
+    setIsLoading(false);
     setShowPhotoModal(false);
     setPhoto(null);
   };
@@ -184,16 +184,17 @@ const Feed = ({ navigation }) => {
       >
         <Text style={styles.buttonText}>Open Camera</Text>
       </TouchableOpacity>
+
       {photo && (
         <Modal visible={showPhotoModal} transparent={true}>
-          <View style={styles.modalContainer}>
+          <View style={styles.modalPhotoContainer}>
             <Image source={{ uri: photo.uri }} style={styles.modalImage} />
             <View style={styles.modalButtonContainer}>
               <TouchableOpacity
-                style={styles.modalButton}
+                style={styles.modalButtonDiscard}
                 onPress={discardPhoto}
               >
-                <Text style={styles.modalButtonText}>Discard</Text>
+                <Text style={styles.modalButtonTextDiscard}>Discard</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.modalButton} onPress={postPhoto}>
                 <Text style={styles.modalButtonText}>Post</Text>
@@ -202,6 +203,7 @@ const Feed = ({ navigation }) => {
           </View>
         </Modal>
       )}
+
       {isLoading && (
         <View style={styles.loadingScreen}>
           <ActivityIndicator size="large" color={COLORS.main} />
@@ -305,33 +307,49 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 20,
   },
-  modalContainer: {
+  modalPhotoContainer: {
     flex: 1,
-    backgroundColor: "#000",
+    justifyContent: "center", // This will center the photo vertically
+    alignItems: "center", // This will center the photo horizontally
+    backgroundColor: COLORS.background,
   },
   modalImage: {
-    flex: 1,
-    resizeMode: "contain",
+    width: "80%", // This sets the width to 80% of the modal's width
+    height: "80%", // This sets the height to 80% of the modal's height
+    resizeMode: "contain", // This ensures the whole photo is visible
   },
   modalButtonContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
     flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 20,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    marginTop: 20,
   },
   modalButton: {
-    padding: 10,
-    backgroundColor: "#fff",
-    borderRadius: 5,
+    backgroundColor: COLORS.main,
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+    borderRadius: 8,
+    borderColor: COLORS.main,
   },
   modalButtonText: {
+    color: "#FFFFFF",
     fontSize: 18,
-    color: "#000",
+    fontFamily: "Nunito-Medium",
   },
+
+  modalButtonDiscard: {
+    backgroundColor: "transparent",
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+    borderRadius: 8,
+    borderColor: COLORS.main,
+    borderWidth: 1,
+    marginRight: 25, 
+  },
+  modalButtonTextDiscard: {
+    color: COLORS.grayWhite,
+    fontSize: 18,
+    fontFamily: "Nunito-Medium",
+  },
+
   loadingScreen: {
     position: "absolute",
     left: 0,
