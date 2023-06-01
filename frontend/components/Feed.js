@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Image,
   Modal,
-  Button,
   ActivityIndicator,
 } from "react-native";
 import { auth, database } from "../db/firebase";
@@ -15,8 +14,9 @@ import { COLORS } from "../constants/colors";
 import Add from "../assets/icons/addIcon.svg";
 import tinycolor from "tinycolor2";
 import { Camera } from "expo-camera";
-import * as MediaLibrary from "expo-media-library";
+import * as ImageManipulator from "expo-image-manipulator";
 import Icon from "react-native-vector-icons/Ionicons";
+
 
 function darkenColor(color) {
   let colorObj = tinycolor(color);
@@ -83,7 +83,13 @@ const Feed = ({ navigation }) => {
     if (cameraRef) {
       setIsLoading(true);
       let photo = await cameraRef.current.takePictureAsync();
-      setPhoto(photo);
+      // Crop the photo to a square
+      const manipResult = await ImageManipulator.manipulateAsync(
+        photo.uri,
+        [{ resize: { width: 371, height: 371 } }],
+        { compress: 1, format: ImageManipulator.SaveFormat.PNG }
+      );
+      setPhoto(manipResult);
       setIsCameraVisible(false);
       setTimeout(() => {
         setShowPhotoModal(true);
@@ -188,7 +194,11 @@ const Feed = ({ navigation }) => {
       {photo && (
         <Modal visible={showPhotoModal} transparent={true}>
           <View style={styles.modalPhotoContainer}>
-            <Image source={{ uri: photo.uri }} style={styles.modalImage} />
+            <Image
+              source={{ uri: photo.uri }}
+              style={[styles.modalImage, { borderRadius: 8 }]}
+            />
+
             <View style={styles.modalButtonContainer}>
               <TouchableOpacity
                 style={styles.modalButtonDiscard}
@@ -314,8 +324,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   modalImage: {
-    width: "80%", // This sets the width to 80% of the modal's width
-    height: "80%", // This sets the height to 80% of the modal's height
+    width: 371, // This sets the width to 371
+    height: 371, // This sets the height to 371
     resizeMode: "contain", // This ensures the whole photo is visible
   },
   modalButtonContainer: {
@@ -342,7 +352,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: COLORS.main,
     borderWidth: 1,
-    marginRight: 25, 
+    marginRight: 25,
   },
   modalButtonTextDiscard: {
     color: COLORS.grayWhite,
