@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     backgroundColor: "transparent",
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     margin: 20,
     justifyContent: "space-between",
   },
@@ -229,11 +229,17 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: "center",
+    
   },
   closeButton: {
-    position: "absolute",
-    top: 10,
-    left: 10,
+    flex: 0.1, 
+    alignSelf: "flex-start",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 50,
+
   },
   image: {
     width: 300,
