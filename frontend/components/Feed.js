@@ -112,6 +112,16 @@ const Feed = ({ navigation }) => {
                 >
                   <Icon name="close" size={30} color="#fff" />
                 </TouchableOpacity>
+
+                <View style={styles.captureButtonContainer}>
+                  <TouchableOpacity
+                    style={styles.takePhotoButton}
+                    onPress={takePhoto}
+                  >
+                    <Icon name="camera-outline" size={30} color="#fff" />
+                  </TouchableOpacity>
+                </View>
+
                 <TouchableOpacity
                   style={styles.flipButton}
                   onPress={() => {
@@ -124,14 +134,6 @@ const Feed = ({ navigation }) => {
                 >
                   <Icon name="camera-reverse-outline" size={30} color="#fff" />
                 </TouchableOpacity>
-                <View style={styles.captureButtonContainer}>
-                  <TouchableOpacity
-                    style={styles.takePhotoButton}
-                    onPress={takePhoto}
-                  >
-                    <Icon name="camera-outline" size={30} color="#fff" />
-                  </TouchableOpacity>
-                </View>
               </View>
             </Camera>
           </Modal>
@@ -216,7 +218,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 10,
     marginBottom: 20,
+    justifyContent: "center",
   },
+
   takePhotoButton: {
     alignSelf: "center",
     backgroundColor: COLORS.main,
@@ -229,17 +233,15 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: "center",
-    
   },
   closeButton: {
-    flex: 0.1, 
+    flex: 0.1,
     alignSelf: "flex-start",
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.5)",
     padding: 10,
     borderRadius: 5,
     marginTop: 50,
-
   },
   image: {
     width: 300,
