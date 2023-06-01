@@ -7,16 +7,23 @@ import {
   Image,
   Modal,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { auth, database } from "../db/firebase";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, set } from "firebase/database";
+import {
+  getStorage,
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
+
 import { COLORS } from "../constants/colors";
 import Add from "../assets/icons/addIcon.svg";
 import tinycolor from "tinycolor2";
 import { Camera } from "expo-camera";
 import * as ImageManipulator from "expo-image-manipulator";
 import Icon from "react-native-vector-icons/Ionicons";
-
 
 function darkenColor(color) {
   let colorObj = tinycolor(color);
@@ -98,19 +105,62 @@ const Feed = ({ navigation }) => {
     }
   };
 
-  const postPhoto = async () => {
-    // TODO: implement logic to post the photo and update your feed
-    setIsLoading(false);
-    setShowPhotoModal(false);
-    setPhoto(null);
-  };
+  // const postPhoto = async () => {
+  //   if (photo) {
+  //     setIsLoading(true);
 
-  // Add your discard photo function
+  //     try {
+  //       const storage = getStorage();
+
+  //       // Create a unique filename for the photo using the current timestamp
+  //       const filename = `post_${Date.now()}.png`;
+
+  //       // Create a reference to the storage location for the photo
+  //       const storagePath = `users/${auth.currentUser.uid}/${filename}`;
+  //       const storageReference = storageRef(storage, storagePath);
+
+  //       // Convert the photo to a blob
+  //       const response = await fetch(photo.uri);
+  //       const blob = await response.blob();
+
+  //       // Upload the photo to Firebase Storage
+  //       await uploadBytes(storageReference, blob);
+
+  //       // Get the download URL of the uploaded photo
+  //       const downloadURL = await getDownloadURL(storageReference);
+
+  //       // Update the user's data in the real-time database with the merged data
+  //       const userRef = ref(database, `users/${auth.currentUser.uid}`);
+  //       onValue(userRef, (snapshot) => {
+  //         const userData = snapshot.val();
+
+  //         // Merge the new photo URL with the existing data
+  //         const updatedData = {
+  //           ...userData,
+  //           postPhotoURL: downloadURL,
+  //         };
+
+  //         set(userRef, updatedData);
+  //         navigation.navigate("Feed");
+  //         Alert.alert("Success", "Flashback posted!");
+  //       });
+
+  //       setIsLoading(false);
+  //       setShowPhotoModal(false);
+  //       setPhoto(null);
+  //     } catch (error) {
+  //       console.error("Error uploading photo:", error);
+  //       setIsLoading(false);
+  //     }
+  //   }
+  // };
+
+
   const discardPhoto = () => {
-    setIsLoading(false); // Hide the loading indicator
-    setShowPhotoModal(false); // Hide the photo modal
-    setPhoto(null); // Discard the photo
-    setIsCameraVisible(true); // Open the camera view
+    setIsLoading(false); 
+    setShowPhotoModal(false);
+    setPhoto(null); 
+    setIsCameraVisible(true); 
   };
 
   return (
