@@ -59,7 +59,6 @@ const daysUntilBirthday = (birthday) => {
     return "Happy Birthday 🥳";
   }
 
-  // If the birthDate has already passed this year, set it for next year
   if (birthDate < today) {
     birthDate.setFullYear(today.getFullYear() + 1);
   }

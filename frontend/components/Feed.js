@@ -7,6 +7,7 @@ import {
   Image,
   Modal,
   Button,
+  ActivityIndicator,
 } from "react-native";
 import { auth, database } from "../db/firebase";
 import { ref, onValue } from "firebase/database";
@@ -35,6 +36,7 @@ const Feed = ({ navigation }) => {
   const [photo, setPhoto] = useState(null);
   const [isCameraVisible, setIsCameraVisible] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   let cameraRef = useRef();
 
@@ -79,17 +81,30 @@ const Feed = ({ navigation }) => {
 
   const takePhoto = async () => {
     if (cameraRef) {
+      setIsLoading(true);
       let photo = await cameraRef.current.takePictureAsync();
       setPhoto(photo);
       setIsCameraVisible(false);
-      setShowPhotoModal(true);
+      setTimeout(() => {
+        setShowPhotoModal(true);
+        setIsLoading(false);
+      }, 300); // delay of 0.5 seconds
     }
   };
 
   const postPhoto = async () => {
     // TODO: implement logic to post the photo and update your feed
+    setIsLoading(false); // Add this after the photo post logic is complete
     setShowPhotoModal(false);
     setPhoto(null);
+  };
+
+  // Add your discard photo function
+  const discardPhoto = () => {
+    setIsLoading(false); // Hide the loading indicator
+    setShowPhotoModal(false); // Hide the photo modal
+    setPhoto(null); // Discard the photo
+    setIsCameraVisible(true); // Open the camera view
   };
 
   return (
@@ -176,10 +191,7 @@ const Feed = ({ navigation }) => {
             <View style={styles.modalButtonContainer}>
               <TouchableOpacity
                 style={styles.modalButton}
-                onPress={() => {
-                  setShowPhotoModal(false);
-                  setPhoto(null);
-                }}
+                onPress={discardPhoto}
               >
                 <Text style={styles.modalButtonText}>Discard</Text>
               </TouchableOpacity>
@@ -189,6 +201,11 @@ const Feed = ({ navigation }) => {
             </View>
           </View>
         </Modal>
+      )}
+      {isLoading && (
+        <View style={styles.loadingScreen}>
+          <ActivityIndicator size="large" color={COLORS.main} />
+        </View>
       )}
     </View>
   );
@@ -314,6 +331,16 @@ const styles = StyleSheet.create({
   modalButtonText: {
     fontSize: 18,
     color: "#000",
+  },
+  loadingScreen: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: COLORS.background,
   },
 });
 
