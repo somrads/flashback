@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   Modal,
+  Button,
 } from "react-native";
 import { auth, database } from "../db/firebase";
 import { ref, onValue } from "firebase/database";
@@ -33,6 +34,7 @@ const Feed = ({ navigation }) => {
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [photo, setPhoto] = useState(null);
   const [isCameraVisible, setIsCameraVisible] = useState(false);
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
 
   let cameraRef = useRef();
 
@@ -80,7 +82,14 @@ const Feed = ({ navigation }) => {
       let photo = await cameraRef.current.takePictureAsync();
       setPhoto(photo);
       setIsCameraVisible(false);
+      setShowPhotoModal(true);
     }
+  };
+
+  const postPhoto = async () => {
+    // TODO: implement logic to post the photo and update your feed
+    setShowPhotoModal(false);
+    setPhoto(null);
   };
 
   return (
@@ -160,7 +169,27 @@ const Feed = ({ navigation }) => {
       >
         <Text style={styles.buttonText}>Open Camera</Text>
       </TouchableOpacity>
-      {photo && <Image source={{ uri: photo.uri }} style={styles.image} />}
+      {photo && (
+        <Modal visible={showPhotoModal} transparent={true}>
+          <View style={styles.modalContainer}>
+            <Image source={{ uri: photo.uri }} style={styles.modalImage} />
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  setShowPhotoModal(false);
+                  setPhoto(null);
+                }}
+              >
+                <Text style={styles.modalButtonText}>Discard</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButton} onPress={postPhoto}>
+                <Text style={styles.modalButtonText}>Post</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      )}
     </View>
   );
 };
@@ -258,6 +287,33 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 20,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "#000",
+  },
+  modalImage: {
+    flex: 1,
+    resizeMode: "contain",
+  },
+  modalButtonContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  },
+  modalButton: {
+    padding: 10,
+    backgroundColor: "#fff",
+    borderRadius: 5,
+  },
+  modalButtonText: {
+    fontSize: 18,
+    color: "#000",
   },
 });
 
