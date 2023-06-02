@@ -1,40 +1,53 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { COLORS } from "../constants/colors";
+import { getDownloadURL, ref } from "firebase/storage";
+import { storage } from "../db/firebase";
 
 const Post = ({ postData, userPhotoURL }) => {
-  const { userName, role, userPostPhoto, timestamp } =
-    postData;
+  const { userName, role, userPostPhoto, timestamp } = postData;
+  const [postImageURL, setPostImageURL] = useState(userPostPhoto);
 
-    const convertTimestamp = (timestamp) => {
-      if (!timestamp) {
-        return "Timestamp not available";
-      }
-    
-      const currentDate = new Date();
-      const postDate = new Date(timestamp);
-      const dayDifference = Math.floor(
-        (currentDate - postDate) / (1000 * 60 * 60 * 24)
-      );
-    
-      let day = postDate.getDate();
-      let month = postDate.getMonth() + 1;
-      let year = postDate.getFullYear();
-      let hours = postDate.getHours();
-      let minutes = "0" + postDate.getMinutes();
-      let formattedTime = hours + ":" + minutes.substr(-2);
-      let formattedDate = day + "/" + month + "/" + year;
-    
-      if (dayDifference === 0) {
-        return "Today at " + formattedTime;
-      } else if (dayDifference === 1) {
-        return "Yesterday at " + formattedTime;
-      } else {
-        return `${formattedDate} at ${formattedTime}`;
-      }
-    };
-    
-    
+  useEffect(() => {
+    if (userPostPhoto) {
+      const storageRef = ref(storage, userPostPhoto);
+      getDownloadURL(storageRef)
+        .then((url) => {
+          setPostImageURL(url);
+        })
+        .catch((error) => {
+          console.error("Error retrieving post image URL:", error);
+        });
+    }
+  }, [userPostPhoto]);
+
+  const convertTimestamp = (timestamp) => {
+    if (!timestamp) {
+      return "Timestamp not available";
+    }
+
+    const currentDate = new Date();
+    const postDate = new Date(timestamp);
+    const dayDifference = Math.floor(
+      (currentDate - postDate) / (1000 * 60 * 60 * 24)
+    );
+
+    let day = postDate.getDate();
+    let month = postDate.getMonth() + 1;
+    let year = postDate.getFullYear();
+    let hours = postDate.getHours();
+    let minutes = "0" + postDate.getMinutes();
+    let formattedTime = hours + ":" + minutes.substr(-2);
+    let formattedDate = day + "/" + month + "/" + year;
+
+    if (dayDifference === 0) {
+      return "Today at " + formattedTime;
+    } else if (dayDifference === 1) {
+      return "Yesterday at " + formattedTime;
+    } else {
+      return `${formattedDate} at ${formattedTime}`;
+    }
+  };
 
   return (
     <View style={styles.postContainer}>
@@ -46,7 +59,9 @@ const Post = ({ postData, userPhotoURL }) => {
         </View>
         <Text style={styles.postTime}>{convertTimestamp(timestamp)}</Text>
       </View>
-      <Image style={styles.postImage} source={{ uri: userPostPhoto }} />
+      {postImageURL && (
+        <Image style={styles.postImage} source={{ uri: postImageURL }} />
+      )}
     </View>
   );
 };
@@ -77,13 +92,13 @@ const styles = StyleSheet.create({
     color: COLORS.grayWhite,
   },
   userName: {
-    marginRight: 145,
+    marginRight: 130,
     fontSize: 12,
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Medium",
   },
   postTime: {
-    fontSize: 11.5,
+    fontSize: 11,
     color: COLORS.grayBlack,
     fontFamily: "Nunito-Regular",
     marginTop: 20,
