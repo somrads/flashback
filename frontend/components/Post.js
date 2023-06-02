@@ -27,8 +27,8 @@ const Post = ({ postData }) => {
       <View style={styles.postHeader}>
         <Image style={styles.profilePic} source={{ uri: userProfilePicture }} />
         <View style={styles.headerText}>
-          <Text style={styles.userName}>{userName}</Text>
           <Text style={styles.userRole}>{role}</Text>
+          <Text style={styles.userName}>{userName}</Text>
         </View>
         <Text style={styles.postTime}>{convertTimestamp(timestamp)}</Text>
       </View>
@@ -57,23 +57,31 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 10,
   },
-  userName: {
-    fontSize: 16,
-    fontWeight: "bold",
+  userRole: {
+    fontSize: 15,
+    fontFamily: "Nunito-Black",
     color: COLORS.grayWhite,
   },
-  userRole: {
-    fontSize: 14,
-    color: "#777",
+  userName: {
+    marginRight: 130,
+    fontSize: 12,
+    color: COLORS.grayWhite,
+    fontFamily: "Nunito-Medium",
+
   },
   postTime: {
-    fontSize: 12,
-    color: "#aaa",
+    fontSize: 11,
+    color: COLORS.grayBlack,
+    fontFamily: "Nunito-Regular",
+    marginTop: 20,
+
   },
   postImage: {
     width: "100%",
     height: 371,
     borderRadius: 8,
+    marginTop: 10,
+
   },
 });
 
