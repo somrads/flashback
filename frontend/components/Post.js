@@ -6,21 +6,35 @@ const Post = ({ postData, userPhotoURL }) => {
   const { userName, role, userPostPhoto, timestamp } =
     postData;
 
-  const convertTimestamp = (timestamp) => {
-    if (!timestamp) {
-      return "Timestamp not available";
-    }
-    let date = new Date(timestamp);
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-    let hours = date.getHours();
-    let minutes = "0" + date.getMinutes();
-    let formattedTime = hours + ":" + minutes.substr(-2);
-    let formattedDate = day + "/" + month + "/" + year;
-
-    return `${formattedDate} at ${formattedTime}`;
-  };
+    const convertTimestamp = (timestamp) => {
+      if (!timestamp) {
+        return "Timestamp not available";
+      }
+    
+      const currentDate = new Date();
+      const postDate = new Date(timestamp);
+      const dayDifference = Math.floor(
+        (currentDate - postDate) / (1000 * 60 * 60 * 24)
+      );
+    
+      let day = postDate.getDate();
+      let month = postDate.getMonth() + 1;
+      let year = postDate.getFullYear();
+      let hours = postDate.getHours();
+      let minutes = "0" + postDate.getMinutes();
+      let formattedTime = hours + ":" + minutes.substr(-2);
+      let formattedDate = day + "/" + month + "/" + year;
+    
+      if (dayDifference === 0) {
+        return "Today at " + formattedTime;
+      } else if (dayDifference === 1) {
+        return "Yesterday at " + formattedTime;
+      } else {
+        return `${formattedDate} at ${formattedTime}`;
+      }
+    };
+    
+    
 
   return (
     <View style={styles.postContainer}>
@@ -63,13 +77,13 @@ const styles = StyleSheet.create({
     color: COLORS.grayWhite,
   },
   userName: {
-    marginRight: 130,
+    marginRight: 145,
     fontSize: 12,
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Medium",
   },
   postTime: {
-    fontSize: 11,
+    fontSize: 11.5,
     color: COLORS.grayBlack,
     fontFamily: "Nunito-Regular",
     marginTop: 20,
