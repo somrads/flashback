@@ -10,7 +10,7 @@ import {
   Alert,
 } from "react-native";
 import { auth, database } from "../db/firebase";
-import { ref, onValue, set } from "firebase/database";
+import { ref, onValue, set, get } from "firebase/database";
 import {
   getStorage,
   ref as storageRef,
@@ -113,7 +113,7 @@ const Feed = ({ navigation }) => {
         const storage = getStorage();
 
         // Use a specific filename for the photo
-        const filename = `todays_post_photo.png`;
+        const filename = `current_post_photo.png`;
 
         // Create a reference to the storage location for the photo
         const storagePath = `users/${auth.currentUser.uid}/${filename}`;
@@ -131,19 +131,18 @@ const Feed = ({ navigation }) => {
 
         // Update the user's data in the real-time database with the merged data
         const userRef = ref(database, `users/${auth.currentUser.uid}`);
-        onValue(userRef, (snapshot) => {
-          const userData = snapshot.val();
+        const snapshot = await get(userRef);
+        const userData = snapshot.val();
 
-          // Merge the new photo URL with the existing data
-          const updatedData = {
-            ...userData,
-            postPhotoURL: downloadURL,
-          };
+        // Merge the new photo URL with the existing data
+        const updatedData = {
+          ...userData,
+          postPhotoURL: downloadURL,
+        };
 
-          set(userRef, updatedData);
-          navigation.navigate("Feed");
-          Alert.alert("Success", "Flashback posted!");
-        });
+        await set(userRef, updatedData);
+        navigation.navigate("Feed");
+        Alert.alert("Success", "Flashback posted!");
 
         setIsLoading(false);
         setShowPhotoModal(false);
