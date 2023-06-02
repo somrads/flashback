@@ -191,6 +191,7 @@ const Feed = ({ navigation }) => {
             userPostPhoto: userData.postPhotoURL,
             role: userData.role,
             timestamp: userData.timestamp,
+            key: 'currentPost',
           };
 
           postsArray.push(post);
@@ -311,6 +312,7 @@ const Feed = ({ navigation }) => {
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
       />
+      
       {isLoading && (
         <View style={styles.loadingScreen}>
           <ActivityIndicator size="large" color={COLORS.main} />

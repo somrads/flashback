@@ -6,8 +6,6 @@ const Post = ({ postData }) => {
   const { userName, role, userProfilePicture, userPostPhoto, timestamp } =
     postData;
 
-  console.log(timestamp);
-
   const convertTimestamp = (timestamp) => {
     if (!timestamp) {
       return "Timestamp not available";
