@@ -228,38 +228,47 @@ const Feed = ({ navigation }) => {
           ]}
         >
           <Modal visible={isCameraVisible} transparent={true}>
-            <Camera style={styles.camera} type={type} ref={cameraRef}>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={styles.closeButton}
-                  onPress={() => setIsCameraVisible(false)}
-                >
-                  <Icon name="close" size={30} color="#fff" />
-                </TouchableOpacity>
+            <View style={styles.cameraContainer}>
+              <Camera style={styles.camera} type={type} ref={cameraRef}>
+              <View style={styles.blackOverlay} />
+                <View style={styles.overlayContainer}/>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                      style={styles.closeButton}
+                      onPress={() => setIsCameraVisible(false)}
+                    >
+                      <Icon name="close" size={30} color="#fff" />
+                    </TouchableOpacity>
 
-                <View style={styles.captureButtonContainer}>
-                  <TouchableOpacity
-                    style={styles.takePhotoButton}
-                    onPress={takePhoto}
-                  >
-                    <Icon name="camera-outline" size={30} color="#fff" />
-                  </TouchableOpacity>
-                </View>
+                    <View style={styles.captureButtonContainer}>
+                      <TouchableOpacity
+                        style={styles.takePhotoButton}
+                        onPress={takePhoto}
+                      >
+                        <Icon name="camera-outline" size={30} color="#fff" />
+                      </TouchableOpacity>
+                    </View>
 
-                <TouchableOpacity
-                  style={styles.flipButton}
-                  onPress={() => {
-                    setType(
-                      type === Camera.Constants.Type.back
-                        ? Camera.Constants.Type.front
-                        : Camera.Constants.Type.back
-                    );
-                  }}
-                >
-                  <Icon name="camera-reverse-outline" size={30} color="#fff" />
-                </TouchableOpacity>
-              </View>
-            </Camera>
+                    <TouchableOpacity
+                      style={styles.flipButton}
+                      onPress={() => {
+                        setType(
+                          type === Camera.Constants.Type.back
+                            ? Camera.Constants.Type.front
+                            : Camera.Constants.Type.back
+                        );
+                      }}
+                    >
+                      <Icon
+                        name="camera-reverse-outline"
+                        size={30}
+                        color="#fff"
+                      />
+                    </TouchableOpacity>
+                  </View>
+              </Camera>
+              
+            </View>
           </Modal>
           {userData && userData.profilePicture ? (
             <Image
@@ -324,11 +333,11 @@ const Feed = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  // ...
+
   container: {
     flex: 1,
-    justifyContent: "flex-start",
-    paddingHorizontal: 20,
-    backgroundColor: COLORS.background,
+    backgroundColor: "black",
   },
   header: {
     flexDirection: "row",
@@ -365,6 +374,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     margin: 20,
     justifyContent: "space-between",
+    zIndex: 3,
   },
 
   flipButton: {
@@ -419,14 +429,14 @@ const styles = StyleSheet.create({
   },
   modalPhotoContainer: {
     flex: 1,
-    justifyContent: "center", // This will center the photo vertically
-    alignItems: "center", // This will center the photo horizontally
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: COLORS.background,
   },
   modalImage: {
-    width: 371, // This sets the width to 371
-    height: 371, // This sets the height to 371
-    resizeMode: "contain", // This ensures the whole photo is visible
+    width: 371,
+    height: 371,
+    resizeMode: "contain",
   },
   modalButtonContainer: {
     flexDirection: "row",
@@ -470,6 +480,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: COLORS.background,
   },
+
+  cameraContainer: {
+    flex: 1,
+    position: "relative",
+  },
+  overlayContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    width: 371,
+    height: 371,
+    marginLeft: -185.5,
+    marginTop: -185.5,
+    borderWidth: 2,
+    borderColor: COLORS.grayWhite,
+    zIndex: 2,
+    overflow: 'hidden',
+    backgroundColor: 'transparent',
+  },
+  blackOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "black",
+    zIndex: 1,
+  },
 });
+
 
 export default Feed;
