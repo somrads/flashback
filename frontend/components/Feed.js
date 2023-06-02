@@ -105,62 +105,61 @@ const Feed = ({ navigation }) => {
     }
   };
 
-  // const postPhoto = async () => {
-  //   if (photo) {
-  //     setIsLoading(true);
+  const postPhoto = async () => {
+    if (photo) {
+      setIsLoading(true);
 
-  //     try {
-  //       const storage = getStorage();
+      try {
+        const storage = getStorage();
 
-  //       // Create a unique filename for the photo using the current timestamp
-  //       const filename = `post_${Date.now()}.png`;
+        // Use a specific filename for the photo
+        const filename = `todays_post_photo.png`;
 
-  //       // Create a reference to the storage location for the photo
-  //       const storagePath = `users/${auth.currentUser.uid}/${filename}`;
-  //       const storageReference = storageRef(storage, storagePath);
+        // Create a reference to the storage location for the photo
+        const storagePath = `users/${auth.currentUser.uid}/${filename}`;
+        const storageReference = storageRef(storage, storagePath);
 
-  //       // Convert the photo to a blob
-  //       const response = await fetch(photo.uri);
-  //       const blob = await response.blob();
+        // Convert the photo to a blob
+        const response = await fetch(photo.uri);
+        const blob = await response.blob();
 
-  //       // Upload the photo to Firebase Storage
-  //       await uploadBytes(storageReference, blob);
+        // Upload the photo to Firebase Storage
+        await uploadBytes(storageReference, blob);
 
-  //       // Get the download URL of the uploaded photo
-  //       const downloadURL = await getDownloadURL(storageReference);
+        // Get the download URL of the uploaded photo
+        const downloadURL = await getDownloadURL(storageReference);
 
-  //       // Update the user's data in the real-time database with the merged data
-  //       const userRef = ref(database, `users/${auth.currentUser.uid}`);
-  //       onValue(userRef, (snapshot) => {
-  //         const userData = snapshot.val();
+        // Update the user's data in the real-time database with the merged data
+        const userRef = ref(database, `users/${auth.currentUser.uid}`);
+        onValue(userRef, (snapshot) => {
+          const userData = snapshot.val();
 
-  //         // Merge the new photo URL with the existing data
-  //         const updatedData = {
-  //           ...userData,
-  //           postPhotoURL: downloadURL,
-  //         };
+          // Merge the new photo URL with the existing data
+          const updatedData = {
+            ...userData,
+            postPhotoURL: downloadURL,
+          };
 
-  //         set(userRef, updatedData);
-  //         navigation.navigate("Feed");
-  //         Alert.alert("Success", "Flashback posted!");
-  //       });
+          set(userRef, updatedData);
+          navigation.navigate("Feed");
+          Alert.alert("Success", "Flashback posted!");
+        });
 
-  //       setIsLoading(false);
-  //       setShowPhotoModal(false);
-  //       setPhoto(null);
-  //     } catch (error) {
-  //       console.error("Error uploading photo:", error);
-  //       setIsLoading(false);
-  //     }
-  //   }
-  // };
-
+        setIsLoading(false);
+        setShowPhotoModal(false);
+        setPhoto(null);
+      } catch (error) {
+        console.error("Error uploading photo:", error);
+        setIsLoading(false);
+      }
+    }
+  };
 
   const discardPhoto = () => {
-    setIsLoading(false); 
+    setIsLoading(false);
     setShowPhotoModal(false);
-    setPhoto(null); 
-    setIsCameraVisible(true); 
+    setPhoto(null);
+    setIsCameraVisible(true);
   };
 
   return (
