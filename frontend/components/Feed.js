@@ -187,11 +187,10 @@ const Feed = ({ navigation }) => {
         if (userData.postPhotoURL) {
           let post = {
             userName: userData.firstName + " " + userData.lastName,
-            userProfilePicture: userData.profilePicture,
             userPostPhoto: userData.postPhotoURL,
             role: userData.role,
             timestamp: userData.timestamp,
-            key: 'currentPost',
+            key: "currentPost",
           };
 
           postsArray.push(post);
@@ -204,7 +203,9 @@ const Feed = ({ navigation }) => {
     }
   };
 
-  const renderItem = ({ item }) => <Post postData={item} />;
+  const renderItem = ({ item }) => (
+    <Post postData={item} userPhotoURL={userData.profilePicture} />
+  );
 
   return (
     <View style={styles.container}>
@@ -312,7 +313,7 @@ const Feed = ({ navigation }) => {
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
       />
-      
+
       {isLoading && (
         <View style={styles.loadingScreen}>
           <ActivityIndicator size="large" color={COLORS.main} />

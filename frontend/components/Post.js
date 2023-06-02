@@ -2,8 +2,8 @@ import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { COLORS } from "../constants/colors";
 
-const Post = ({ postData }) => {
-  const { userName, role, userProfilePicture, userPostPhoto, timestamp } =
+const Post = ({ postData, userPhotoURL }) => {
+  const { userName, role, userPostPhoto, timestamp } =
     postData;
 
   const convertTimestamp = (timestamp) => {
@@ -12,7 +12,7 @@ const Post = ({ postData }) => {
     }
     let date = new Date(timestamp);
     let day = date.getDate();
-    let month = date.getMonth() + 1; //Month starts from 0
+    let month = date.getMonth() + 1;
     let year = date.getFullYear();
     let hours = date.getHours();
     let minutes = "0" + date.getMinutes();
@@ -25,7 +25,7 @@ const Post = ({ postData }) => {
   return (
     <View style={styles.postContainer}>
       <View style={styles.postHeader}>
-        <Image style={styles.profilePic} source={{ uri: userProfilePicture }} />
+        <Image style={styles.profilePic} source={{ uri: userPhotoURL }} />
         <View style={styles.headerText}>
           <Text style={styles.userRole}>{role}</Text>
           <Text style={styles.userName}>{userName}</Text>
@@ -67,21 +67,18 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Medium",
-
   },
   postTime: {
     fontSize: 11,
     color: COLORS.grayBlack,
     fontFamily: "Nunito-Regular",
     marginTop: 20,
-
   },
   postImage: {
     width: "100%",
     height: 371,
     borderRadius: 8,
-    marginTop: 10,
-
+    marginTop: 5,
   },
 });
 
