@@ -8,6 +8,7 @@ import {
   Modal,
   ActivityIndicator,
   Alert,
+  FlatList,
 } from "react-native";
 import { auth, database } from "../db/firebase";
 import { ref, onValue, set, get } from "firebase/database";
@@ -24,6 +25,7 @@ import tinycolor from "tinycolor2";
 import { Camera } from "expo-camera";
 import * as ImageManipulator from "expo-image-manipulator";
 import Icon from "react-native-vector-icons/Ionicons";
+import Post from "./Post";
 
 function darkenColor(color) {
   let colorObj = tinycolor(color);
@@ -44,6 +46,7 @@ const Feed = ({ navigation }) => {
   const [isCameraVisible, setIsCameraVisible] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [posts, setPosts] = useState([]);
 
   let cameraRef = useRef();
 
@@ -82,6 +85,10 @@ const Feed = ({ navigation }) => {
     }
   }, []);
 
+  useEffect(() => {
+    fetchPostsFromDB();
+  }, []);
+
   const navigateToProfile = () => {
     navigation.navigate("Profile", { updatedData: Date.now() });
   };
@@ -111,9 +118,10 @@ const Feed = ({ navigation }) => {
 
       try {
         const storage = getStorage();
+        const timestamp = Date.now();
 
         // Use a specific filename for the photo
-        const filename = `current_post_photo.png`;
+        const filename = `current_post_photo2.png`;
 
         // Create a reference to the storage location for the photo
         const storagePath = `users/${auth.currentUser.uid}/${filename}`;
@@ -134,10 +142,11 @@ const Feed = ({ navigation }) => {
         const snapshot = await get(userRef);
         const userData = snapshot.val();
 
-        // Merge the new photo URL with the existing data
+        // Merge the new photo URL and the timestamp with the existing data
         const updatedData = {
           ...userData,
           postPhotoURL: downloadURL,
+          timestamp: timestamp,
         };
 
         await set(userRef, updatedData);
@@ -160,6 +169,41 @@ const Feed = ({ navigation }) => {
     setPhoto(null);
     setIsCameraVisible(true);
   };
+
+  const fetchPostsFromDB = async () => {
+    const usersRef = ref(database, `users`);
+
+    // Fetch all users
+    const usersSnapshot = await get(usersRef);
+
+    if (usersSnapshot.exists()) {
+      const usersData = usersSnapshot.val();
+      let postsArray = [];
+
+      // Go through each user and construct a post
+      for (const userId in usersData) {
+        let userData = usersData[userId];
+
+        if (userData.postPhotoURL) {
+          let post = {
+            userName: userData.firstName + " " + userData.lastName,
+            userProfilePicture: userData.profilePicture,
+            userPostPhoto: userData.postPhotoURL,
+            role: userData.role,
+            timestamp: userData.timestamp,
+          };
+
+          postsArray.push(post);
+        }
+      }
+
+      setPosts(postsArray);
+    } else {
+      console.log("No users data available");
+    }
+  };
+
+  const renderItem = ({ item }) => <Post postData={item} />;
 
   return (
     <View style={styles.container}>
@@ -262,6 +306,11 @@ const Feed = ({ navigation }) => {
         </Modal>
       )}
 
+      <FlatList
+        data={posts}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.key}
+      />
       {isLoading && (
         <View style={styles.loadingScreen}>
           <ActivityIndicator size="large" color={COLORS.main} />
