@@ -28,25 +28,40 @@ const Post = ({ postData, userPhotoURL }) => {
 
     const currentDate = new Date();
     const postDate = new Date(timestamp);
-    const dayDifference = Math.floor(
-      (currentDate - postDate) / (1000 * 60 * 60 * 24)
-    );
+    const currentDateStr = currentDate.toISOString().slice(0, 10);
+    const postDateStr = postDate.toISOString().slice(0, 10);
 
-    let day = postDate.getDate();
-    let month = postDate.getMonth() + 1;
-    let year = postDate.getFullYear();
-    let hours = postDate.getHours();
-    let minutes = "0" + postDate.getMinutes();
-    let formattedTime = hours + ":" + minutes.substr(-2);
-    let formattedDate = day + "/" + month + "/" + year;
-
-    if (dayDifference === 0) {
+    if (postDateStr === currentDateStr) {
+      // Post is from today
+      let hours = postDate.getHours();
+      let minutes = "0" + postDate.getMinutes();
+      let formattedTime = hours + ":" + minutes.substr(-2);
       return "Today at " + formattedTime;
-    } else if (dayDifference === 1) {
+    } else if (postDateStr === getPreviousDate(currentDateStr)) {
+      // Post is from yesterday
+      let hours = postDate.getHours();
+      let minutes = "0" + postDate.getMinutes();
+      let formattedTime = hours + ":" + minutes.substr(-2);
       return "Yesterday at " + formattedTime;
     } else {
+      // Post is from a different day
+      let day = postDate.getDate();
+      let month = postDate.getMonth() + 1;
+      let year = postDate.getFullYear();
+      let hours = postDate.getHours();
+      let minutes = "0" + postDate.getMinutes();
+      let formattedTime = hours + ":" + minutes.substr(-2);
+      let formattedDate = day + "/" + month + "/" + year;
       return `${formattedDate} at ${formattedTime}`;
     }
+  };
+
+  // Helper function to get the previous date in YYYY-MM-DD format
+  const getPreviousDate = (dateStr) => {
+    const currentDate = new Date(dateStr);
+    const previousDate = new Date(currentDate);
+    previousDate.setDate(previousDate.getDate() - 1);
+    return previousDate.toISOString().slice(0, 10);
   };
 
   return (
@@ -92,7 +107,7 @@ const styles = StyleSheet.create({
     color: COLORS.grayWhite,
   },
   userName: {
-    marginRight: 180,
+    marginRight: 170,
     fontSize: 12,
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Medium",
