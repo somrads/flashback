@@ -18,6 +18,7 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
+import { Dimensions } from "react-native";
 
 import { COLORS } from "../constants/colors";
 import Add from "../assets/icons/addIcon.svg";
@@ -37,6 +38,14 @@ function darkenColor(color) {
 
   return tinycolor({ r, g, b }).toString();
 }
+
+const windowHeight = Dimensions.get("window").height;
+const windowWidth = Dimensions.get("window").width;
+const squareWidth = 530;
+const squareHeight = 530;
+
+const overlayVerticalHeight = (windowHeight - squareHeight) / 2;
+const overlayHorizontalWidth = (windowWidth - squareWidth) / 2;
 
 const Feed = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
@@ -230,44 +239,82 @@ const Feed = ({ navigation }) => {
           <Modal visible={isCameraVisible} transparent={true}>
             <View style={styles.cameraContainer}>
               <Camera style={styles.camera} type={type} ref={cameraRef}>
-              <View style={styles.blackOverlay} />
-                <View style={styles.overlayContainer}/>
+              <Text style={styles.logoOverlay}>flashback</Text> 
+
+                <View
+                  style={[
+                    styles.blackOverlay,
+                    { height: overlayVerticalHeight, width: windowWidth },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.blackOverlay,
+                    {
+                      width: overlayHorizontalWidth,
+                      height: squareHeight,
+                      top: overlayVerticalHeight,
+                    },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.blackOverlay,
+                    {
+                      width: overlayHorizontalWidth,
+                      height: squareHeight,
+                      top: overlayVerticalHeight,
+                      right: 0,
+                    },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.blackOverlay,
+                    {
+                      height: overlayVerticalHeight,
+                      width: windowWidth,
+                      bottom: 0,
+                    },
+                  ]}
+                />
+
+                <View style={styles.overlayContainer} />
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                      style={styles.closeButton}
-                      onPress={() => setIsCameraVisible(false)}
-                    >
-                      <Icon name="close" size={30} color="#fff" />
-                    </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.closeButton}
+                    onPress={() => setIsCameraVisible(false)}
+                  >
+                    <Icon name="close" size={30} color="#fff" />
+                  </TouchableOpacity>
 
-                    <View style={styles.captureButtonContainer}>
-                      <TouchableOpacity
-                        style={styles.takePhotoButton}
-                        onPress={takePhoto}
-                      >
-                        <Icon name="camera-outline" size={30} color="#fff" />
-                      </TouchableOpacity>
-                    </View>
-
+                  <View style={styles.captureButtonContainer}>
                     <TouchableOpacity
-                      style={styles.flipButton}
-                      onPress={() => {
-                        setType(
-                          type === Camera.Constants.Type.back
-                            ? Camera.Constants.Type.front
-                            : Camera.Constants.Type.back
-                        );
-                      }}
+                      style={styles.takePhotoButton}
+                      onPress={takePhoto}
                     >
-                      <Icon
-                        name="camera-reverse-outline"
-                        size={30}
-                        color="#fff"
-                      />
+                      <Icon name="camera-outline" size={30} color="#fff" />
                     </TouchableOpacity>
                   </View>
+
+                  <TouchableOpacity
+                    style={styles.flipButton}
+                    onPress={() => {
+                      setType(
+                        type === Camera.Constants.Type.back
+                          ? Camera.Constants.Type.front
+                          : Camera.Constants.Type.back
+                      );
+                    }}
+                  >
+                    <Icon
+                      name="camera-reverse-outline"
+                      size={30}
+                      color="#fff"
+                    />
+                  </TouchableOpacity>
+                </View>
               </Camera>
-              
             </View>
           </Modal>
           {userData && userData.profilePicture ? (
@@ -385,7 +432,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginRight: 10,
-    marginBottom: 20,
+    bottom: 60,
     justifyContent: "center",
   },
 
@@ -400,6 +447,7 @@ const styles = StyleSheet.create({
     bottom: 10,
     left: 0,
     right: 0,
+    bottom: 50,
     alignItems: "center",
   },
   closeButton: {
@@ -485,26 +533,22 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "relative",
   },
-  overlayContainer: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    width: 371,
-    height: 371,
-    marginLeft: -185.5,
-    marginTop: -185.5,
-    borderWidth: 2,
-    borderColor: COLORS.grayWhite,
-    zIndex: 2,
-    overflow: 'hidden',
-    backgroundColor: 'transparent',
-  },
+
   blackOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "black",
-    zIndex: 1,
+    position: 'absolute',
+    backgroundColor: 'black',
+    zIndex: 2,
+  },
+  logoOverlay: {
+    position: "absolute",
+    color: COLORS.grayWhite,
+    fontSize: 28,
+    fontWeight: "bold",
+    fontFamily: "Ubuntu-Regular",
+    top: 80, 
+    alignSelf: "center",
+    zIndex: 3,
   },
 });
-
 
 export default Feed;

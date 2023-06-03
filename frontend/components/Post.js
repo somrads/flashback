@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     color: COLORS.grayWhite,
   },
   userName: {
-    marginRight: 130,
+    marginRight: 180,
     fontSize: 12,
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Medium",
