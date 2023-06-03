@@ -176,7 +176,6 @@ const Feed = ({ navigation }) => {
         };
 
         await set(userRef, updatedData);
-        navigation.navigate("Feed");
         Alert.alert("Success", "Flashback posted!");
 
         setIsLoading(false);
