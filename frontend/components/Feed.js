@@ -19,7 +19,6 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { Dimensions } from "react-native";
-
 import { COLORS } from "../constants/colors";
 import Add from "../assets/icons/addIcon.svg";
 import tinycolor from "tinycolor2";
@@ -41,8 +40,8 @@ function darkenColor(color) {
 
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
-const squareWidth = 530;
-const squareHeight = 530;
+const squareWidth = 500;
+const squareHeight = 500;
 
 const overlayVerticalHeight = (windowHeight - squareHeight) / 2;
 const overlayHorizontalWidth = (windowWidth - squareWidth) / 2;
@@ -106,10 +105,28 @@ const Feed = ({ navigation }) => {
     if (cameraRef) {
       setIsLoading(true);
       let photo = await cameraRef.current.takePictureAsync();
-      // Crop the photo to a square
+
+      // Get the dimensions of the photo
+      const { width, height } = photo;
+
+      // Calculate the size and position of the crop
+      const cropSize = Math.min(width, height);
+      const cropX = (width - cropSize) / 1.5;
+      const cropY = (height - cropSize) / 1.5;
+
+      // Crop the photo without resizing
       const manipResult = await ImageManipulator.manipulateAsync(
         photo.uri,
-        [{ resize: { width: 371, height: 371 } }],
+        [
+          {
+            crop: {
+              originX: cropX,
+              originY: cropY,
+              width: cropSize,
+              height: cropSize,
+            },
+          },
+        ],
         { compress: 1, format: ImageManipulator.SaveFormat.PNG }
       );
       setPhoto(manipResult);
@@ -239,7 +256,7 @@ const Feed = ({ navigation }) => {
           <Modal visible={isCameraVisible} transparent={true}>
             <View style={styles.cameraContainer}>
               <Camera style={styles.camera} type={type} ref={cameraRef}>
-              <Text style={styles.logoOverlay}>flashback</Text> 
+                <Text style={styles.logoOverlay}>flashback</Text>
 
                 <View
                   style={[
@@ -482,8 +499,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   modalImage: {
-    width: 371,
-    height: 371,
+    width: 530,
+    height: 530,
     resizeMode: "contain",
   },
   modalButtonContainer: {
@@ -535,8 +552,8 @@ const styles = StyleSheet.create({
   },
 
   blackOverlay: {
-    position: 'absolute',
-    backgroundColor: 'black',
+    position: "absolute",
+    backgroundColor: "black",
     zIndex: 2,
   },
   logoOverlay: {
@@ -545,7 +562,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     fontFamily: "Ubuntu-Regular",
-    top: 80, 
+    top: 80,
     alignSelf: "center",
     zIndex: 3,
   },
