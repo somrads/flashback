@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
   postContainer: {
     marginBottom: 20,
     marginTop: 20,
+    overflow: "hidden",
   },
   postHeader: {
     flexDirection: "row",
@@ -122,6 +123,7 @@ const styles = StyleSheet.create({
     width: 530,
     height: 530,
     marginTop: 5,
+    width: "100%",
     borderRadius: 8,
   },
 });
