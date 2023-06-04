@@ -119,10 +119,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   postImage: {
-    width: "100%",
-    height: 371,
-    borderRadius: 8,
+    width: 530,
+    height: 530,
     marginTop: 5,
+    borderRadius: 8,
   },
 });
 

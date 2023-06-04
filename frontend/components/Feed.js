@@ -40,8 +40,8 @@ function darkenColor(color) {
 
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
-const squareWidth = 500;
-const squareHeight = 500;
+const squareWidth = 530;
+const squareHeight = 530;
 
 const overlayVerticalHeight = (windowHeight - squareHeight) / 2;
 const overlayHorizontalWidth = (windowWidth - squareWidth) / 2;
@@ -106,29 +106,13 @@ const Feed = ({ navigation }) => {
       setIsLoading(true);
       let photo = await cameraRef.current.takePictureAsync();
 
-      // Get the dimensions of the photo
-      const { width, height } = photo;
-
-      // Calculate the size and position of the crop
-      const cropSize = Math.min(width, height);
-      const cropX = (width - cropSize) / 1.5;
-      const cropY = (height - cropSize) / 1.5;
-
-      // Crop the photo without resizing
+      // Resize the photo
       const manipResult = await ImageManipulator.manipulateAsync(
         photo.uri,
-        [
-          {
-            crop: {
-              originX: cropX,
-              originY: cropY,
-              width: cropSize,
-              height: cropSize,
-            },
-          },
-        ],
-        { compress: 1, format: ImageManipulator.SaveFormat.PNG }
+        [],
+        { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
       );
+
       setPhoto(manipResult);
       setIsCameraVisible(false);
       setTimeout(() => {
@@ -147,7 +131,7 @@ const Feed = ({ navigation }) => {
         const timestamp = Date.now();
 
         // Use a specific filename for the photo
-        const filename = `current_post_photo2.png`;
+        const filename = `current_post_photo.png`;
 
         // Create a reference to the storage location for the photo
         const storagePath = `users/${auth.currentUser.uid}/${filename}`;
@@ -295,7 +279,6 @@ const Feed = ({ navigation }) => {
                   ]}
                 />
 
-                <View style={styles.overlayContainer} />
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity
                     style={styles.closeButton}
@@ -364,19 +347,57 @@ const Feed = ({ navigation }) => {
               source={{ uri: photo.uri }}
               style={[styles.modalImage, { borderRadius: 8 }]}
             />
-
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity
-                style={styles.modalButtonDiscard}
-                onPress={discardPhoto}
-              >
-                <Text style={styles.modalButtonTextDiscard}>Discard</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton} onPress={postPhoto}>
-                <Text style={styles.modalButtonText}>Post</Text>
-              </TouchableOpacity>
-            </View>
           </View>
+          <View style={styles.modalButtonContainer}>
+            <TouchableOpacity
+              style={styles.modalButtonDiscard}
+              onPress={discardPhoto}
+            >
+              <Text style={styles.modalButtonTextDiscard}>Discard</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalButton} onPress={postPhoto}>
+              <Text style={styles.modalButtonText}>Post</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.logoOverlay}>flashback</Text>
+
+          <View
+            style={[
+              styles.blackOverlay,
+              { height: overlayVerticalHeight, width: windowWidth },
+            ]}
+          />
+          <View
+            style={[
+              styles.blackOverlay,
+              {
+                width: overlayHorizontalWidth,
+                height: squareHeight,
+                top: overlayVerticalHeight,
+              },
+            ]}
+          />
+          <View
+            style={[
+              styles.blackOverlay,
+              {
+                width: overlayHorizontalWidth,
+                height: squareHeight,
+                top: overlayVerticalHeight,
+                right: 0,
+              },
+            ]}
+          />
+          <View
+            style={[
+              styles.blackOverlay,
+              {
+                height: overlayVerticalHeight,
+                width: windowWidth,
+                bottom: 0,
+              },
+            ]}
+          />
         </Modal>
       )}
 
@@ -396,8 +417,6 @@ const Feed = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  // ...
-
   container: {
     flex: 1,
     backgroundColor: "black",
@@ -498,13 +517,17 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   modalImage: {
-    width: 530,
-    height: 530,
+    width: "100%",
+    height: "100%",
     resizeMode: "contain",
   },
   modalButtonContainer: {
     flexDirection: "row",
-    marginTop: 20,
+    zIndex: 5,
+    position: "absolute",
+    bottom: 20,
+    alignSelf: "center",
+    bottom: 80,
   },
   modalButton: {
     backgroundColor: COLORS.main,
