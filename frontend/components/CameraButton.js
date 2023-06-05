@@ -9,7 +9,7 @@ const CameraButton = ({ onCameraOpen }) => {
   const START_HOUR = 22;
   const START_MINUTE = 43;
   const END_HOUR = 23;
-  const END_MINUTE = 27;
+  const END_MINUTE = 59;
 
   const isWithinTimeRange = () => {
     const now = new Date();

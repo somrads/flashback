@@ -318,7 +318,6 @@ const Feed = ({ navigation }) => {
               </Camera>
             </View>
           </Modal>
-          
           {userData && userData.profilePicture ? (
             <Image
               style={styles.profilePic}
@@ -336,7 +335,75 @@ const Feed = ({ navigation }) => {
           )}
         </TouchableOpacity>
       </View>
+      {/* <TouchableOpacity
+        style={styles.openCameraButton}
+        onPress={() => setIsCameraVisible(true)}
+      >
+        <Text style={styles.buttonText}>Open Camera</Text>
+      </TouchableOpacity> */}
+
       <CameraButton onCameraOpen={() => setIsCameraVisible(true)} />
+
+      {photo && (
+        <Modal visible={showPhotoModal} transparent={true}>
+          <View style={styles.modalPhotoContainer}>
+            <Image
+              source={{ uri: photo.uri }}
+              style={[styles.modalImage, { borderRadius: 8 }]}
+            />
+          </View>
+          <View style={styles.modalButtonContainer}>
+            <TouchableOpacity
+              style={styles.modalButtonDiscard}
+              onPress={discardPhoto}
+            >
+              <Text style={styles.modalButtonTextDiscard}>Discard</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalButton} onPress={postPhoto}>
+              <Text style={styles.modalButtonText}>Post</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.logoOverlay}>flashback</Text>
+
+          <View
+            style={[
+              styles.blackOverlay,
+              { height: overlayVerticalHeight, width: windowWidth },
+            ]}
+          />
+          <View
+            style={[
+              styles.blackOverlay,
+              {
+                width: overlayHorizontalWidth,
+                height: squareHeight,
+                top: overlayVerticalHeight,
+              },
+            ]}
+          />
+          <View
+            style={[
+              styles.blackOverlay,
+              {
+                width: overlayHorizontalWidth,
+                height: squareHeight,
+                top: overlayVerticalHeight,
+                right: 0,
+              },
+            ]}
+          />
+          <View
+            style={[
+              styles.blackOverlay,
+              {
+                height: overlayVerticalHeight,
+                width: windowWidth,
+                bottom: 0,
+              },
+            ]}
+          />
+        </Modal>
+      )}
 
       <FlatList
         data={posts}
@@ -369,17 +436,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#DCDCDC",
     fontFamily: "Ubuntu-Regular",
-    marginLeft: 20,
   },
   iconButton: {
-    marginRight: -150,
+    marginRight: -130,
   },
   profilePic: {
     width: 40,
     height: 40,
     borderRadius: 20,
     backgroundColor: "#ccc",
-    marginRight: 15,
   },
   profileInitials: {
     fontSize: 18,
@@ -439,6 +504,15 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     alignSelf: "center",
     marginTop: 20,
+  },
+  openCameraButton: {
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
+    padding: 10,
+    marginTop: 20,
+  },
+  buttonText: {
+    fontSize: 20,
   },
   modalPhotoContainer: {
     flex: 1,
