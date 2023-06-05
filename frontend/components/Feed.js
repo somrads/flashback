@@ -335,13 +335,6 @@ const Feed = ({ navigation }) => {
           )}
         </TouchableOpacity>
       </View>
-      {/* <TouchableOpacity
-        style={styles.openCameraButton}
-        onPress={() => setIsCameraVisible(true)}
-      >
-        <Text style={styles.buttonText}>Open Camera</Text>
-      </TouchableOpacity> */}
-
       <CameraButton onCameraOpen={() => setIsCameraVisible(true)} />
 
       {photo && (
