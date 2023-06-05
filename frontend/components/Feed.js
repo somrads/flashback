@@ -27,6 +27,9 @@ import * as ImageManipulator from "expo-image-manipulator";
 import Icon from "react-native-vector-icons/Ionicons";
 import Post from "./Post";
 
+import CameraButton from "./CameraButton";
+
+
 function darkenColor(color) {
   let colorObj = tinycolor(color);
   let { r, g, b } = colorObj.toRgb();
@@ -333,12 +336,14 @@ const Feed = ({ navigation }) => {
           )}
         </TouchableOpacity>
       </View>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.openCameraButton}
         onPress={() => setIsCameraVisible(true)}
       >
         <Text style={styles.buttonText}>Open Camera</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+
+      <CameraButton onCameraOpen={() => setIsCameraVisible(true)} />
 
       {photo && (
         <Modal visible={showPhotoModal} transparent={true}>
