@@ -8,10 +8,10 @@ const Add = () => {
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
-        <AntDesign name="search1" size={24} color="white" style={styles.searchIcon} />
+        <AntDesign name="search1" size={24} color={COLORS.grayWhite} style={styles.searchIcon} />
         <TextInput
           style={styles.input}
-          placeholder="Enter your family member's name"
+          placeholder="Search for family members"
           placeholderTextColor="lightgray"
         />
       </View>
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 12,
     fontSize: 16,
-    color: 'white',
+    color: COLORS.grayWhite,
     fontFamily: "Nunito-Regular"
   },
   titleContainer: {
@@ -54,9 +54,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'white',
+    color: COLORS.grayWhite,
     marginRight: 10,
-    fontFamily: "Nunito-SemiBold"
+    fontFamily: "Nunito-Regular"
 
   },
 });

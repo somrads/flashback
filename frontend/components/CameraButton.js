@@ -75,7 +75,7 @@ const CameraButton = ({ onCameraOpen }) => {
     if (buttonActive) {
       onCameraOpen();
     } else {
-      Alert.alert("You can take a picture until its time for a flashback!");
+      Alert.alert("You can take a picture when its time for a flashback!");
     }
   };
 
