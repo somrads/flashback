@@ -33,7 +33,6 @@ const Add = () => {
     const db = getDatabase();
     const usersRef = ref(db, "users");
 
-    // Fetch users from the Realtime Database
     const fetchUsers = () => {
       onValue(usersRef, (snapshot) => {
         const data = snapshot.val();
@@ -65,20 +64,22 @@ const Add = () => {
 
     fetchUsers();
 
-    // Check if a user is logged in
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
     });
   }, []);
 
-  const filteredUsers = users.filter(
-    (user) =>
-      (user.fullName &&
-        user.fullName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (user.email &&
-        user.email.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  const filteredUsers = searchQuery
+    ? users.filter(
+        (user) =>
+          (user.fullName &&
+            user.fullName
+              .toLowerCase()
+              .startsWith(searchQuery.toLowerCase()))
+
+      )
+    : [];
 
   return (
     <View style={styles.container}>
@@ -103,40 +104,41 @@ const Add = () => {
         <Text style={styles.title}>Requests</Text>
       </View>
 
-      {filteredUsers.map((user) => (
-        <View key={user.key} style={styles.userContainer}>
-          {user.profilePicture ? (
-            <Image
-              source={{ uri: user.profilePicture }}
-              style={styles.profilePicture}
-            />
-          ) : (
-            <View
-              style={[
-                styles.initialsContainer,
-                { backgroundColor: user.color },
-              ]}
-            >
-              <Text
+      {searchQuery &&
+        filteredUsers.map((user) => (
+          <View key={user.key} style={styles.userContainer}>
+            {user.profilePicture ? (
+              <Image
+                source={{ uri: user.profilePicture }}
+                style={styles.profilePicture}
+              />
+            ) : (
+              <View
                 style={[
-                  styles.initialsText,
-                  { color: darkenColor(user.color) },
+                  styles.initialsContainer,
+                  { backgroundColor: user.color },
                 ]}
               >
-                {user.initials || ""}
-              </Text>
-            </View>
-          )}
-          <View style={styles.userInfo}>
-            <Text style={styles.userName}>{user.fullName}</Text>
-            {currentUser && (
-              <TouchableOpacity style={styles.addButton}>
-                <Text style={styles.addButtonLabel}>Add</Text>
-              </TouchableOpacity>
+                <Text
+                  style={[
+                    styles.initialsText,
+                    { color: darkenColor(user.color) },
+                  ]}
+                >
+                  {user.initials || ""}
+                </Text>
+              </View>
             )}
+            <View style={styles.userInfo}>
+              <Text style={styles.userName}>{user.fullName}</Text>
+              {currentUser && (
+                <TouchableOpacity style={styles.addButton}>
+                  <Text style={styles.addButtonLabel}>Add</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
-        </View>
-      ))}
+        ))}
     </View>
   );
 };
