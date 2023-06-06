@@ -17,7 +17,7 @@ const Add = () => {
       </View>
       <View style={styles.titleContainer}>
         <Text style={styles.title}>Add</Text>
-        <Text style={styles.title}>Request</Text>
+        <Text style={styles.title}>Requests</Text>
       </View>
     </View>
   );

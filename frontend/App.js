@@ -216,7 +216,7 @@ function AppNavigator() {
             <Arrow width={25} height={20} style={{ marginLeft: 20 }} />
           ),
           headerBackTitleVisible: false,
-          title: "Add",
+          title: "Add Family",
         }}
       />
     </Stack.Navigator>
