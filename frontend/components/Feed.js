@@ -8,7 +8,6 @@ import {
   Modal,
   ActivityIndicator,
   Alert,
-  FlatList,
   ScrollView,
 } from "react-native";
 import { auth, database } from "../db/firebase";
@@ -102,6 +101,10 @@ const Feed = ({ navigation }) => {
 
   const navigateToProfile = () => {
     navigation.navigate("Profile", { updatedData: Date.now() });
+  };
+
+  const navigateToAddScreen = () => {
+    navigation.navigate("Add");
   };
 
   const takePhoto = async () => {
@@ -224,7 +227,10 @@ const Feed = ({ navigation }) => {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.logo}>flashback</Text>
-          <TouchableOpacity style={styles.iconButton}>
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={navigateToAddScreen}
+          >
             <Add />
           </TouchableOpacity>
 

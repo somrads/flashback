@@ -25,6 +25,7 @@ import Email from "./components/SignUpScreens/Email";
 import Password from "./components/SignUpScreens/Password";
 import RoleAndDob from "./components/SignUpScreens/RoleAndDob";
 import Feed from "./components/Feed";
+import Add from "./components/Add";
 import Options from "./components/Options";
 import ResetPassword from "./components/SignUpScreens/ResetPassword";
 import VerifyEmail from "./components/VerifyEmail";
@@ -193,6 +194,29 @@ function AppNavigator() {
               Cancel
             </Text>
           ),
+        }}
+      />
+      <Stack.Screen
+        name="Add"
+        component={Add}
+        options={{
+          unmountOnBlur: true,
+          headerStyle: {
+            backgroundColor: COLORS.background,
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+          headerTintColor: COLORS.grayWhite,
+          headerTitleStyle: {
+            fontSize: 24,
+            fontFamily: "Nunito-Medium",
+          },
+          headerBackImage: () => (
+            <Arrow width={25} height={20} style={{ marginLeft: 20 }} />
+          ),
+          headerBackTitleVisible: false,
+          title: "Add",
         }}
       />
     </Stack.Navigator>
