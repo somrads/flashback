@@ -12,6 +12,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { COLORS } from "../constants/colors";
 import tinycolor from "tinycolor2";
 import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const darkenColor = (color) => {
   let colorObj = tinycolor(color);
@@ -28,6 +29,7 @@ const Add = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const db = getDatabase();
@@ -73,11 +75,8 @@ const Add = () => {
   const filteredUsers = searchQuery
     ? users.filter(
         (user) =>
-          (user.fullName &&
-            user.fullName
-              .toLowerCase()
-              .startsWith(searchQuery.toLowerCase()))
-
+          user.fullName &&
+          user.fullName.toLowerCase().startsWith(searchQuery.toLowerCase())
       )
     : [];
 
@@ -106,29 +105,47 @@ const Add = () => {
 
       {searchQuery &&
         filteredUsers.map((user) => (
-          <View key={user.key} style={styles.userContainer}>
-            {user.profilePicture ? (
-              <Image
-                source={{ uri: user.profilePicture }}
-                style={styles.profilePicture}
-              />
-            ) : (
-              <View
-                style={[
-                  styles.initialsContainer,
-                  { backgroundColor: user.color },
-                ]}
-              >
-                <Text
+          <TouchableOpacity
+            key={user.key}
+            style={styles.userContainer}
+            onPress={() =>
+              navigation.navigate("Profile", {
+                user: { ...user, uid: user.key },
+              })
+            }
+          >
+            <TouchableOpacity
+              key={user.key}
+              onPress={() =>
+                navigation.navigate("Profile", {
+                  user: { ...user, uid: user.key },
+                })
+              }
+            >
+              {user.profilePicture ? (
+                <Image
+                  source={{ uri: user.profilePicture }}
+                  style={styles.profilePicture}
+                />
+              ) : (
+                <View
                   style={[
-                    styles.initialsText,
-                    { color: darkenColor(user.color) },
+                    styles.initialsContainer,
+                    { backgroundColor: user.color },
                   ]}
                 >
-                  {user.initials || ""}
-                </Text>
-              </View>
-            )}
+                  <Text
+                    style={[
+                      styles.initialsText,
+                      { color: darkenColor(user.color) },
+                    ]}
+                  >
+                    {user.initials || ""}
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+
             <View style={styles.userInfo}>
               <Text style={styles.userName}>{user.fullName}</Text>
               {currentUser && (
@@ -137,7 +154,7 @@ const Add = () => {
                 </TouchableOpacity>
               )}
             </View>
-          </View>
+          </TouchableOpacity>
         ))}
     </View>
   );

@@ -26,7 +26,6 @@ function darkenColor(color) {
   return tinycolor({ r, g, b }).toString();
 }
 
-// Set up real-time data listener
 const fetchUserData = (userId, callback) => {
   const userRef = ref(database, `users/${userId}`);
   const listener = (snapshot) => {
@@ -36,22 +35,19 @@ const fetchUserData = (userId, callback) => {
       userData.initials = initials.toUpperCase();
       userData.color = userData.color;
       userData.darkerColor = darkenColor(userData.color);
-      callback(userData); // Trigger the callback with new data
+      callback(userData);
     }
   };
   onValue(userRef, listener);
 
-  // Return the function to unsubscribe this listener
   return () => off(userRef, listener);
 };
 
-// Birthday count calculator
 const daysUntilBirthday = (birthday) => {
   const today = new Date();
   const birthDate = new Date(birthday);
   birthDate.setFullYear(today.getFullYear());
 
-  // If today's date is the same as the birthday
   if (
     birthDate.getDate() === today.getDate() &&
     birthDate.getMonth() === today.getMonth()
@@ -70,17 +66,15 @@ const daysUntilBirthday = (birthday) => {
   return `In ${daysUntil} days`;
 };
 
-export default function Profile({ navigation }) {
+export default function Profile({ navigation, route }) {
   const [userData, setUserData] = useState(null);
+  const currentUser = auth.currentUser;
+  const userId = route.params?.user?.uid || currentUser.uid;
 
-  const route = useRoute();
-
-  // Use the listener in your component
   useEffect(() => {
-    const currentUser = auth.currentUser;
-    let unsubscribe; // Save the unsubscribe function
-    if (currentUser) {
-      unsubscribe = fetchUserData(currentUser.uid, (data) => {
+    let unsubscribe;
+    if (userId) {
+      unsubscribe = fetchUserData(userId, (data) => {
         if (data) {
           setUserData(data);
         } else {
@@ -88,11 +82,11 @@ export default function Profile({ navigation }) {
         }
       });
     }
-    // Clean up: remove the listener when the component is unmounted
+
     return () => {
       if (unsubscribe) unsubscribe();
     };
-  }, [route.params?.updatedData]);
+  }, [userId, route.params?.updatedData]);
 
   if (!userData) {
     return (
@@ -143,7 +137,7 @@ export default function Profile({ navigation }) {
         <Text style={styles.userName}>
           {firstName} {lastName}
         </Text>
-        {/* Birthday and Role */}
+
         <View style={styles.bioSection}>
           <View style={styles.icons}>
             <View style={styles.statsSection}>
@@ -163,9 +157,9 @@ export default function Profile({ navigation }) {
             </View>
           </View>
         </View>
+
         <View style={styles.greenLine} />
 
-        {/* Bio */}
         <View style={styles.description}>
           {bio ? (
             <Text style={styles.descriptionText}>{bio}</Text>
@@ -175,7 +169,6 @@ export default function Profile({ navigation }) {
         </View>
       </View>
 
-      {/* Todays Posts */}
       <View style={styles.postsWrapper}>
         <Text style={styles.title}>Today Post</Text>
         <View style={styles.todaysPhotoCentered}>
@@ -188,7 +181,6 @@ export default function Profile({ navigation }) {
         </View>
       </View>
 
-      {/* Family Members */}
       <View style={styles.familyMembersSection}>
         <Text style={styles.familyMembersTitle}>Family Members</Text>
         <View style={styles.membersInfo}>
@@ -196,6 +188,7 @@ export default function Profile({ navigation }) {
           <Text style={styles.membersText}>Members</Text>
         </View>
       </View>
+
       <View style={styles.membersWrapper}>
         <View style={styles.members}>
           <Image
