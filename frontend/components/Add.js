@@ -41,6 +41,9 @@ const Add = () => {
         const userList = [];
 
         for (const key in data) {
+          // Exclude the current user from the list
+          if (currentUser && key === currentUser.uid) continue;
+
           const {
             firstName,
             lastName,
@@ -70,7 +73,7 @@ const Add = () => {
     onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
     });
-  }, []);
+  }, [currentUser]);
 
   const filteredUsers = searchQuery
     ? users.filter(
