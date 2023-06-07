@@ -1,12 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { getDatabase, ref, onValue, set } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { COLORS } from "../constants/colors";
@@ -30,6 +23,7 @@ const Add = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const [friendRequests, setFriendRequests] = useState([]);
   const navigation = useNavigation();
 
   // Function to handle add friend requests
@@ -107,6 +101,15 @@ const Add = () => {
     onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
     });
+
+    // Fetch friend requests
+    const friendRequestsRef = ref(db, `users/${currentUser?.uid}/friendRequests`);
+    onValue(friendRequestsRef, (snapshot) => {
+      const data = snapshot.val();
+      const requests = data ? Object.keys(data) : [];
+      setFriendRequests(requests);
+    });
+
   }, [currentUser]);
 
   // Function to determine button label based on user's relationship with current user
@@ -162,7 +165,9 @@ const Add = () => {
         onPress={() => navigation.navigate("FriendRequest")}
         style={styles.titleContainer}
       >
-        <Text style={styles.title}>Requests</Text>
+        <Text style={styles.title}>
+          Requests ({friendRequests.length})
+        </Text>
       </TouchableOpacity>
 
       {searchQuery &&
@@ -255,15 +260,17 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Regular",
   },
   titleContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
+    backgroundColor: COLORS.main,
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    marginLeft: "auto",
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     color: COLORS.grayWhite,
-    marginRight: 10,
-    fontFamily: "Nunito-Regular",
+    fontFamily: "Nunito-Medium",
   },
   userContainer: {
     flexDirection: "row",
