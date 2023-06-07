@@ -29,6 +29,7 @@ import Add from "./components/Add";
 import Options from "./components/Options";
 import ResetPassword from "./components/SignUpScreens/ResetPassword";
 import VerifyEmail from "./components/VerifyEmail";
+import FriendRequest from "./components/FriendRequest";
 
 import OptionsIcon from "./assets/icons/edit.svg";
 import Arrow from "./assets/icons/arrow.svg";
@@ -217,6 +218,29 @@ function AppNavigator() {
           ),
           headerBackTitleVisible: false,
           title: "Add Family",
+        }}
+      />
+      <Stack.Screen
+        name="FriendRequest"
+        component={FriendRequest}
+        options={{
+          unmountOnBlur: true,
+          headerStyle: {
+            backgroundColor: COLORS.background,
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+          headerTintColor: COLORS.grayWhite,
+          headerTitleStyle: {
+            fontSize: 24,
+            fontFamily: "Nunito-Medium",
+          },
+          headerBackImage: () => (
+            <Arrow width={25} height={20} style={{ marginLeft: 20 }} />
+          ),
+          headerBackTitleVisible: false,
+          title: "Add Requests",
         }}
       />
     </Stack.Navigator>

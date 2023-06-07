@@ -13,6 +13,7 @@ import { COLORS } from "../constants/colors";
 import tinycolor from "tinycolor2";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { set } from "firebase/database";
 
 const darkenColor = (color) => {
   let colorObj = tinycolor(color);
@@ -30,6 +31,17 @@ const Add = () => {
   const [users, setUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const navigation = useNavigation();
+
+  const handleAdd = (userKey) => {
+    const db = getDatabase();
+    const currentUserID = currentUser.uid;
+
+    const recipientFriendRequestsRef = ref(
+      db,
+      `users/${userKey}/friendRequests/${currentUserID}`
+    );
+    set(recipientFriendRequestsRef, true);
+  };
 
   useEffect(() => {
     const db = getDatabase();
@@ -101,10 +113,12 @@ const Add = () => {
         />
       </View>
 
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Add</Text>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("FriendRequest")}
+        style={styles.titleContainer}
+      >
         <Text style={styles.title}>Requests</Text>
-      </View>
+      </TouchableOpacity>
 
       {searchQuery &&
         filteredUsers.map((user) => (
@@ -152,7 +166,10 @@ const Add = () => {
             <View style={styles.userInfo}>
               <Text style={styles.userName}>{user.fullName}</Text>
               {currentUser && (
-                <TouchableOpacity style={styles.addButton}>
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={() => handleAdd(user.key)}
+                >
                   <Text style={styles.addButtonLabel}>Add</Text>
                 </TouchableOpacity>
               )}
