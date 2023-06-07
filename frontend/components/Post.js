@@ -67,7 +67,11 @@ const Post = ({ postData, userPhotoURL }) => {
   return (
     <View style={styles.postContainer}>
       <View style={styles.postHeader}>
-        <Image style={styles.profilePic} source={{ uri: userPhotoURL }} />
+        <Image
+          style={styles.profilePic}
+          source={{ uri: postData.userProfilePicture }}
+        />
+
         <View style={styles.headerText}>
           <Text style={styles.userRole}>{role}</Text>
           <Text style={styles.userName}>{userName}</Text>

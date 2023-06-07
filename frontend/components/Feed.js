@@ -203,6 +203,7 @@ const Feed = ({ navigation }) => {
           let post = {
             userName: userData.firstName + " " + userData.lastName,
             userPostPhoto: userData.postPhotoURL,
+            userProfilePicture: userData.profilePicture,
             role: userData.role,
             timestamp: userData.timestamp,
             key: "currentPost",
