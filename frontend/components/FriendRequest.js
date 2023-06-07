@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { getDatabase, ref, onValue } from "firebase/database";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from "react-native";
+import { getDatabase, ref, onValue, update } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { COLORS } from "../constants/colors";
 import tinycolor from "tinycolor2";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { acceptFriendRequest } from "../db/firebase";
 
 const darkenColor = (color) => {
   let colorObj = tinycolor(color);
@@ -59,12 +65,48 @@ const FriendRequest = () => {
     }
   }, [currentUser]);
 
-  const acceptFriendRequest = (friendId) => {
-    // Implement the logic to accept the friend request
+  const acceptFriendRequest = async (friendId) => {
+    const db = getDatabase();
+    const currentUserRef = ref(db, `users/${currentUser.uid}`);
+    const friendRef = ref(db, `users/${friendId}`);
+
+    try {
+      await update(currentUserRef, {
+        friendRequests: {
+          [friendId]: null,
+        },
+        friends: {
+          [friendId]: true,
+        },
+      });
+
+      await update(friendRef, {
+        friends: {
+          [currentUser.uid]: true,
+        },
+      });
+
+      Alert.alert("Friend request accepted");
+    } catch (error) {
+      Alert.alert("Error accepting friend request");
+    }
   };
 
-  const declineFriendRequest = (friendId) => {
-    // Implement the logic to decline the friend request
+  const declineFriendRequest = async (friendId) => {
+    const db = getDatabase();
+    const currentUserRef = ref(db, `users/${currentUser.uid}`);
+
+    try {
+      await update(currentUserRef, {
+        friendRequests: {
+          [friendId]: null,
+        },
+      });
+
+      Alert.alert("Friend request declined");
+    } catch (error) {
+      Alert.alert("Error declining friend request");
+    }
   };
 
   return (
@@ -163,7 +205,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Medium",
-    marginLeft:10,
+    marginLeft: 10,
   },
   buttonContainer: {
     flexDirection: "row",
