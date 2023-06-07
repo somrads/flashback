@@ -30,9 +30,10 @@ const VerifyEmail = () => {
         <Logo width={186} height={186} />
       </View>
       <View style={styles.text}>
-        <Text style={styles.verifyText}>Verify your account to continue.</Text>
+        <Text style={styles.verifyTitle}>Thank you for signing up!</Text>
         <Text style={styles.verifyText}>
-          Please check your email for verification instructions.
+          Please check your email for verification instructions. It might be in
+          your spam so be sure to check there!
         </Text>
       </View>
       <View style={styles.buttons}>
@@ -71,6 +72,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 30,
     fontFamily: "Nunito-Regular",
+  },
+  verifyTitle: {
+    fontSize: 22,
+    color: COLORS.grayWhite,
+    marginHorizontal: 40,
+    textAlign: "center",
+    marginBottom: 30,
+    fontFamily: "Nunito-Bold",
   },
   resendButton: {
     backgroundColor: COLORS.main,
