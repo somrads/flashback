@@ -4,6 +4,7 @@ import { getDatabase, ref, onValue } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { COLORS } from "../constants/colors";
 import tinycolor from "tinycolor2";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { acceptFriendRequest } from "../db/firebase";
 
 const darkenColor = (color) => {
@@ -62,8 +63,15 @@ const FriendRequest = () => {
     // Implement the logic to accept the friend request
   };
 
+  const declineFriendRequest = (friendId) => {
+    // Implement the logic to decline the friend request
+  };
+
   return (
     <View style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Amount ({friendRequests.length})</Text>
+      </View>
       {friendRequests.map((friendId) => (
         <View key={friendId} style={styles.friendContainer}>
           {usersData[friendId] && usersData[friendId].profilePicture ? (
@@ -92,12 +100,20 @@ const FriendRequest = () => {
           <Text style={styles.userName}>
             {usersData[friendId]?.firstName} {usersData[friendId]?.lastName}
           </Text>
-          <TouchableOpacity
-            style={styles.acceptButton}
-            onPress={() => acceptFriendRequest(friendId)}
-          >
-            <Text style={styles.acceptButtonText}>Accept</Text>
-          </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={() => acceptFriendRequest(friendId)}
+            >
+              <FontAwesome5 name="check" size={22} color={COLORS.main} solid />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={() => declineFriendRequest(friendId)}
+            >
+              <FontAwesome5 name="times" size={22} color={COLORS.red} solid />
+            </TouchableOpacity>
+          </View>
         </View>
       ))}
     </View>
@@ -110,11 +126,14 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
     padding: 20,
   },
+  titleContainer: {
+    marginBottom: 10,
+  },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     color: COLORS.grayWhite,
-    fontFamily: "Nunito-Regular",
+    fontFamily: "Nunito-Bold",
   },
   friendContainer: {
     flexDirection: "row",
@@ -144,19 +163,15 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Medium",
-    marginLeft: 10,
+    marginLeft:10,
   },
-  acceptButton: {
-    backgroundColor: COLORS.grayBlack,
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 20,
+  buttonContainer: {
+    flexDirection: "row",
     marginLeft: "auto",
   },
-  acceptButtonText: {
-    color: COLORS.grayWhite,
-    fontFamily: "Nunito-Medium",
-    fontSize: 14,
+  iconButton: {
+    marginHorizontal: 5,
+    marginLeft: 30,
   },
 });
 
