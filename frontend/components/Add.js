@@ -7,14 +7,14 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, set } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { COLORS } from "../constants/colors";
 import tinycolor from "tinycolor2";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { set } from "firebase/database";
 
+// Function to darken colors
 const darkenColor = (color) => {
   let colorObj = tinycolor(color);
   let { r, g, b } = colorObj.toRgb();
@@ -32,17 +32,28 @@ const Add = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const navigation = useNavigation();
 
-  const handleAdd = (userKey) => {
+  // Function to handle add friend requests
+  const handleAdd = (user) => {
+    // Don't allow to send friend request if already requested or already friends
+    if (user.hasSentFriendRequest || user.isFriend || !currentUser) return;
+
     const db = getDatabase();
     const currentUserID = currentUser.uid;
 
+    // Reference to recipient's friend requests in DB
     const recipientFriendRequestsRef = ref(
       db,
-      `users/${userKey}/friendRequests/${currentUserID}`
+      `users/${user.key}/friendRequests/${currentUserID}`
     );
+
+    // Send a friend request
     set(recipientFriendRequestsRef, true);
+
+    // Update local state immediately after sending a friend request
+    user.hasSentFriendRequest = true;
   };
 
+  // Fetch users from the DB
   useEffect(() => {
     const db = getDatabase();
     const usersRef = ref(db, "users");
@@ -63,8 +74,16 @@ const Add = () => {
             email,
             color,
             initials,
+            friendRequests,
+            friends,
           } = data[key];
           const fullName = `${firstName} ${lastName}`;
+
+          // Check if current user has sent friend request or is already friends
+          const hasSentFriendRequest =
+            currentUser && friendRequests && friendRequests[currentUser.uid];
+          const isFriend = currentUser && friends && friends[currentUser.uid];
+
           userList.push({
             key,
             fullName,
@@ -72,6 +91,8 @@ const Add = () => {
             email,
             color,
             initials,
+            hasSentFriendRequest,
+            isFriend,
           });
         }
 
@@ -81,12 +102,36 @@ const Add = () => {
 
     fetchUsers();
 
+    // Track current user authentication state
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
     });
   }, [currentUser]);
 
+  // Function to determine button label based on user's relationship with current user
+  const getButtonLabel = (user) => {
+    if (user.isFriend) {
+      return "Family";
+    }
+    if (user.hasSentFriendRequest) {
+      return "Requested";
+    }
+    return "Add";
+  };
+
+  // Function to determine button color based on user's relationship with current user
+  const getButtonColor = (user) => {
+    if (user.isFriend) {
+      return COLORS.grayBlack;
+    }
+    if (user.hasSentFriendRequest) {
+      return tinycolor(COLORS.grayBlack).darken(20).toString();
+    }
+    return COLORS.grayBlack;
+  };
+
+  // Filter users based on search query
   const filteredUsers = searchQuery
     ? users.filter(
         (user) =>
@@ -167,10 +212,15 @@ const Add = () => {
               <Text style={styles.userName}>{user.fullName}</Text>
               {currentUser && (
                 <TouchableOpacity
-                  style={styles.addButton}
-                  onPress={() => handleAdd(user.key)}
+                  style={[
+                    styles.addButton,
+                    { backgroundColor: getButtonColor(user) },
+                  ]}
+                  onPress={() => handleAdd(user)}
                 >
-                  <Text style={styles.addButtonLabel}>Add</Text>
+                  <Text style={styles.addButtonLabel}>
+                    {getButtonLabel(user)}
+                  </Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -260,7 +310,7 @@ const styles = StyleSheet.create({
   },
   addButtonLabel: {
     color: COLORS.grayWhite,
-    fontFamily: "Nunito-Medium",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
   },
 });
