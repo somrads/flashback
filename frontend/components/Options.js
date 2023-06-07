@@ -109,6 +109,15 @@ const Options = () => {
     return tinycolor({ r, g, b }).toString();
   }
 
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      navigation.navigate("Login");
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   useEffect(() => {
     if (user) {
       const dbRef = ref(database, `users/${user.uid}`);
@@ -184,54 +193,8 @@ const Options = () => {
       });
     }
     navigation.navigate("Profile", { updatedData: new Date().getTime() });
-  };
+  };  
 
-  // const deleteUser = async () => {
-  //   if (user !== null) {
-  //     try {
-  //       // Create a reference to the user's data in the database
-  //       const dbRef = ref(database, `users/${user.uid}`);
-  
-  //       // Create a reference to the user's profile picture in storage
-  //       const imageRef = storageRef(
-  //         storage,
-  //         `users/${user.uid}/profile_picture`
-  //       );
-  
-  //       // Delete the user's data from the database
-  //       await deleteDBRef(dbRef);
-  
-  //       // Delete the user's profile picture from storage
-  //       await deleteStorageObject(imageRef);
-  
-  //       // Delete the user from authentication
-  //       await deleteAuthUser(user);
-  
-  //       // After the account deletion, navigate to the login screen
-  //       navigation.navigate('Login', { message: 'User deletion successful' });
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   } else {
-  //     console.error('No user is currently signed in');
-  //   }
-  // };
-  
-
-  const confirmDeleteUser = () => {
-    Alert.alert(
-      "Delete Account",
-      "Are you sure you want to delete your account? This action cannot be undone.",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        { text: "Yes", onPress: deleteUser },
-      ]
-    );
-  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -391,9 +354,9 @@ const Options = () => {
 
         <TouchableOpacity
           style={styles.deleteButton}
-          onPress=""
+          onPress={handleLogout}
         >
-          <Text style={styles.buttonText2}>Delete Account</Text>
+          <Text style={styles.buttonText2}>Log Out</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -484,7 +447,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 75,
     borderRadius: 8,
-    marginBottom: 20,
+    marginBottom: 50,
     marginTop: 20,
     borderWidth: 1,
     alignSelf: "center",
@@ -496,8 +459,8 @@ const styles = StyleSheet.create({
   },
   buttonText2: {
     color: "#580020",
-    fontSize: 16,
-    fontFamily: "Nunito-Bold",
+    fontSize: 17,
+    fontFamily: "Nunito-Black",
   },
   editButton: {
     alignItems: "center",

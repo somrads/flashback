@@ -115,15 +115,6 @@ export default function Profile({ navigation, route }) {
 
   const { firstName, lastName, role, dob, bio, profilePicture } = userData;
 
-  const handleLogout = async () => {
-    try {
-      await auth.signOut();
-      navigation.navigate("Login");
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
   const pfpStyles = profilePicture
     ? styles.pfp
     : [
@@ -220,10 +211,6 @@ export default function Profile({ navigation, route }) {
               </TouchableOpacity>
             </View>
           </View>
-
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <Text style={styles.buttonText}>Logout</Text>
-          </TouchableOpacity>
         </>
       )}
     </ScrollView>
@@ -399,15 +386,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Medium",
     fontSize: 14,
   },
-  logoutButton: {
-    backgroundColor: COLORS.red,
-    paddingVertical: 10,
-    paddingHorizontal: 50,
-    borderRadius: 5,
-    alignSelf: "center",
-    marginTop: 10,
-    marginBottom: 10,
-  },
+  
   buttonText: {
     color: "#580020",
     fontSize: 16,
