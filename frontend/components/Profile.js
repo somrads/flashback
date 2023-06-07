@@ -186,42 +186,46 @@ export default function Profile({ navigation, route }) {
         </View>
       </View>
 
-      <View style={styles.postsWrapper}>
-        <Text style={styles.title}>Today Post</Text>
-        <View style={styles.todaysPhotoCentered}>
-          <View style={styles.todaysPhotoWrapper}>
-            <Image
-              style={styles.todaysPhotoWrapper}
-              source={require("../assets/img/image1.png")}
-            ></Image>
+      {currentUser.uid === userId && (
+        <>
+          <View style={styles.postsWrapper}>
+            <Text style={styles.title}>Today Post</Text>
+            <View style={styles.todaysPhotoCentered}>
+              <View style={styles.todaysPhotoWrapper}>
+                <Image
+                  style={styles.todaysPhotoWrapper}
+                  source={require("../assets/img/image1.png")}
+                ></Image>
+              </View>
+            </View>
           </View>
-        </View>
-      </View>
 
-      <View style={styles.familyMembersSection}>
-        <Text style={styles.familyMembersTitle}>Family Members</Text>
-        <View style={styles.membersInfo}>
-          <Text style={styles.membersCount}>1</Text>
-          <Text style={styles.membersText}>Members</Text>
-        </View>
-      </View>
+          <View style={styles.familyMembersSection}>
+            <Text style={styles.familyMembersTitle}>Family Members</Text>
+            <View style={styles.membersInfo}>
+              <Text style={styles.membersCount}>1</Text>
+              <Text style={styles.membersText}>Members</Text>
+            </View>
+          </View>
 
-      <View style={styles.membersWrapper}>
-        <View style={styles.members}>
-          <Image
-            style={styles.memberPfp}
-            source={require("../assets/img/image1.png")}
-          ></Image>
-          <Text style={styles.memberName}>Julie Laquez</Text>
-          <TouchableOpacity style={styles.removeButton} onPress={() => {}}>
-            <Text style={styles.removeButtonText}>Remove</Text>
+          <View style={styles.membersWrapper}>
+            <View style={styles.members}>
+              <Image
+                style={styles.memberPfp}
+                source={require("../assets/img/image1.png")}
+              ></Image>
+              <Text style={styles.memberName}>Julie Laquez</Text>
+              <TouchableOpacity style={styles.removeButton} onPress={() => {}}>
+                <Text style={styles.removeButtonText}>Remove</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.buttonText}>Logout</Text>
           </TouchableOpacity>
-        </View>
-      </View>
-
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Logout</Text>
-      </TouchableOpacity>
+        </>
+      )}
     </ScrollView>
   );
 }
