@@ -7,11 +7,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { auth } from "./db/firebase";
 import {
   LogBox,
-  StyleSheet,
   Text,
-  View,
-  Image,
-  ScrollView,
   TouchableOpacity,
 } from "react-native";
 

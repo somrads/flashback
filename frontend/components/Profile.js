@@ -180,7 +180,7 @@ export default function Profile({ navigation, route }) {
       {currentUser.uid === userId && (
         <>
           <View style={styles.postsWrapper}>
-            <Text style={styles.title}>Today Post</Text>
+            <Text style={styles.title}>Today's Post</Text>
             <View style={styles.todaysPhotoCentered}>
               <View style={styles.todaysPhotoWrapper}>
                 <Image
@@ -312,9 +312,6 @@ const styles = StyleSheet.create({
     marginLeft: 50,
     alignSelf: "flex-start",
     marginBottom: 20,
-  },
-  postsWrapper: {
-    marginTop: 10,
   },
   todaysPhotoCentered: {
     alignItems: "center",

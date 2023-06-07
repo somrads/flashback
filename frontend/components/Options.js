@@ -10,7 +10,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
-  Alert,
 } from "react-native";
 import { COLORS } from "../constants/colors";
 import { database, auth, storage } from "../db/firebase";
@@ -22,7 +21,6 @@ import {
   deleteObject as deleteStorageObject,
 } from "firebase/storage";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { deleteUser as deleteAuthUser } from "firebase/auth";
 import * as ImagePicker from "expo-image-picker";
 import RNPickerSelect from "react-native-picker-select";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -193,8 +191,7 @@ const Options = () => {
       });
     }
     navigation.navigate("Profile", { updatedData: new Date().getTime() });
-  };  
-
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -352,10 +349,7 @@ const Options = () => {
           />
         </View>
 
-        <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={handleLogout}
-        >
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogout}>
           <Text style={styles.buttonText2}>Log Out</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -442,13 +436,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignSelf: "center",
   },
-  deleteButton: {
+  loginButton: {
     backgroundColor: COLORS.red,
     paddingVertical: 15,
     paddingHorizontal: 75,
     borderRadius: 8,
-    marginBottom: 50,
-    marginTop: 20,
+    marginBottom: 20,
+
     borderWidth: 1,
     alignSelf: "center",
   },

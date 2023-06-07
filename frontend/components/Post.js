@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
     color: COLORS.grayBlack,
     fontFamily: "Nunito-Regular",
     marginTop: 20,
+    marginLeft: -10,
   },
   postImage: {
     width: 530,
