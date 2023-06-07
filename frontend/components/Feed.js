@@ -446,7 +446,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   iconButton: {
-    marginRight: -120,
+    marginRight: -150,
   },
   profilePic: {
     width: 40,
