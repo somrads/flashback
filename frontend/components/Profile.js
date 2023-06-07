@@ -14,6 +14,7 @@ import RoleIcon from "../assets/icons/role.svg";
 import { auth, database } from "../db/firebase";
 import { ref, onValue, off } from "firebase/database";
 import tinycolor from "tinycolor2";
+import OptionsIcon from "../assets/icons/edit.svg";
 
 function darkenColor(color) {
   let colorObj = tinycolor(color);
@@ -87,6 +88,22 @@ export default function Profile({ navigation, route }) {
       if (unsubscribe) unsubscribe();
     };
   }, [userId, route.params?.updatedData]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight:
+        currentUser.uid === userId
+          ? () => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Options")}
+                style={{ marginRight: 20 }}
+              >
+                <OptionsIcon width={25} height={20} />
+              </TouchableOpacity>
+            )
+          : null,
+    });
+  }, [navigation, currentUser, userId]);
 
   if (!userData) {
     return (
