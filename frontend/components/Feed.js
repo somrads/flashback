@@ -188,20 +188,20 @@ const Feed = ({ navigation }) => {
   const fetchPostsFromDB = async () => {
     const currentUser = auth.currentUser;
     const usersRef = ref(database, `users`);
-  
+
     // Fetch all users
     const usersSnapshot = await get(usersRef);
-  
+
     if (usersSnapshot.exists()) {
       const usersData = usersSnapshot.val();
       let postsArray = [];
-  
+
       // Get the friend list of the logged-in user
       const currentUserRef = ref(database, `users/${currentUser.uid}`);
       const currentUserSnapshot = await get(currentUserRef);
       const currentUserData = currentUserSnapshot.val();
       const friendList = currentUserData.friends || {};
-  
+
       // Add the logged-in user's post with a label indicating their post
       if (currentUserData.postPhotoURL) {
         let currentUserPost = {
@@ -211,17 +211,17 @@ const Feed = ({ navigation }) => {
           role: currentUserData.role,
           timestamp: currentUserData.timestamp,
           key: "currentUserPost",
-          isCurrentUserPost: true, // Flag to indicate the logged-in user's post
+          isCurrentUserPost: true,
         };
-  
+
         postsArray.push(currentUserPost);
       }
-  
+
       // Go through each user and construct a post if they are friends
       for (const userId in usersData) {
         if (userId !== currentUser.uid && friendList[userId]) {
           let userData = usersData[userId];
-  
+
           if (userData.postPhotoURL) {
             let post = {
               userName: userData.firstName + " " + userData.lastName,
@@ -231,16 +231,18 @@ const Feed = ({ navigation }) => {
               timestamp: userData.timestamp,
               key: "currentPost",
               isCurrentUserPost: false, // Flag to indicate it's not the logged-in user's post
+              initials: userData.initials, // Include the initials data
+              color: userData.color, // Include the color datat
             };
-  
+
             postsArray.push(post);
           }
         }
       }
-  
+
       // Sort the posts array by timestamp in descending order
       postsArray.sort((a, b) => b.timestamp - a.timestamp);
-  
+
       setPosts(postsArray);
     } else {
       console.log("No users data available");
@@ -437,9 +439,9 @@ const Feed = ({ navigation }) => {
             <Post
               key={index}
               postData={item}
-              userPhotoURL={userData.profilePicture}
-              initials={userData.initials}
-              color={userData.color}
+              userPhotoURL={item.userProfilePicture}
+              initials={item.initials}
+              color={item.color}
               userId={auth.currentUser.uid}
               isCurrentUserPost={item.isCurrentUserPost}
             />
