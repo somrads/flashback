@@ -76,7 +76,7 @@ const Feed = ({ navigation }) => {
         (snapshot) => {
           const userData = snapshot.val();
           if (userData) {
-            const initials = userData.firstName[0] + userData.lastName[0];
+            const initials = userData.initials;
             userData.initials = initials.toUpperCase();
             userData.color = userData.color;
             userData.darkerColor = darkenColor(userData.color);

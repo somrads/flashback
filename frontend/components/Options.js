@@ -129,7 +129,7 @@ const Options = () => {
         setEmail(data.email);
         setImage({ uri: data.profilePicture });
 
-        const userInitials = data.firstName[0] + data.lastName[0];
+        const userInitials = data.initials;
         setInitials(userInitials.toUpperCase());
         setColor(data.color);
         setDarkerColor(darkenColor(data.color));
