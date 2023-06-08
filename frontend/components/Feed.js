@@ -188,20 +188,20 @@ const Feed = ({ navigation }) => {
   const fetchPostsFromDB = async () => {
     const currentUser = auth.currentUser;
     const usersRef = ref(database, `users`);
-
+  
     // Fetch all users
     const usersSnapshot = await get(usersRef);
-
+  
     if (usersSnapshot.exists()) {
       const usersData = usersSnapshot.val();
       let postsArray = [];
-
+  
       // Get the friend list of the logged-in user
       const currentUserRef = ref(database, `users/${currentUser.uid}`);
       const currentUserSnapshot = await get(currentUserRef);
       const currentUserData = currentUserSnapshot.val();
       const friendList = currentUserData.friends || {};
-
+  
       if (currentUserData.postPhotoURL) {
         let currentUserPost = {
           userName: currentUserData.firstName + " " + currentUserData.lastName,
@@ -214,15 +214,15 @@ const Feed = ({ navigation }) => {
           initials: currentUserData.initials, // Include the initials data
           color: currentUserData.color, // Include the color data
         };
-
+  
         postsArray.unshift(currentUserPost); // Add the current user's post at the beginning
       }
-
+  
       // Go through each user and construct a post if they are friends
       for (const userId in usersData) {
         if (userId !== currentUser.uid && friendList[userId]) {
           let userData = usersData[userId];
-
+  
           if (userData.postPhotoURL) {
             let post = {
               userName: userData.firstName + " " + userData.lastName,
@@ -235,20 +235,29 @@ const Feed = ({ navigation }) => {
               initials: userData.initials,
               color: userData.color,
             };
-
+  
             postsArray.push(post);
           }
         }
       }
-
+  
       // Sort the posts array by timestamp in descending order
-      postsArray.sort((a, b) => b.timestamp - a.timestamp);
-
+      postsArray.sort((a, b) => {
+        if (a.isCurrentUserPost) {
+          return -1; // Place the logged-in user's post first
+        } else if (b.isCurrentUserPost) {
+          return 1; // Place the logged-in user's post last
+        } else {
+          return b.timestamp - a.timestamp; // Sort by timestamp in descending order
+        }
+      });
+  
       setPosts(postsArray);
     } else {
       console.log("No users data available");
     }
   };
+  
 
   return (
     <ScrollView style={styles.container}>
