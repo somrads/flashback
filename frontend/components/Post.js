@@ -13,7 +13,7 @@ const Post = ({
   color,
   isCurrentUserPost,
 }) => {
-  const { userName, role, userPostPhoto, timestamp } = postData;
+  const { userId, userName, role, userPostPhoto, timestamp } = postData;
   const [postImageURL, setPostImageURL] = useState(userPostPhoto);
   const navigation = useNavigation();
 
@@ -87,10 +87,13 @@ const Post = ({
   const initialsStyle = {
     color: darkenColor(color),
   };
-  
+
   const navigateToProfile = () => {
-    navigation.navigate("Profile", { user: { ...postData, uid: postData.userId } });
+    console.log("userId:", userId);
+    console.log("userName:", userName);
+    navigation.navigate("Profile", { user: { uid: userId, userName: userName } });
   };
+  
 
   return (
     <View style={styles.postContainer}>
@@ -106,7 +109,9 @@ const Post = ({
 
           <View style={styles.headerText}>
             <View style={styles.roleContainer}>
-              <Text style={styles.userRole}>{role}</Text>
+              <TouchableOpacity onPress={navigateToProfile}>
+                <Text style={styles.userRole}>{role}</Text>
+              </TouchableOpacity>
               {isCurrentUserPost && (
                 <View style={styles.currentUserBox}>
                   <Text style={styles.currentUserLabel}>Your Flashback</Text>
