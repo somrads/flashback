@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "../db/firebase";
 import { COLORS } from "../constants/colors";
 import tinycolor from "tinycolor2";
+import { useNavigation } from "@react-navigation/native";
 
 const Post = ({
   postData,
@@ -14,6 +15,7 @@ const Post = ({
 }) => {
   const { userName, role, userPostPhoto, timestamp } = postData;
   const [postImageURL, setPostImageURL] = useState(userPostPhoto);
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (userPostPhoto) {
@@ -85,31 +87,39 @@ const Post = ({
   const initialsStyle = {
     color: darkenColor(color),
   };
+  
+  const navigateToProfile = () => {
+    navigation.navigate("Profile", { user: { ...postData, uid: postData.userId } });
+  };
 
   return (
     <View style={styles.postContainer}>
-      <View style={styles.postHeader}>
-        {!userPhotoURL ? (
-          <View style={[styles.profilePic, { backgroundColor: color }]}>
-            <Text style={[styles.initials, initialsStyle]}>{initials}</Text>
-          </View>
-        ) : (
-          <Image style={styles.profilePic} source={{ uri: userPhotoURL }} />
-        )}
+      <TouchableOpacity onPress={navigateToProfile}>
+        <View style={styles.postHeader}>
+          {!userPhotoURL ? (
+            <View style={[styles.profilePic, { backgroundColor: color }]}>
+              <Text style={[styles.initials, initialsStyle]}>{initials}</Text>
+            </View>
+          ) : (
+            <Image style={styles.profilePic} source={{ uri: userPhotoURL }} />
+          )}
 
-        <View style={styles.headerText}>
-          <View style={styles.roleContainer}>
-            <Text style={styles.userRole}>{role}</Text>
-            {isCurrentUserPost && (
-              <View style={styles.currentUserBox}>
-                <Text style={styles.currentUserLabel}>Your Flashback</Text>
-              </View>
-            )}
+          <View style={styles.headerText}>
+            <View style={styles.roleContainer}>
+              <Text style={styles.userRole}>{role}</Text>
+              {isCurrentUserPost && (
+                <View style={styles.currentUserBox}>
+                  <Text style={styles.currentUserLabel}>Your Flashback</Text>
+                </View>
+              )}
+            </View>
+            <TouchableOpacity onPress={navigateToProfile}>
+              <Text style={styles.userName}>{userName}</Text>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.userName}>{userName}</Text>
+          <Text style={styles.postTime}>{convertTimestamp(timestamp)}</Text>
         </View>
-        <Text style={styles.postTime}>{convertTimestamp(timestamp)}</Text>
-      </View>
+      </TouchableOpacity>
       {postImageURL && (
         <Image style={styles.postImage} source={{ uri: postImageURL }} />
       )}
@@ -173,12 +183,10 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Regular",
     fontSize: 12,
     color: COLORS.mainDarker,
-
   },
   currentUserBox: {
     marginLeft: 10,
   },
-
   roleContainer: {
     flexDirection: "row",
     alignItems: "center",

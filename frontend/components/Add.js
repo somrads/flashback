@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { getDatabase, ref, onValue, set } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { COLORS } from "../constants/colors";
@@ -103,13 +110,15 @@ const Add = () => {
     });
 
     // Fetch friend requests
-    const friendRequestsRef = ref(db, `users/${currentUser?.uid}/friendRequests`);
+    const friendRequestsRef = ref(
+      db,
+      `users/${currentUser?.uid}/friendRequests`
+    );
     onValue(friendRequestsRef, (snapshot) => {
       const data = snapshot.val();
       const requests = data ? Object.keys(data) : [];
       setFriendRequests(requests);
     });
-
   }, [currentUser]);
 
   // Function to determine button label based on user's relationship with current user
@@ -165,9 +174,7 @@ const Add = () => {
         onPress={() => navigation.navigate("FriendRequest")}
         style={styles.titleContainer}
       >
-        <Text style={styles.title}>
-          Requests ({friendRequests.length})
-        </Text>
+        <Text style={styles.title}>Requests ({friendRequests.length})</Text>
       </TouchableOpacity>
 
       {searchQuery &&
