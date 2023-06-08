@@ -5,7 +5,13 @@ import { storage } from "../db/firebase";
 import { COLORS } from "../constants/colors";
 import tinycolor from "tinycolor2";
 
-const Post = ({ postData, userPhotoURL, initials, color }) => {
+const Post = ({
+  postData,
+  userPhotoURL,
+  initials,
+  color,
+  isCurrentUserPost,
+}) => {
   const { userName, role, userPostPhoto, timestamp } = postData;
   const [postImageURL, setPostImageURL] = useState(userPostPhoto);
 
@@ -92,7 +98,14 @@ const Post = ({ postData, userPhotoURL, initials, color }) => {
         )}
 
         <View style={styles.headerText}>
-          <Text style={styles.userRole}>{role}</Text>
+          <View style={styles.roleContainer}>
+            <Text style={styles.userRole}>{role}</Text>
+            {isCurrentUserPost && (
+              <View style={styles.currentUserBox}>
+                <Text style={styles.currentUserLabel}>Your Flashback</Text>
+              </View>
+            )}
+          </View>
           <Text style={styles.userName}>{userName}</Text>
         </View>
         <Text style={styles.postTime}>{convertTimestamp(timestamp)}</Text>
@@ -155,6 +168,20 @@ const styles = StyleSheet.create({
     marginTop: 5,
     width: "100%",
     borderRadius: 8,
+  },
+  currentUserLabel: {
+    fontFamily: "Nunito-Regular",
+    fontSize: 12,
+    color: COLORS.mainDarker,
+
+  },
+  currentUserBox: {
+    marginLeft: 10,
+  },
+
+  roleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
 

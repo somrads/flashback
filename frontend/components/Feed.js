@@ -188,39 +188,40 @@ const Feed = ({ navigation }) => {
   const fetchPostsFromDB = async () => {
     const currentUser = auth.currentUser;
     const usersRef = ref(database, `users`);
-
+  
     // Fetch all users
     const usersSnapshot = await get(usersRef);
-
+  
     if (usersSnapshot.exists()) {
       const usersData = usersSnapshot.val();
       let postsArray = [];
-
+  
       // Get the friend list of the logged-in user
       const currentUserRef = ref(database, `users/${currentUser.uid}`);
       const currentUserSnapshot = await get(currentUserRef);
       const currentUserData = currentUserSnapshot.val();
       const friendList = currentUserData.friends || {};
-
-      // Add the logged-in user's posts
+  
+      // Add the logged-in user's post with a label indicating their post
       if (currentUserData.postPhotoURL) {
-        let post = {
+        let currentUserPost = {
           userName: currentUserData.firstName + " " + currentUserData.lastName,
           userPostPhoto: currentUserData.postPhotoURL,
           userProfilePicture: currentUserData.profilePicture,
           role: currentUserData.role,
           timestamp: currentUserData.timestamp,
           key: "currentUserPost",
+          isCurrentUserPost: true, // Flag to indicate the logged-in user's post
         };
-
-        postsArray.push(post);
+  
+        postsArray.push(currentUserPost);
       }
-
+  
       // Go through each user and construct a post if they are friends
       for (const userId in usersData) {
         if (userId !== currentUser.uid && friendList[userId]) {
           let userData = usersData[userId];
-
+  
           if (userData.postPhotoURL) {
             let post = {
               userName: userData.firstName + " " + userData.lastName,
@@ -229,13 +230,17 @@ const Feed = ({ navigation }) => {
               role: userData.role,
               timestamp: userData.timestamp,
               key: "currentPost",
+              isCurrentUserPost: false, // Flag to indicate it's not the logged-in user's post
             };
-
+  
             postsArray.push(post);
           }
         }
       }
-
+  
+      // Sort the posts array by timestamp in descending order
+      postsArray.sort((a, b) => b.timestamp - a.timestamp);
+  
       setPosts(postsArray);
     } else {
       console.log("No users data available");
@@ -436,6 +441,7 @@ const Feed = ({ navigation }) => {
               initials={userData.initials}
               color={userData.color}
               userId={auth.currentUser.uid}
+              isCurrentUserPost={item.isCurrentUserPost}
             />
           ))}
         </View>
