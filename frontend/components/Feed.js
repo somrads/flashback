@@ -186,6 +186,7 @@ const Feed = ({ navigation }) => {
   };
 
   const fetchPostsFromDB = async () => {
+    const currentUser = auth.currentUser;
     const usersRef = ref(database, `users`);
 
     // Fetch all users
@@ -195,21 +196,43 @@ const Feed = ({ navigation }) => {
       const usersData = usersSnapshot.val();
       let postsArray = [];
 
-      // Go through each user and construct a post
+      // Get the friend list of the logged-in user
+      const currentUserRef = ref(database, `users/${currentUser.uid}`);
+      const currentUserSnapshot = await get(currentUserRef);
+      const currentUserData = currentUserSnapshot.val();
+      const friendList = currentUserData.friends || {};
+
+      // Add the logged-in user's posts
+      if (currentUserData.postPhotoURL) {
+        let post = {
+          userName: currentUserData.firstName + " " + currentUserData.lastName,
+          userPostPhoto: currentUserData.postPhotoURL,
+          userProfilePicture: currentUserData.profilePicture,
+          role: currentUserData.role,
+          timestamp: currentUserData.timestamp,
+          key: "currentUserPost",
+        };
+
+        postsArray.push(post);
+      }
+
+      // Go through each user and construct a post if they are friends
       for (const userId in usersData) {
-        let userData = usersData[userId];
+        if (userId !== currentUser.uid && friendList[userId]) {
+          let userData = usersData[userId];
 
-        if (userData.postPhotoURL) {
-          let post = {
-            userName: userData.firstName + " " + userData.lastName,
-            userPostPhoto: userData.postPhotoURL,
-            userProfilePicture: userData.profilePicture,
-            role: userData.role,
-            timestamp: userData.timestamp,
-            key: "currentPost",
-          };
+          if (userData.postPhotoURL) {
+            let post = {
+              userName: userData.firstName + " " + userData.lastName,
+              userPostPhoto: userData.postPhotoURL,
+              userProfilePicture: userData.profilePicture,
+              role: userData.role,
+              timestamp: userData.timestamp,
+              key: "currentPost",
+            };
 
-          postsArray.push(post);
+            postsArray.push(post);
+          }
         }
       }
 
@@ -218,10 +241,6 @@ const Feed = ({ navigation }) => {
       console.log("No users data available");
     }
   };
-
-  const renderItem = ({ item }) => (
-    <Post postData={item} userPhotoURL={userData.profilePicture} />
-  );
 
   return (
     <ScrollView style={styles.container}>

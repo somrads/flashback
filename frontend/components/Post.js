@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
-import { getDownloadURL, ref, onValue, off } from "firebase/storage";
+import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "../db/firebase";
 import { COLORS } from "../constants/colors";
 import tinycolor from "tinycolor2";
@@ -79,12 +79,6 @@ const Post = ({ postData, userPhotoURL, initials, color }) => {
   const initialsStyle = {
     color: darkenColor(color),
   };
-
-  useEffect(() => {
-    return () => {
-      off(ref(storage, userPostPhoto));
-    };
-  }, [userPostPhoto]);
 
   return (
     <View style={styles.postContainer}>
