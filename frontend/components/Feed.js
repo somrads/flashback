@@ -409,11 +409,14 @@ const Feed = ({ navigation }) => {
         )}
 
         <View>
-          {posts.map((item) => (
+          {posts.map((item, index) => (
             <Post
-              key={item.key}
+              key={index}
               postData={item}
               userPhotoURL={userData.profilePicture}
+              initials={userData.initials}
+              color={userData.color}
+              userId={auth.currentUser.uid}
             />
           ))}
         </View>

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
-import { COLORS } from "../constants/colors";
-import { getDownloadURL, ref } from "firebase/storage";
+import { getDownloadURL, ref, onValue, off } from "firebase/storage";
 import { storage } from "../db/firebase";
+import { COLORS } from "../constants/colors";
+import tinycolor from "tinycolor2";
 
-const Post = ({ postData, userPhotoURL }) => {
+const Post = ({ postData, userPhotoURL, initials, color }) => {
   const { userName, role, userPostPhoto, timestamp } = postData;
   const [postImageURL, setPostImageURL] = useState(userPostPhoto);
 
@@ -64,13 +65,37 @@ const Post = ({ postData, userPhotoURL }) => {
     return previousDate.toISOString().slice(0, 10);
   };
 
+  const darkenColor = (color) => {
+    let colorObj = tinycolor(color);
+    let { r, g, b } = colorObj.toRgb();
+
+    r = Math.floor(r / 2);
+    g = Math.floor(g / 2);
+    b = Math.floor(b / 2);
+
+    return tinycolor({ r, g, b }).toString();
+  };
+
+  const initialsStyle = {
+    color: darkenColor(color),
+  };
+
+  useEffect(() => {
+    return () => {
+      off(ref(storage, userPostPhoto));
+    };
+  }, [userPostPhoto]);
+
   return (
     <View style={styles.postContainer}>
       <View style={styles.postHeader}>
-        <Image
-          style={styles.profilePic}
-          source={{ uri: postData.userProfilePicture }}
-        />
+        {!userPhotoURL ? (
+          <View style={[styles.profilePic, { backgroundColor: color }]}>
+            <Text style={[styles.initials, initialsStyle]}>{initials}</Text>
+          </View>
+        ) : (
+          <Image style={styles.profilePic} source={{ uri: userPhotoURL }} />
+        )}
 
         <View style={styles.headerText}>
           <Text style={styles.userRole}>{role}</Text>
@@ -105,6 +130,12 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     marginRight: 10,
+  },
+  initials: {
+    fontSize: 18,
+    textAlign: "center",
+    lineHeight: 40,
+    fontFamily: "Nunito-Black",
   },
   userRole: {
     fontSize: 15,
