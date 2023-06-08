@@ -202,7 +202,6 @@ const Feed = ({ navigation }) => {
       const currentUserData = currentUserSnapshot.val();
       const friendList = currentUserData.friends || {};
 
-      // Add the logged-in user's post with a label indicating their post
       if (currentUserData.postPhotoURL) {
         let currentUserPost = {
           userName: currentUserData.firstName + " " + currentUserData.lastName,
@@ -211,10 +210,12 @@ const Feed = ({ navigation }) => {
           role: currentUserData.role,
           timestamp: currentUserData.timestamp,
           key: "currentUserPost",
-          isCurrentUserPost: true,
+          isCurrentUserPost: true, // Flag to indicate the logged-in user's post
+          initials: currentUserData.initials, // Include the initials data
+          color: currentUserData.color, // Include the color data
         };
 
-        postsArray.push(currentUserPost);
+        postsArray.unshift(currentUserPost); // Add the current user's post at the beginning
       }
 
       // Go through each user and construct a post if they are friends
@@ -230,9 +231,9 @@ const Feed = ({ navigation }) => {
               role: userData.role,
               timestamp: userData.timestamp,
               key: "currentPost",
-              isCurrentUserPost: false, // Flag to indicate it's not the logged-in user's post
-              initials: userData.initials, // Include the initials data
-              color: userData.color, // Include the color datat
+              isCurrentUserPost: false,
+              initials: userData.initials,
+              color: userData.color,
             };
 
             postsArray.push(post);
