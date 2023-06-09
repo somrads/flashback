@@ -69,45 +69,42 @@ const FriendRequest = () => {
     const db = getDatabase();
     const currentUserRef = ref(db, `users/${currentUser.uid}`);
     const friendRef = ref(db, `users/${friendId}`);
-
+  
     try {
+      // Update the friendRequests and friends nodes of the current user
       await update(currentUserRef, {
-        friendRequests: {
-          [friendId]: null,
-        },
-        friends: {
-          [friendId]: true,
-        },
+        [`friendRequests/${friendId}`]: null,
+        [`friends/${friendId}`]: true,
       });
-
+  
+      // Update the friends node of the friend
       await update(friendRef, {
-        friends: {
-          [currentUser.uid]: true,
-        },
+        [`friends/${currentUser.uid}`]: true,
       });
-
+  
       Alert.alert("Friend request accepted");
     } catch (error) {
       Alert.alert("Error accepting friend request");
     }
   };
+  
 
   const declineFriendRequest = async (friendId) => {
     const db = getDatabase();
     const currentUserRef = ref(db, `users/${currentUser.uid}`);
-
+  
     try {
+      // Update the friendRequests node of the current user
       await update(currentUserRef, {
-        friendRequests: {
-          [friendId]: null,
-        },
+        [`friendRequests/${friendId}`]: null,
       });
-
+  
       Alert.alert("Friend request declined");
     } catch (error) {
       Alert.alert("Error declining friend request");
     }
   };
+  
 
   return (
     <View style={styles.container}>
