@@ -15,7 +15,28 @@ const Post = ({
 }) => {
   const { userId, userName, role, userPostPhoto, timestamp } = postData;
   const [postImageURL, setPostImageURL] = useState(userPostPhoto);
+  const [isVisible, setIsVisible] = useState(false);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const visibilityTimestamp = getVisibilityTimestamp(); // Set the desired visibility timestamp
+
+    const intervalId = setInterval(() => {
+      const currentTime = new Date();
+      const visibilityTime = new Date(visibilityTimestamp);
+
+      if (currentTime >= visibilityTime && currentTime < getEndTime()) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    }, 1000); // checks every second
+
+    // cleanup function
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   useEffect(() => {
     if (userPostPhoto) {
@@ -96,40 +117,57 @@ const Post = ({
     });
   };
 
-  return (
-    <View style={styles.postContainer}>
-      <TouchableOpacity onPress={navigateToProfile}>
-        <View style={styles.postHeader}>
-          {!userPhotoURL ? (
-            <View style={[styles.profilePic, { backgroundColor: color }]}>
-              <Text style={[styles.initials, initialsStyle]}>{initials}</Text>
-            </View>
-          ) : (
-            <Image style={styles.profilePic} source={{ uri: userPhotoURL }} />
-          )}
+  // Helper function to get the visibility timestamp (today at 16:13)
+  const getVisibilityTimestamp = () => {
+    const currentDate = new Date();
+    currentDate.setHours(16);
+    currentDate.setMinutes(13);
+    return currentDate.toISOString();
+  };
 
-          <View style={styles.headerText}>
-            <View style={styles.roleContainer}>
+  // Helper function to get the end time for visibility (18:00)
+  const getEndTime = () => {
+    const currentTime = new Date();
+    currentTime.setHours(16);
+    currentTime.setMinutes(16);
+    currentTime.setSeconds(0);
+    return currentTime;
+  };
+
+  return (
+    isVisible && (
+      <View style={styles.postContainer}>
+        <TouchableOpacity onPress={navigateToProfile}>
+          <View style={styles.postHeader}>
+            {!userPhotoURL ? (
+              <View style={[styles.profilePic, { backgroundColor: color }]}>
+                <Text style={[styles.initials, initialsStyle]}>{initials}</Text>
+              </View>
+            ) : (
+              <Image style={styles.profilePic} source={{ uri: userPhotoURL }} />
+            )}
+
+            <View style={styles.headerText}>
+              <View style={styles.roleContainer}>
+                <TouchableOpacity onPress={navigateToProfile}>
+                  <Text style={styles.userRole}>{role}</Text>
+                </TouchableOpacity>
+                {isCurrentUserPost && (
+                  <View style={styles.currentUserBox}>
+                    <Text style={styles.currentUserLabel}>Your Flashback</Text>
+                  </View>
+                )}
+              </View>
               <TouchableOpacity onPress={navigateToProfile}>
-                <Text style={styles.userRole}>{role}</Text>
+                <Text style={styles.userName}>{userName}</Text>
               </TouchableOpacity>
-              {isCurrentUserPost && (
-                <View style={styles.currentUserBox}>
-                  <Text style={styles.currentUserLabel}>Your Flashback</Text>
-                </View>
-              )}
             </View>
-            <TouchableOpacity onPress={navigateToProfile}>
-              <Text style={styles.userName}>{userName}</Text>
-            </TouchableOpacity>
+            <Text style={styles.postTime}>{convertTimestamp(timestamp)}</Text>
           </View>
-          <Text style={styles.postTime}>{convertTimestamp(timestamp)}</Text>
-        </View>
-      </TouchableOpacity>
-      {postImageURL && ( 
-        <Image style={styles.postImage} source={{ uri: postImageURL }} />
-      )}
-    </View>
+        </TouchableOpacity>
+        {postImageURL && <Image style={styles.postImage} source={{ uri: postImageURL }} />}
+      </View>
+    )
   );
 };
 
