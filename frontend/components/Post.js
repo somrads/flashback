@@ -128,7 +128,7 @@ const Post = ({
   // Helper function to get the end time for visibility (18:00)
   const getEndTime = () => {
     const currentTime = new Date();
-    currentTime.setHours(16);
+    currentTime.setHours(19);
     currentTime.setMinutes(16);
     currentTime.setSeconds(0);
     return currentTime;
