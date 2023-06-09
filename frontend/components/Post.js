@@ -91,9 +91,10 @@ const Post = ({
   const navigateToProfile = () => {
     console.log("userId:", userId);
     console.log("userName:", userName);
-    navigation.navigate("Profile", { user: { uid: userId, userName: userName } });
+    navigation.navigate("Profile", {
+      user: { uid: userId, userName: userName },
+    });
   };
-  
 
   return (
     <View style={styles.postContainer}>
@@ -125,7 +126,7 @@ const Post = ({
           <Text style={styles.postTime}>{convertTimestamp(timestamp)}</Text>
         </View>
       </TouchableOpacity>
-      {postImageURL && (
+      {postImageURL && ( 
         <Image style={styles.postImage} source={{ uri: postImageURL }} />
       )}
     </View>
