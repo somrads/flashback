@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
 import { COLORS } from "../constants/colors";
 
-const CameraButton = ({ onCameraOpen }) => {
+const CameraButton = ({ onCameraOpen, disabled }) => {
   const [timeLeft, setTimeLeft] = useState(null);
   const [buttonActive, setButtonActive] = useState(false);
 
@@ -72,20 +72,19 @@ const CameraButton = ({ onCameraOpen }) => {
   }, []);
 
   const handlePress = () => {
-    if (buttonActive) {
-      onCameraOpen();
+    if (disabled) {
+      Alert.alert("You can take a picture when it's time for a flashback!");
     } else {
-      Alert.alert("You can take a picture when its time for a flashback!");
+      onCameraOpen();
     }
   };
 
   return (
     <>
       <TouchableOpacity
-        style={
-          buttonActive ? styles.openCameraButton : styles.disabledCameraButton
-        }
+        style={disabled ? styles.disabledCameraButton : styles.openCameraButton}
         onPress={handlePress}
+        disabled={disabled}
       >
         <Text style={styles.buttonText}>
           {buttonActive ? "Open Camera" : "Camera Disabled"}

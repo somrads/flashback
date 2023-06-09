@@ -57,6 +57,8 @@ const Feed = ({ navigation }) => {
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [isPosting, setIsPosting] = useState(false);
+  const [isCameraButtonDisabled, setIsCameraButtonDisabled] = useState(false);
 
   let cameraRef = useRef();
 
@@ -131,6 +133,8 @@ const Feed = ({ navigation }) => {
   const postPhoto = async () => {
     if (photo) {
       setIsLoading(true);
+      setIsPosting(true);
+      setIsCameraButtonDisabled(true);
 
       try {
         const storage = getStorage();
@@ -168,16 +172,47 @@ const Feed = ({ navigation }) => {
         await set(userRef, updatedData);
         Alert.alert("Success", "Flashback posted!");
 
+        // Create a new post object
+        const newPost = {
+          userName: userData.firstName + " " + userData.lastName,
+          userPostPhoto: updatedData.postPhotoURL,
+          userProfilePicture: userData.profilePicture,
+          role: userData.role,
+          timestamp: updatedData.timestamp,
+          key: "currentPost",
+          isCurrentUserPost: true,
+          initials: userData.initials,
+          color: userData.color,
+          userId: auth.currentUser.uid,
+        };
+
+        // Update the posts array by replacing the existing post or adding a new one
+        setPosts((prevPosts) => {
+          const updatedPosts = [...prevPosts];
+          const existingPostIndex = updatedPosts.findIndex(
+            (post) => post.isCurrentUserPost
+          );
+          if (existingPostIndex !== -1) {
+            updatedPosts[existingPostIndex] = newPost;
+          } else {
+            updatedPosts.unshift(newPost);
+          }
+          return updatedPosts;
+        });
+
         setIsLoading(false);
         setShowPhotoModal(false);
+        setIsPosting(false);
+        setIsCameraButtonDisabled(false);
         setPhoto(null);
       } catch (error) {
         console.error("Error uploading photo:", error);
         setIsLoading(false);
+        setIsPosting(false);
+        setIsCameraButtonDisabled(false);
       }
     }
   };
-
   const discardPhoto = () => {
     setIsLoading(false);
     setShowPhotoModal(false);
@@ -255,6 +290,52 @@ const Feed = ({ navigation }) => {
       });
 
       setPosts(postsArray);
+
+      // Set up the listener for real-time updates
+      const postsRef = ref(database, "posts");
+      onValue(postsRef, (snapshot) => {
+        const updatedPosts = snapshot.val();
+
+        // Update the posts array with the new data
+        let updatedPostsArray = postsArray;
+
+        for (const postId in updatedPosts) {
+          const post = updatedPosts[postId];
+
+          if (
+            post.userPostPhoto &&
+            !updatedPostsArray.find((item) => item.key === postId)
+          ) {
+            let newPost = {
+              userName: post.userName,
+              userPostPhoto: post.userPostPhoto,
+              userProfilePicture: post.userProfilePicture,
+              role: post.role,
+              timestamp: post.timestamp,
+              key: postId,
+              isCurrentUserPost: false,
+              initials: post.initials,
+              color: post.color,
+              userId: post.userId, // Add the userId property
+            };
+
+            updatedPostsArray.push(newPost);
+          }
+        }
+
+        // Sort the updated posts array by timestamp in descending order
+        updatedPostsArray.sort((a, b) => {
+          if (a.isCurrentUserPost) {
+            return -1; // Place the logged-in user's post first
+          } else if (b.isCurrentUserPost) {
+            return 1; // Place the logged-in user's post last
+          } else {
+            return b.timestamp - a.timestamp; // Sort by timestamp in descending order
+          }
+        });
+
+        setPosts(updatedPostsArray);
+      });
     } else {
       console.log("No users data available");
     }
@@ -382,7 +463,10 @@ const Feed = ({ navigation }) => {
             )}
           </TouchableOpacity>
         </View>
-        <CameraButton onCameraOpen={() => setIsCameraVisible(true)} />
+        <CameraButton
+          onCameraOpen={() => setIsCameraVisible(true)}
+          disabled={isPosting || isCameraButtonDisabled}
+        />
 
         {photo && (
           <Modal visible={showPhotoModal} transparent={true}>
@@ -614,12 +698,11 @@ const styles = StyleSheet.create({
 
   loadingScreen: {
     position: "absolute",
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: COLORS.background,
-  
   },
 
   cameraContainer: {

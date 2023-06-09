@@ -165,7 +165,9 @@ const Post = ({
             <Text style={styles.postTime}>{convertTimestamp(timestamp)}</Text>
           </View>
         </TouchableOpacity>
-        {postImageURL && <Image style={styles.postImage} source={{ uri: postImageURL }} />}
+        {postImageURL && (
+          <Image style={styles.postImage} source={{ uri: postImageURL }} />
+        )}
       </View>
     )
   );
