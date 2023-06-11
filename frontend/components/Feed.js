@@ -58,7 +58,6 @@ const Feed = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [isPosting, setIsPosting] = useState(false);
-  const [isCameraButtonDisabled, setIsCameraButtonDisabled] = useState(false);
 
   let cameraRef = useRef();
 
@@ -133,8 +132,7 @@ const Feed = ({ navigation }) => {
   const postPhoto = async () => {
     if (photo) {
       setIsLoading(true);
-      setIsPosting(true);
-      setIsCameraButtonDisabled(true);
+      // setIsPosting(true);
 
       try {
         const storage = getStorage();
@@ -203,16 +201,15 @@ const Feed = ({ navigation }) => {
         setIsLoading(false);
         setShowPhotoModal(false);
         setIsPosting(false);
-        setIsCameraButtonDisabled(false);
         setPhoto(null);
       } catch (error) {
         console.error("Error uploading photo:", error);
         setIsLoading(false);
-        setIsPosting(false);
-        setIsCameraButtonDisabled(false);
+        // setIsPosting(false);
       }
     }
   };
+
   const discardPhoto = () => {
     setIsLoading(false);
     setShowPhotoModal(false);
@@ -465,7 +462,7 @@ const Feed = ({ navigation }) => {
         </View>
         <CameraButton
           onCameraOpen={() => setIsCameraVisible(true)}
-          disabled={isPosting || isCameraButtonDisabled}
+          disabled={isPosting} // Use isPosting directly to disable the camera button
         />
 
         {photo && (

@@ -147,7 +147,7 @@ const Post = ({
               <Image style={styles.profilePic} source={{ uri: userPhotoURL }} />
             )}
 
-            <View style={styles.headerText}>
+            <View style={[styles.headerText, styles.headerTextContainer]}>
               <View style={styles.roleContainer}>
                 <TouchableOpacity onPress={navigateToProfile}>
                   <Text style={styles.userRole}>{role}</Text>
@@ -180,10 +180,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   postHeader: {
-    flexDirection: "row",
+    flexDirection: 'row',
     padding: 10,
-    justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: 'center',
   },
   headerText: {
     flexDirection: "column",
@@ -206,7 +205,6 @@ const styles = StyleSheet.create({
     color: COLORS.grayWhite,
   },
   userName: {
-    marginRight: 190,
     fontSize: 12,
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Medium",
@@ -236,6 +234,11 @@ const styles = StyleSheet.create({
   roleContainer: {
     flexDirection: "row",
     alignItems: "center",
+  },
+
+  headerTextContainer: {
+    flex: 1,
+    marginLeft: 5,
   },
 });
 
