@@ -118,7 +118,7 @@ const Feed = ({ navigation }) => {
         photo.uri,
         [],
         {
-          compress: 0.3,
+          compress: 0.4,
           format: ImageManipulator.SaveFormat.JPEG,
         }
       );

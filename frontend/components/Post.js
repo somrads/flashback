@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { getDownloadURL, ref } from "firebase/storage";
-import { storage } from "../db/firebase";
+import { storage, database } from "../db/firebase";
 import { COLORS } from "../constants/colors";
 import tinycolor from "tinycolor2";
 import { useNavigation } from "@react-navigation/native";
@@ -128,7 +128,7 @@ const Post = ({
   // Helper function to get the end time for visibility (18:00)
   const getEndTime = () => {
     const currentTime = new Date();
-    currentTime.setHours(19);
+    currentTime.setHours(23);
     currentTime.setMinutes(16);
     currentTime.setSeconds(0);
     return currentTime;
@@ -180,9 +180,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   postHeader: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   headerText: {
     flexDirection: "column",

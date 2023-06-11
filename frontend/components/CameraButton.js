@@ -72,7 +72,7 @@ const CameraButton = ({ onCameraOpen, disabled }) => {
   }, []);
 
   const handlePress = () => {
-    if (disabled) {
+    if (!buttonActive || disabled) {
       Alert.alert("You can take a picture when it's time for a flashback!");
     } else {
       onCameraOpen();
@@ -82,16 +82,16 @@ const CameraButton = ({ onCameraOpen, disabled }) => {
   return (
     <>
       <TouchableOpacity
-        style={disabled ? styles.disabledCameraButton : styles.openCameraButton}
+        style={!buttonActive || disabled ? styles.disabledCameraButton : styles.openCameraButton}
         onPress={handlePress}
-        disabled={disabled}
+        disabled={!buttonActive || disabled}
       >
         <Text style={styles.buttonText}>
-          {buttonActive ? "Open Camera" : "Camera Disabled"}
+          {buttonActive && !disabled ? "Open Camera" : "Camera Disabled"}
         </Text>
       </TouchableOpacity>
       <Text style={styles.timerText}>
-        {buttonActive ? timeLeft : "Until the next flashback!"}
+        {buttonActive && !disabled ? timeLeft : "Until the next flashback!"}
       </Text>
     </>
   );
