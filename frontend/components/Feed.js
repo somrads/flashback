@@ -57,7 +57,7 @@ const Feed = ({ navigation }) => {
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [posts, setPosts] = useState([]);
-  const [isPosting, setIsPosting] = useState(false);
+  const [isPostSubmitted, setIsPostSubmitted] = useState(false);
 
   let cameraRef = useRef();
 
@@ -117,7 +117,10 @@ const Feed = ({ navigation }) => {
       const manipResult = await ImageManipulator.manipulateAsync(
         photo.uri,
         [],
-        { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
+        {
+          compress: 0.3,
+          format: ImageManipulator.SaveFormat.JPEG,
+        }
       );
 
       setPhoto(manipResult);
@@ -132,7 +135,6 @@ const Feed = ({ navigation }) => {
   const postPhoto = async () => {
     if (photo) {
       setIsLoading(true);
-      // setIsPosting(true);
 
       try {
         const storage = getStorage();
@@ -200,12 +202,11 @@ const Feed = ({ navigation }) => {
 
         setIsLoading(false);
         setShowPhotoModal(false);
-        setIsPosting(false);
         setPhoto(null);
+        setIsPostSubmitted(true);
       } catch (error) {
         console.error("Error uploading photo:", error);
         setIsLoading(false);
-        // setIsPosting(false);
       }
     }
   };
@@ -462,7 +463,7 @@ const Feed = ({ navigation }) => {
         </View>
         <CameraButton
           onCameraOpen={() => setIsCameraVisible(true)}
-          disabled={isPosting} // Use isPosting directly to disable the camera button
+          disabled={isPostSubmitted}
         />
 
         {photo && (
