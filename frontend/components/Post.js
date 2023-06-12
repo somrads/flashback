@@ -17,18 +17,24 @@ const Post = ({
   const { userId, userName, role, userPostPhoto, timestamp } = postData;
   const [postImageURL, setPostImageURL] = useState(userPostPhoto);
   const [isBlurred, setIsBlurred] = useState(true);
+  const [isVisible, setIsVisible] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
     const visibilityTimestamp = getVisibilityTimestamp();
+    const endTime = getEndTime();
 
     const intervalId = setInterval(() => {
       const currentTime = Date.now();
 
       if (currentTime < visibilityTimestamp) {
         setIsBlurred(true);
-      } else {
+        setIsVisible(true);
+      } else if (currentTime >= visibilityTimestamp && currentTime <= endTime) {
         setIsBlurred(false);
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
       }
     }, 1000); // checks every second
 
@@ -124,60 +130,62 @@ const Post = ({
   // Updated getVisibilityTimestamp function
   const getVisibilityTimestamp = () => {
     const currentDate = new Date();
-    currentDate.setHours(17);
-    currentDate.setMinutes(13);
+    currentDate.setHours(16);
+    currentDate.setMinutes(51);
     return currentDate.getTime();
   };
 
   // Updated getEndTime function
   const getEndTime = () => {
     const currentTime = new Date();
-    currentTime.setHours(23);
+    currentTime.setHours(16);
     currentTime.setMinutes(16);
     currentTime.setSeconds(0);
     return currentTime.getTime();
   };
 
-  return (
-      <View style={styles.postContainer}>
-        <TouchableOpacity onPress={navigateToProfile}>
-          <View style={styles.postHeader}>
-            {!userPhotoURL ? (
-              <View style={[styles.profilePic, { backgroundColor: color }]}>
-                <Text style={[styles.initials, initialsStyle]}>{initials}</Text>
-              </View>
-            ) : (
-              <Image style={styles.profilePic} source={{ uri: userPhotoURL }} />
-            )}
+  if (!isVisible) return null;
 
-            <View style={[styles.headerText, styles.headerTextContainer]}>
-              <View style={styles.roleContainer}>
-                <TouchableOpacity onPress={navigateToProfile}>
-                  <Text style={styles.userRole}>{role}</Text>
-                </TouchableOpacity>
-                {isCurrentUserPost && (
-                  <View style={styles.currentUserBox}>
-                    <Text style={styles.currentUserLabel}>Your flashback</Text>
-                  </View>
-                )}
-              </View>
-              <TouchableOpacity onPress={navigateToProfile}>
-                <Text style={styles.userName}>{userName}</Text>
-              </TouchableOpacity>
+  return (
+    <View style={styles.postContainer}>
+      <TouchableOpacity onPress={navigateToProfile}>
+        <View style={styles.postHeader}>
+          {!userPhotoURL ? (
+            <View style={[styles.profilePic, { backgroundColor: color }]}>
+              <Text style={[styles.initials, initialsStyle]}>{initials}</Text>
             </View>
-            <Text style={styles.postTime}>{convertTimestamp(timestamp)}</Text>
-          </View>
-        </TouchableOpacity>
-        <View style={styles.imageContainer}>
-          <Image style={styles.postImage} source={{ uri: postImageURL }} />
-          {isBlurred && (
-            <BlurView intensity={70} style={styles.absolute}>
-              <Text style={styles.placeholderText}>flashback made!</Text>
-            </BlurView>
+          ) : (
+            <Image style={styles.profilePic} source={{ uri: userPhotoURL }} />
           )}
+
+          <View style={[styles.headerText, styles.headerTextContainer]}>
+            <View style={styles.roleContainer}>
+              <TouchableOpacity onPress={navigateToProfile}>
+                <Text style={styles.userRole}>{role}</Text>
+              </TouchableOpacity>
+              {isCurrentUserPost && (
+                <View style={styles.currentUserBox}>
+                  <Text style={styles.currentUserLabel}>Your flashback</Text>
+                </View>
+              )}
+            </View>
+            <TouchableOpacity onPress={navigateToProfile}>
+              <Text style={styles.userName}>{userName}</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.postTime}>{convertTimestamp(timestamp)}</Text>
         </View>
+      </TouchableOpacity>
+      <View style={styles.imageContainer}>
+        <Image style={styles.postImage} source={{ uri: postImageURL }} />
+        {isBlurred && (
+          <BlurView intensity={70} style={styles.absolute}>
+            <Text style={styles.placeholderText}>flashback made!</Text>
+          </BlurView>
+        )}
       </View>
-    )
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
