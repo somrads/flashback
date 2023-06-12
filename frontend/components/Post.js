@@ -16,7 +16,7 @@ const Post = ({
 }) => {
   const { userId, userName, role, userPostPhoto, timestamp } = postData;
   const [postImageURL, setPostImageURL] = useState(userPostPhoto);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isBlurred, setIsBlurred] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -25,17 +25,12 @@ const Post = ({
     const intervalId = setInterval(() => {
       const currentTime = Date.now();
 
-      if (currentTime >= visibilityTimestamp && currentTime < getEndTime()) {
-        setIsVisible(true);
+      if (currentTime < visibilityTimestamp) {
+        setIsBlurred(true);
       } else {
-        setIsVisible(false);
+        setIsBlurred(false);
       }
     }, 1000); // checks every second
-
-    // Check if the current time is before the visibility timestamp
-    if (Date.now() < visibilityTimestamp) {
-      setIsVisible(false); // Show the placeholder if the current time is before visibility
-    }
 
     // cleanup function
     return () => {
@@ -129,7 +124,7 @@ const Post = ({
   // Updated getVisibilityTimestamp function
   const getVisibilityTimestamp = () => {
     const currentDate = new Date();
-    currentDate.setHours(13);
+    currentDate.setHours(17);
     currentDate.setMinutes(13);
     return currentDate.getTime();
   };
@@ -144,7 +139,6 @@ const Post = ({
   };
 
   return (
-    isVisible && (
       <View style={styles.postContainer}>
         <TouchableOpacity onPress={navigateToProfile}>
           <View style={styles.postHeader}>
@@ -176,7 +170,7 @@ const Post = ({
         </TouchableOpacity>
         <View style={styles.imageContainer}>
           <Image style={styles.postImage} source={{ uri: postImageURL }} />
-          {!isPostTime() && (
+          {isBlurred && (
             <BlurView intensity={70} style={styles.absolute}>
               <Text style={styles.placeholderText}>flashback made!</Text>
             </BlurView>
@@ -184,7 +178,6 @@ const Post = ({
         </View>
       </View>
     )
-  );
 };
 
 const styles = StyleSheet.create({
