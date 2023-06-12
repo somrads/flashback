@@ -227,7 +227,7 @@ const Post = ({
         <Ionicons
           name={isLiked ? "heart" : "heart-outline"}
           size={24}
-          color={isLiked ? "red" : "white"}
+          color={isLiked ? "red"  : COLORS.grayWhite}
         />
         <Text style={styles.likeText}>{likeCount}</Text>
       </TouchableOpacity>
@@ -292,7 +292,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   currentUserBox: {
-    marginLeft: 10,
+    marginLeft: 'auto',
+    marginRight: -80, // Add additional s
+
   },
   roleContainer: {
     flexDirection: "row",
@@ -333,17 +335,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 16,
     right: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    borderRadius: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.7)",
+    borderRadius: 8,
     padding: 8,
   },
   likeText: {
-    color: 'white',
+    color: COLORS.grayWhite,
     marginLeft: 8,
     fontSize: 16,
-    fontFamily: 'Nunito-Bold',
+    fontFamily: "Nunito-Bold",
   },
 });
 
