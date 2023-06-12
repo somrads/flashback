@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { getDownloadURL, ref } from "firebase/storage";
-import { storage, database } from "../db/firebase";
+import { storage } from "../db/firebase";
 import { COLORS } from "../constants/colors";
 import tinycolor from "tinycolor2";
 import { useNavigation } from "@react-navigation/native";
+import { BlurView } from "expo-blur";
 
 const Post = ({
   postData,
@@ -19,18 +20,22 @@ const Post = ({
   const navigation = useNavigation();
 
   useEffect(() => {
-    const visibilityTimestamp = getVisibilityTimestamp(); // Set the desired visibility timestamp
+    const visibilityTimestamp = getVisibilityTimestamp();
 
     const intervalId = setInterval(() => {
-      const currentTime = new Date();
-      const visibilityTime = new Date(visibilityTimestamp);
+      const currentTime = Date.now();
 
-      if (currentTime >= visibilityTime && currentTime < getEndTime()) {
+      if (currentTime >= visibilityTimestamp && currentTime < getEndTime()) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
       }
     }, 1000); // checks every second
+
+    // Check if the current time is before the visibility timestamp
+    if (Date.now() < visibilityTimestamp) {
+      setIsVisible(false); // Show the placeholder if the current time is before visibility
+    }
 
     // cleanup function
     return () => {
@@ -94,6 +99,10 @@ const Post = ({
     return previousDate.toISOString().slice(0, 10);
   };
 
+  const isPostTime = (currentTime, visibilityTime, endTime) => {
+    return currentTime >= visibilityTime && currentTime <= endTime;
+  };
+
   const darkenColor = (color) => {
     let colorObj = tinycolor(color);
     let { r, g, b } = colorObj.toRgb();
@@ -117,21 +126,21 @@ const Post = ({
     });
   };
 
-  // Helper function to get the visibility timestamp (today at 16:13)
+  // Updated getVisibilityTimestamp function
   const getVisibilityTimestamp = () => {
     const currentDate = new Date();
-    currentDate.setHours(16);
+    currentDate.setHours(13);
     currentDate.setMinutes(13);
-    return currentDate.toISOString();
+    return currentDate.getTime();
   };
 
-  // Helper function to get the end time for visibility (18:00)
+  // Updated getEndTime function
   const getEndTime = () => {
     const currentTime = new Date();
     currentTime.setHours(23);
     currentTime.setMinutes(16);
     currentTime.setSeconds(0);
-    return currentTime;
+    return currentTime.getTime();
   };
 
   return (
@@ -154,7 +163,7 @@ const Post = ({
                 </TouchableOpacity>
                 {isCurrentUserPost && (
                   <View style={styles.currentUserBox}>
-                    <Text style={styles.currentUserLabel}>Your Flashback</Text>
+                    <Text style={styles.currentUserLabel}>Your flashback</Text>
                   </View>
                 )}
               </View>
@@ -165,9 +174,14 @@ const Post = ({
             <Text style={styles.postTime}>{convertTimestamp(timestamp)}</Text>
           </View>
         </TouchableOpacity>
-        {postImageURL && (
+        <View style={styles.imageContainer}>
           <Image style={styles.postImage} source={{ uri: postImageURL }} />
-        )}
+          {!isPostTime() && (
+            <BlurView intensity={70} style={styles.absolute}>
+              <Text style={styles.placeholderText}>flashback made!</Text>
+            </BlurView>
+          )}
+        </View>
       </View>
     )
   );
@@ -224,9 +238,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   currentUserLabel: {
-    fontFamily: "Nunito-Regular",
+    fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: COLORS.mainDarker,
+    color: COLORS.main,
+    alignItems: "flex-end",
   },
   currentUserBox: {
     marginLeft: 10,
@@ -239,6 +254,32 @@ const styles = StyleSheet.create({
   headerTextContainer: {
     flex: 1,
     marginLeft: 5,
+  },
+
+  placeholderImage: {
+    width: "100%",
+    height: 530,
+    backgroundColor: COLORS.grayLight,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  placeholderText: {
+    fontSize: 40,
+    color: COLORS.background,
+    fontFamily: "Nunito-Black",
+  },
+  imageContainer: {
+    position: "relative",
+  },
+
+  absolute: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

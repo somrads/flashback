@@ -8,7 +8,7 @@ const CameraButton = ({ onCameraOpen, disabled }) => {
 
   const START_HOUR = 10;
   const START_MINUTE = 38;
-  const END_HOUR = 23;
+  const END_HOUR = 22;
   const END_MINUTE = 22;
 
   const isWithinTimeRange = () => {
@@ -82,7 +82,11 @@ const CameraButton = ({ onCameraOpen, disabled }) => {
   return (
     <>
       <TouchableOpacity
-        style={!buttonActive || disabled ? styles.disabledCameraButton : styles.openCameraButton}
+        style={
+          !buttonActive || disabled
+            ? styles.disabledCameraButton
+            : styles.openCameraButton
+        }
         onPress={handlePress}
         disabled={!buttonActive || disabled}
       >
