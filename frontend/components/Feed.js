@@ -221,20 +221,20 @@ const Feed = ({ navigation }) => {
   const fetchPostsFromDB = async () => {
     const currentUser = auth.currentUser;
     const usersRef = ref(database, `users`);
-
+  
     // Fetch all users
     const usersSnapshot = await get(usersRef);
-
+  
     if (usersSnapshot.exists()) {
       const usersData = usersSnapshot.val();
       let postsArray = [];
-
+  
       // Get the friend list of the logged-in user
       const currentUserRef = ref(database, `users/${currentUser.uid}`);
       const currentUserSnapshot = await get(currentUserRef);
       const currentUserData = currentUserSnapshot.val();
       const friendList = currentUserData.friends || {};
-
+  
       if (currentUserData.postPhotoURL) {
         let currentUserPost = {
           userName: currentUserData.firstName + " " + currentUserData.lastName,
@@ -248,15 +248,15 @@ const Feed = ({ navigation }) => {
           color: currentUserData.color, // Include the color data
           userId: currentUser.uid, // Add the userId property
         };
-
+  
         postsArray.unshift(currentUserPost); // Add the current user's post at the beginning
       }
-
+  
       // Go through each user and construct a post if they are friends
       for (const userId in usersData) {
         if (userId !== currentUser.uid && friendList[userId]) {
           let userData = usersData[userId];
-
+  
           if (userData.postPhotoURL) {
             let post = {
               userName: userData.firstName + " " + userData.lastName,
@@ -270,12 +270,12 @@ const Feed = ({ navigation }) => {
               color: userData.color,
               userId: userId, // Add the userId property
             };
-
+  
             postsArray.push(post);
           }
         }
       }
-
+  
       // Sort the posts array by timestamp in descending order
       postsArray.sort((a, b) => {
         if (a.isCurrentUserPost) {
@@ -286,20 +286,20 @@ const Feed = ({ navigation }) => {
           return b.timestamp - a.timestamp; // Sort by timestamp in descending order
         }
       });
-
+  
       setPosts(postsArray);
-
+  
       // Set up the listener for real-time updates
       const postsRef = ref(database, "posts");
       onValue(postsRef, (snapshot) => {
         const updatedPosts = snapshot.val();
-
+  
         // Update the posts array with the new data
         let updatedPostsArray = postsArray;
-
+  
         for (const postId in updatedPosts) {
           const post = updatedPosts[postId];
-
+  
           if (
             post.userPostPhoto &&
             !updatedPostsArray.find((item) => item.key === postId)
@@ -316,11 +316,11 @@ const Feed = ({ navigation }) => {
               color: post.color,
               userId: post.userId, // Add the userId property
             };
-
+  
             updatedPostsArray.push(newPost);
           }
         }
-
+  
         // Sort the updated posts array by timestamp in descending order
         updatedPostsArray.sort((a, b) => {
           if (a.isCurrentUserPost) {
@@ -331,13 +331,12 @@ const Feed = ({ navigation }) => {
             return b.timestamp - a.timestamp; // Sort by timestamp in descending order
           }
         });
-
+  
         setPosts(updatedPostsArray);
       });
-    } else {
-      console.log("No users data available");
     }
   };
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -532,6 +531,7 @@ const Feed = ({ navigation }) => {
             <Post
               key={index}
               postData={item}
+              postId={item.key} 
               userPhotoURL={item.userProfilePicture}
               initials={item.initials}
               color={item.color}

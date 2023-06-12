@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { getDownloadURL, ref } from "firebase/storage";
-import { storage } from "../db/firebase";
+import { ref as dbRef, set, get, push, child, update } from "firebase/database";
+import { storage, auth, database } from "../db/firebase"; // adjust the import path as per your structure
 import { COLORS } from "../constants/colors";
 import tinycolor from "tinycolor2";
 import { useNavigation } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
+import { Ionicons } from "@expo/vector-icons";
 
 const Post = ({
   postData,
@@ -13,11 +15,14 @@ const Post = ({
   initials,
   color,
   isCurrentUserPost,
+  postId,
 }) => {
   const { userId, userName, role, userPostPhoto, timestamp } = postData;
   const [postImageURL, setPostImageURL] = useState(userPostPhoto);
   const [isBlurred, setIsBlurred] = useState(true);
   const [isVisible, setIsVisible] = useState(true);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(postData.likeCount || 0);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -56,6 +61,44 @@ const Post = ({
         });
     }
   }, [userPostPhoto]);
+
+  const handleLike = () => {
+    const currentUser = auth.currentUser;
+    get(child(dbRef(database), `users/${currentUser.uid}/likedPosts`))
+      .then((snapshot) => {
+        let likedPosts = snapshot.exists() ? snapshot.val() : [];
+        if (isLiked) {
+          // Unlike the post
+          likedPosts = likedPosts.filter((id) => id !== postId);
+          setLikeCount((prevLikeCount) => prevLikeCount - 1);
+        } else {
+          // Like the post
+          likedPosts.push(postId);
+          setLikeCount((prevLikeCount) => prevLikeCount + 1);
+        }
+        setIsLiked(!isLiked);
+
+        // Update likedPosts in Firebase
+        set(dbRef(database, `users/${currentUser.uid}/likedPosts`), likedPosts);
+
+        // Update likeCount in Firebase
+        get(child(dbRef(database), `posts/${postId}`))
+          .then((postSnapshot) => {
+            if (postSnapshot.exists()) {
+              const post = postSnapshot.val();
+              update(dbRef(database), {
+                [`posts/${postId}/likeCount`]: post.likeCount ? likeCount : 0,
+              });
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   const convertTimestamp = (timestamp) => {
     if (!timestamp) {
@@ -100,10 +143,6 @@ const Post = ({
     return previousDate.toISOString().slice(0, 10);
   };
 
-  const isPostTime = (currentTime, visibilityTime, endTime) => {
-    return currentTime >= visibilityTime && currentTime <= endTime;
-  };
-
   const darkenColor = (color) => {
     let colorObj = tinycolor(color);
     let { r, g, b } = colorObj.toRgb();
@@ -138,7 +177,7 @@ const Post = ({
   // Updated getEndTime function
   const getEndTime = () => {
     const currentTime = new Date();
-    currentTime.setHours(16);
+    currentTime.setHours(18);
     currentTime.setMinutes(16);
     currentTime.setSeconds(0);
     return currentTime.getTime();
@@ -184,6 +223,14 @@ const Post = ({
           </BlurView>
         )}
       </View>
+      <TouchableOpacity style={styles.likeButton} onPress={handleLike}>
+        <Ionicons
+          name={isLiked ? "heart" : "heart-outline"}
+          size={24}
+          color={isLiked ? "red" : "white"}
+        />
+        <Text style={styles.likeText}>{likeCount}</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -281,6 +328,22 @@ const styles = StyleSheet.create({
     right: 0,
     justifyContent: "center",
     alignItems: "center",
+  },
+  likeButton: {
+    position: "absolute",
+    bottom: 16,
+    right: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 16,
+    padding: 8,
+  },
+  likeText: {
+    color: 'white',
+    marginLeft: 8,
+    fontSize: 16,
+    fontFamily: 'Nunito-Bold',
   },
 });
 
