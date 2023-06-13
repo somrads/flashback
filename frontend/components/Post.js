@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { getDownloadURL, ref } from "firebase/storage";
 import { ref as dbRef, set, get, push, child, update } from "firebase/database";
-import { storage, auth, database } from "../db/firebase"; // adjust the import path as per your structure
+import { storage, auth, database } from "../db/firebase";
 import { COLORS } from "../constants/colors";
 import tinycolor from "tinycolor2";
 import { useNavigation } from "@react-navigation/native";
@@ -169,7 +169,7 @@ const Post = ({
   // Updated getVisibilityTimestamp function
   const getVisibilityTimestamp = () => {
     const currentDate = new Date();
-    currentDate.setHours(16);
+    currentDate.setHours(10);
     currentDate.setMinutes(51);
     return currentDate.getTime();
   };
@@ -222,15 +222,17 @@ const Post = ({
             <Text style={styles.placeholderText}>flashback made!</Text>
           </BlurView>
         )}
+        {!isBlurred && (
+          <TouchableOpacity style={styles.likeButton} onPress={handleLike}>
+            <Ionicons
+              name={isLiked ? "heart" : "heart-outline"}
+              size={24}
+              color={isLiked ? "red" : COLORS.grayWhite}
+            />
+            <Text style={styles.likeText}>{likeCount}</Text>
+          </TouchableOpacity>
+        )}
       </View>
-      <TouchableOpacity style={styles.likeButton} onPress={handleLike}>
-        <Ionicons
-          name={isLiked ? "heart" : "heart-outline"}
-          size={24}
-          color={isLiked ? "red"  : COLORS.grayWhite}
-        />
-        <Text style={styles.likeText}>{likeCount}</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -292,9 +294,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   currentUserBox: {
-    marginLeft: 'auto',
+    marginLeft: "auto",
     marginRight: -80, // Add additional s
-
   },
   roleContainer: {
     flexDirection: "row",
