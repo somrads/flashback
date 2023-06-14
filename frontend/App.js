@@ -94,21 +94,15 @@ function AppNavigator() {
     "Ubuntu-Regular": require("./assets/fonts/Ubuntu-Regular.ttf"),
   });
 
-  useEffect(() => {
-    const subscriber = auth.onIdTokenChanged((user) => {
-      if (user) {
-        user.reload().then(() => {
-          setUser(user);
-          if (initializing) setInitializing(false);
-        });
-      } else {
-        setUser(null);
-        if (initializing) setInitializing(false);
-      }
-    });
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
 
+  useEffect(() => {
+    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
     return subscriber;
-  }, [initializing]);
+  }, []);
 
   if (!fontsLoaded || initializing) return null;
 
