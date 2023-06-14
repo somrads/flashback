@@ -7,7 +7,7 @@ const CameraButton = ({ onCameraOpen, disabled }) => {
   const [buttonActive, setButtonActive] = useState(false);
 
   const START_HOUR = 10;
-  const START_MINUTE = 38;
+  const START_MINUTE = 36;
   const END_HOUR = 22;
   const END_MINUTE = 22;
 

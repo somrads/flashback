@@ -169,7 +169,7 @@ const Post = ({
   // Updated getVisibilityTimestamp function
   const getVisibilityTimestamp = () => {
     const currentDate = new Date();
-    currentDate.setHours(10);
+    currentDate.setHours(9);
     currentDate.setMinutes(51);
     return currentDate.getTime();
   };
