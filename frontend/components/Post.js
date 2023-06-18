@@ -177,7 +177,7 @@ const Post = ({
   // Updated getEndTime function
   const getEndTime = () => {
     const currentTime = new Date();
-    currentTime.setHours(19);
+    currentTime.setHours(23);
     currentTime.setMinutes(16);
     currentTime.setSeconds(0);
     return currentTime.getTime();

@@ -7,12 +7,11 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { useRoute } from "@react-navigation/native";
 import { COLORS } from "../constants/colors";
 import BirthdayIcon from "../assets/icons/birthday.svg";
 import RoleIcon from "../assets/icons/role.svg";
 import { auth, database } from "../db/firebase";
-import { ref, onValue, off } from "firebase/database";
+import { ref, onValue, off, set } from "firebase/database";
 import tinycolor from "tinycolor2";
 import OptionsIcon from "../assets/icons/edit.svg";
 
@@ -65,6 +64,24 @@ const fetchUserFriends = (userId, callback) => {
   onValue(friendsRef, listener);
 
   return () => off(friendsRef, listener);
+};
+
+const removeFriend = (friend) => {
+  const currentUser = auth.currentUser;
+  const friendId = friend.userId || friend.key;
+  const userFriendsRef = ref(database, `users/${currentUser.uid}/friends`);
+  const friendRef = ref(userFriendsRef, friendId);
+
+  // Set the friend's value to null or false to mark them as removed
+  set(friendRef, null)
+    .then(() => {
+      // Friend removed successfully
+      console.log("Friend removed successfully");
+    })
+    .catch((error) => {
+      // Error occurred while removing friend
+      console.error("Error removing friend:", error);
+    });
 };
 
 const daysUntilBirthday = (birthday) => {
@@ -157,6 +174,20 @@ export default function Profile({ navigation, route }) {
         },
       ];
 
+  const renderProfilePicture = () => {
+    if (profilePicture) {
+      return (
+        <Image style={styles.pfp} source={{ uri: profilePicture }} />
+      );
+    } else {
+      return (
+        <Text style={[styles.initials, { color: userData.darkerColor }]}>
+          {userData.initials}
+        </Text>
+      );
+    }
+  };
+
   return (
     <ScrollView
       contentContainerStyle={styles.scrollContainer}
@@ -164,13 +195,7 @@ export default function Profile({ navigation, route }) {
     >
       <View style={styles.wrapper}>
         <View style={pfpStyles}>
-          {profilePicture ? (
-            <Image style={styles.pfp} source={{ uri: profilePicture }} />
-          ) : (
-            <Text style={[styles.initials, { color: userData.darkerColor }]}>
-              {userData.initials}
-            </Text>
-          )}
+          {renderProfilePicture()}
         </View>
 
         <Text style={styles.userName}>
@@ -245,20 +270,24 @@ export default function Profile({ navigation, route }) {
                 <View style={styles.membersWrapper}>
                   {userFriends.map((friend, index) => (
                     <View style={styles.members} key={index}>
-                      <Image
-                        style={styles.memberPfp}
-                        source={
-                          friend.profilePicture
-                            ? { uri: friend.profilePicture }
-                            : require("../assets/img/image1.png")
-                        }
-                      />
+                      <View style={styles.friendPfp}>
+                        {friend.profilePicture ? (
+                          <Image
+                            style={styles.memberPfp}
+                            source={{ uri: friend.profilePicture }}
+                          />
+                        ) : (
+                          <Text style={styles.friendInitials}>
+                            {friend.initials}
+                          </Text>
+                        )}
+                      </View>
                       <Text style={styles.memberName}>
                         {friend.firstName} {friend.lastName}
                       </Text>
                       <TouchableOpacity
                         style={styles.removeButton}
-                        onPress={() => {}}
+                        onPress={() => removeFriend(friend)}
                       >
                         <Text style={styles.removeButtonText}>Remove</Text>
                       </TouchableOpacity>
@@ -406,7 +435,6 @@ const styles = StyleSheet.create({
   membersInfo: {
     flexDirection: "row",
     marginRight: 25,
-
   },
   membersText: {
     color: COLORS.mainDarker,
@@ -430,6 +458,11 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 70,
+  },
+  friendInitials: {
+    fontSize: 30,
+    fontFamily: "Nunito-Black",
+    color: COLORS.grayWhite,
   },
   memberName: {
     color: COLORS.grayWhite,
@@ -475,6 +508,6 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between", 
+    justifyContent: "space-between",
   },
 });
