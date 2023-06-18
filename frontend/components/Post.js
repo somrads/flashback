@@ -169,7 +169,7 @@ const Post = ({
   // Updated getVisibilityTimestamp function
   const getVisibilityTimestamp = () => {
     const currentDate = new Date();
-    currentDate.setHours(9);
+    currentDate.setHours(17);
     currentDate.setMinutes(51);
     return currentDate.getTime();
   };
@@ -177,7 +177,7 @@ const Post = ({
   // Updated getEndTime function
   const getEndTime = () => {
     const currentTime = new Date();
-    currentTime.setHours(18);
+    currentTime.setHours(19);
     currentTime.setMinutes(16);
     currentTime.setSeconds(0);
     return currentTime.getTime();
@@ -295,7 +295,6 @@ const styles = StyleSheet.create({
   },
   currentUserBox: {
     marginLeft: "auto",
-    marginRight: -80, // Add additional s
   },
   roleContainer: {
     flexDirection: "row",

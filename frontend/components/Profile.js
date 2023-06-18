@@ -36,6 +36,7 @@ const fetchUserData = (userId, callback) => {
       userData.initials = initials.toUpperCase();
       userData.color = userData.color;
       userData.darkerColor = darkenColor(userData.color);
+      userData.postPhotoURL = userData.postPhotoURL;
       callback(userData);
     }
   };
@@ -87,7 +88,7 @@ export default function Profile({ navigation, route }) {
     return () => {
       if (unsubscribe) unsubscribe();
     };
-  }, [userId, route.params?.updatedData]);
+  }, [userId, route.params?.updatedData, userData?.postPhotoURL]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -183,10 +184,16 @@ export default function Profile({ navigation, route }) {
             <Text style={styles.title}>Today's Post</Text>
             <View style={styles.todaysPhotoCentered}>
               <View style={styles.todaysPhotoWrapper}>
-                <Image
-                  style={styles.todaysPhotoWrapper}
-                  source={require("../assets/img/image1.png")}
-                ></Image>
+                {userData.postPhotoURL ? (
+                  <Image
+                    style={styles.todaysPhotoWrapper}
+                    source={{ uri: userData.postPhotoURL }}
+                  />
+                ) : (
+                  <Text style={styles.placeholderText2}>
+                    No flashback yet 😢
+                  </Text>
+                )}
               </View>
             </View>
           </View>
@@ -383,7 +390,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Medium",
     fontSize: 14,
   },
-  
+
   buttonText: {
     color: "#580020",
     fontSize: 16,
@@ -392,5 +399,12 @@ const styles = StyleSheet.create({
   initials: {
     fontSize: 50,
     fontFamily: "Nunito-Black",
+  },
+
+  placeholderText2: {
+    color: COLORS.placeHolder,
+    fontFamily: "Nunito-Regular",
+    fontSize: 15,
+    marginLeft: 15,
   },
 });
