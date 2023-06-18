@@ -27,22 +27,44 @@ function darkenColor(color) {
   return tinycolor({ r, g, b }).toString();
 }
 
-const fetchUserData = (userId, callback) => {
-  const userRef = ref(database, `users/${userId}`);
-  const listener = (snapshot) => {
-    const userData = snapshot.val();
-    if (userData) {
-      const initials = userData.firstName[0] + userData.lastName[0];
-      userData.initials = initials.toUpperCase();
-      userData.color = userData.color;
-      userData.darkerColor = darkenColor(userData.color);
-      userData.postPhotoURL = userData.postPhotoURL;
-      callback(userData);
+const fetchUserData = (userId) => {
+  return new Promise((resolve, reject) => {
+    const userRef = ref(database, `users/${userId}`);
+    const listener = (snapshot) => {
+      const userData = snapshot.val();
+      if (userData) {
+        const initials = userData.firstName[0] + userData.lastName[0];
+        userData.initials = initials.toUpperCase();
+        userData.color = userData.color;
+        userData.darkerColor = darkenColor(userData.color);
+        userData.postPhotoURL = userData.postPhotoURL;
+        resolve(userData);
+      }
+      reject(new Error("User data not found"));
+    };
+    onValue(userRef, listener);
+
+    return () => off(userRef, listener);
+  });
+};
+
+const fetchUserFriends = (userId, callback) => {
+  const friendsRef = ref(database, `users/${userId}/friends`);
+  const listener = async (snapshot) => {
+    const friendsData = snapshot.val();
+    if (friendsData) {
+      const friends = Object.keys(friendsData);
+      const friendsDetails = [];
+      for (let friendId of friends) {
+        const friendData = await fetchUserData(friendId);
+        friendsDetails.push(friendData);
+      }
+      callback(friendsDetails);
     }
   };
-  onValue(userRef, listener);
+  onValue(friendsRef, listener);
 
-  return () => off(userRef, listener);
+  return () => off(friendsRef, listener);
 };
 
 const daysUntilBirthday = (birthday) => {
@@ -70,23 +92,31 @@ const daysUntilBirthday = (birthday) => {
 
 export default function Profile({ navigation, route }) {
   const [userData, setUserData] = useState(null);
+  const [userFriends, setUserFriends] = useState([]);
   const currentUser = auth.currentUser;
   const userId = route.params?.user?.uid || currentUser.uid;
 
   useEffect(() => {
-    let unsubscribe;
+    let unsubscribeUserData;
+    let unsubscribeUserFriends;
+
     if (userId) {
-      unsubscribe = fetchUserData(userId, (data) => {
-        if (data) {
-          setUserData(data);
-        } else {
-          alert("User data not found");
-        }
-      });
+      fetchUserData(userId)
+        .then((data) => {
+          if (data) {
+            setUserData(data);
+          } else {
+            alert("User data not found");
+          }
+        })
+        .catch((error) => console.error(error));
+
+      unsubscribeUserFriends = fetchUserFriends(userId, setUserFriends);
     }
 
     return () => {
-      if (unsubscribe) unsubscribe();
+      if (unsubscribeUserData) unsubscribeUserData();
+      if (unsubscribeUserFriends) unsubscribeUserFriends();
     };
   }, [userId, route.params?.updatedData, userData?.postPhotoURL]);
 
@@ -198,26 +228,50 @@ export default function Profile({ navigation, route }) {
             </View>
           </View>
 
-          <View style={styles.familyMembersSection}>
-            <Text style={styles.familyMembersTitle}>Family Members</Text>
-            <View style={styles.membersInfo}>
-              <Text style={styles.membersCount}>1</Text>
-              <Text style={styles.membersText}>Members</Text>
+          {currentUser.uid === userId && (
+            <View style={styles.familyMembersSection}>
+              <View style={styles.titleContainer}>
+                <Text style={styles.familyMembersTitle}>Family Members</Text>
+                {userFriends?.length > 0 && (
+                  <View style={styles.membersInfo}>
+                    <Text style={styles.membersCount}>
+                      {userFriends.length}
+                    </Text>
+                    <Text style={styles.membersText}>members</Text>
+                  </View>
+                )}
+              </View>
+              {userFriends?.length > 0 ? (
+                <View style={styles.membersWrapper}>
+                  {userFriends.map((friend, index) => (
+                    <View style={styles.members} key={index}>
+                      <Image
+                        style={styles.memberPfp}
+                        source={
+                          friend.profilePicture
+                            ? { uri: friend.profilePicture }
+                            : require("../assets/img/image1.png")
+                        }
+                      />
+                      <Text style={styles.memberName}>
+                        {friend.firstName} {friend.lastName}
+                      </Text>
+                      <TouchableOpacity
+                        style={styles.removeButton}
+                        onPress={() => {}}
+                      >
+                        <Text style={styles.removeButtonText}>Remove</Text>
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </View>
+              ) : (
+                <Text style={styles.placeholderText3}>
+                  Add your family members to view them here!
+                </Text>
+              )}
             </View>
-          </View>
-
-          <View style={styles.membersWrapper}>
-            <View style={styles.members}>
-              <Image
-                style={styles.memberPfp}
-                source={require("../assets/img/image1.png")}
-              ></Image>
-              <Text style={styles.memberName}>Julie Laquez</Text>
-              <TouchableOpacity style={styles.removeButton} onPress={() => {}}>
-                <Text style={styles.removeButtonText}>Remove</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          )}
         </>
       )}
     </ScrollView>
@@ -329,25 +383,29 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   familyMembersSection: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
+    justifyContent: "space-between",
     paddingHorizontal: 20,
     marginTop: 50,
     marginBottom: 20,
+    marginLeft: 15,
   },
   familyMembersTitle: {
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Bold",
     fontSize: 25,
   },
+
   membersCount: {
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Medium",
     fontSize: 20,
     marginTop: 2,
+    marginRight: 6,
   },
   membersInfo: {
     flexDirection: "row",
+    marginRight: 25,
+
   },
   membersText: {
     color: COLORS.mainDarker,
@@ -356,6 +414,7 @@ const styles = StyleSheet.create({
     marginLeft: 6,
     marginTop: 10,
   },
+
   membersWrapper: {
     paddingHorizontal: 20,
     marginBottom: 10,
@@ -406,5 +465,17 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Regular",
     fontSize: 15,
     marginLeft: 15,
+  },
+
+  placeholderText3: {
+    color: COLORS.placeHolder,
+    fontFamily: "Nunito-Regular",
+    fontSize: 15,
+    marginTop: 10,
+  },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between", 
   },
 });
