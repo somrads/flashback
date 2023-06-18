@@ -393,6 +393,7 @@ const styles = StyleSheet.create({
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Bold",
     fontSize: 25,
+    marginLeft: 15,
   },
 
   membersCount: {
@@ -420,19 +421,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   members: {
-    margin: 10,
+    marginTop: 20,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-evenly",
+    justifyContent: "space-between",
   },
   memberPfp: {
-    width: 59,
-    height: 57,
+    width: 50,
+    height: 50,
     borderRadius: 70,
   },
   memberName: {
-    marginLeft: 15,
-    marginLeft: -15,
     color: COLORS.grayWhite,
     fontFamily: "Nunito-Medium",
     fontSize: 20,
