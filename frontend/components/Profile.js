@@ -55,8 +55,12 @@ const fetchUserFriends = (userId, callback) => {
       const friends = Object.keys(friendsData);
       const friendsDetails = [];
       for (let friendId of friends) {
-        const friendData = await fetchUserData(friendId);
-        friendsDetails.push(friendData);
+        try {
+          const friendData = await fetchUserData(friendId);
+          friendsDetails.push(friendData);
+        } catch (error) {
+          console.error("Friend data not found for id:", friendId);
+        }
       }
       callback(friendsDetails);
     }
@@ -64,24 +68,6 @@ const fetchUserFriends = (userId, callback) => {
   onValue(friendsRef, listener);
 
   return () => off(friendsRef, listener);
-};
-
-const removeFriend = (friend) => {
-  const currentUser = auth.currentUser;
-  const friendId = friend.userId || friend.key;
-  const userFriendsRef = ref(database, `users/${currentUser.uid}/friends`);
-  const friendRef = ref(userFriendsRef, friendId);
-
-  // Set the friend's value to null or false to mark them as removed
-  set(friendRef, null)
-    .then(() => {
-      // Friend removed successfully
-      console.log("Friend removed successfully");
-    })
-    .catch((error) => {
-      // Error occurred while removing friend
-      console.error("Error removing friend:", error);
-    });
 };
 
 const daysUntilBirthday = (birthday) => {
@@ -176,9 +162,7 @@ export default function Profile({ navigation, route }) {
 
   const renderProfilePicture = () => {
     if (profilePicture) {
-      return (
-        <Image style={styles.pfp} source={{ uri: profilePicture }} />
-      );
+      return <Image style={styles.pfp} source={{ uri: profilePicture }} />;
     } else {
       return (
         <Text style={[styles.initials, { color: userData.darkerColor }]}>
@@ -194,9 +178,7 @@ export default function Profile({ navigation, route }) {
       style={styles.color}
     >
       <View style={styles.wrapper}>
-        <View style={pfpStyles}>
-          {renderProfilePicture()}
-        </View>
+        <View style={pfpStyles}>{renderProfilePicture()}</View>
 
         <Text style={styles.userName}>
           {firstName} {lastName}
@@ -287,7 +269,6 @@ export default function Profile({ navigation, route }) {
                       </Text>
                       <TouchableOpacity
                         style={styles.removeButton}
-                        onPress={() => removeFriend(friend)}
                       >
                         <Text style={styles.removeButtonText}>Remove</Text>
                       </TouchableOpacity>
