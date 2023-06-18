@@ -247,6 +247,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 10,
     alignItems: "center",
+    position: "relative"
   },
   headerText: {
     flexDirection: "column",
@@ -278,7 +279,8 @@ const styles = StyleSheet.create({
     color: COLORS.grayBlack,
     fontFamily: "Nunito-Regular",
     marginTop: 20,
-    marginLeft: -10,
+
+    right: 0 
   },
   postImage: {
     width: 530,
@@ -294,7 +296,10 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   currentUserBox: {
-    marginLeft: "auto",
+    position: "absolute", 
+    right: -75, 
+    top: 0
+
   },
   roleContainer: {
     flexDirection: "row",
