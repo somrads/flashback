@@ -82,7 +82,9 @@ const FriendRequest = () => {
         [`friends/${currentUser.uid}`]: true,
       });
 
-      Alert.alert("Friend request accepted");
+      Alert.alert(
+        "Accepted! Please restart the app for to see your families pictures"
+      );
     } catch (error) {
       Alert.alert("Error accepting friend request");
     }
