@@ -32,8 +32,10 @@ const VerifyEmail = () => {
       <View style={styles.text}>
         <Text style={styles.verifyTitle}>Thank you for signing up!</Text>
         <Text style={styles.verifyText}>
-          Please check your email for verification instructions. It might be in
-          your spam so be sure to check there!
+          Check your email, including <Text style={styles.boldText}>spam</Text>,
+          for verification instructions. Once verified, please{" "}
+          <Text style={styles.boldText}>restart the app</Text> for a successful
+          login. Thank you!
         </Text>
       </View>
       <View style={styles.buttons}>
@@ -63,10 +65,10 @@ const styles = StyleSheet.create({
   logoContainer: {
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 100,
+    marginBottom: 50,
   },
   verifyText: {
-    fontSize: 20,
+    fontSize: 18,
     color: COLORS.grayWhite,
     marginHorizontal: 40,
     textAlign: "center",
@@ -110,5 +112,10 @@ const styles = StyleSheet.create({
 
   text: {
     marginBottom: 50,
+  },
+  boldText: {
+    fontFamily: "Nunito-Black",
+    color: COLORS.main,
+    fontSize: 19,
   },
 });

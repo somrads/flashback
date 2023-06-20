@@ -5,10 +5,10 @@
     "description": "Catch up in a flash with flashback! Ignite nostalgia and bond with family, one shared photo at a time",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/app-icon.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/app-icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#151515"
     },
